@@ -2,13 +2,21 @@ import re
 
 class Person():
 	def __init__(self):
-		self.tags = {}
+		self.fields = {}
 
-	def addTag(self,name,value):
-		self.tags[name] = value
+	def setName(self, level, data):
+		match = re.search('(.*)/(.*)/', data)
+		if match:
+			self.setField(level, 'GIVN', match.group(1).strip())
+			self.setField(level, 'NAME', match.group(2).strip())
+		else:
+			print("raise error!")
+
+	def setField(self, level, field, value):
+		self.fields[field] = value
 
 	def print(self):
-		print(self.tags)
+		print(self.fields)
 
 class Line():
 	def __init__(self, line):
@@ -17,38 +25,37 @@ class Line():
 	
 	def parseLine(self, line):
 		parts = line.split()
-		self.code = parts[0]
-		self.tag = parts[1]
+		self.level = parts[0]
+		self.field = parts[1]
 		if len(parts) > 2:
-			self.data = line[len(self.code)+len(self.tag)+2:].rstrip()
+			self.data = line[len(self.level)+len(self.field)+2:].rstrip()
 		else:
 			self.data = ''
 	
 	def isPersonHeader(self):
-		if self.code == '0' and self.data == 'INDI':
-			print('HEADER FOUND ' + self.tag)
+		if self.level == '0' and self.data == 'INDI':
+			print('HEADER FOUND ' + self.field)
 			return True
 
 	def isInfo(self):
-		if self.code > '0':
+		if self.level > '0':
 			return True
 
 class Parser():
 	def __init__(self):
 		self.people = list()
 		self.is_person = False
+		self.line = None
 
-	def parseLines(self,lines):
-		for line in lines:
-			self.parseLine(line)
+	def parseLines(self, lines):
+		for self.current_line in lines:
+			self.parseCurrentLine()
 
-	def parseLine(self, line):
-		line_obj = Line(line)
-
-		if line_obj.isPersonHeader():
+	def parseCurrentLine(self):
+		if self.current_line.isPersonHeader():
 			self.createPerson()
-		elif self.is_person and line_obj.isInfo():
-			self.addPersonData(line_obj.tag, line_obj.data)
+		elif self.is_person and self.current_line.isInfo():
+			self.addPersonData()
 		else:
 			self.is_person = False
 	
@@ -57,22 +64,16 @@ class Parser():
 		self.people.append(person)
 		self.is_person = True
 		
-	def addPersonData(self, key, value):
-		if key == 'NAME':
-			self.addPersonName(value)
-		else:
-			person = self.people[-1]
-			person.addTag(key,value)
-
-	def addPersonName(self, value):
+	def addPersonData(self):
 		person = self.people[-1]
+		level = self.current_line.level
+		field = self.current_line.field
+		data  = self.current_line.data
 
-		match = re.search('(.*)/(.*)/', value)
-		if match:
-			person.addTag('GIVN', match.group(1).strip())
-			person.addTag('NAME', match.group(2).strip())
+		if field == 'NAME':
+			person.setName(level, data)
 		else:
-			print("raise error!")
+			person.setField(level, field, data)
 
 	def printPerson(self, idx):
 		self.people[idx].print()
@@ -80,8 +81,7 @@ class Parser():
 # Read the file into a list of lines
 def readFile(file_name):
 	with open(file_name,mode='r') as tree_file:
-		return tree_file.readlines()
-
+		return map(Line, tree_file.readlines())
 
 lines = readFile('tree.ged')
 parser = Parser()
