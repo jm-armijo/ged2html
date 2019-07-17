@@ -1,22 +1,42 @@
 import re
 
+class Node():
+	def __init__(self, key, value):
+		self.key = key
+		self.children = list()
+		self.value = value
+
+	def append(self, node):
+		self.children.append(node)
+
+	def __getitem__(self, index):
+		return self.children[index]
+
+	def __str__(self):
+		text = self.key + " : " + self.value
+		for child in self.children:
+			text += "\n" + child.__str__()
+
+		return text
+
 class Person():
 	def __init__(self):
-		self.fields = {}
-
-	def setName(self, level, data):
-		match = re.search('(.*)/(.*)/', data)
-		if match:
-			self.setField(level, 'GIVN', match.group(1).strip())
-			self.setField(level, 'NAME', match.group(2).strip())
-		else:
-			print("raise error!")
+		self.fields = list()
 
 	def setField(self, level, field, value):
-		self.fields[field] = value
+		new_node = Node(field, value)
+		parent_node = self.getParentForNewNode(level)
+		parent_node.append(new_node)
+
+	def getParentForNewNode(self, level):
+		node = self.fields
+		for i in range(level-1):
+			node = node[-1]
+		return node
 
 	def print(self):
-		print(self.fields)
+		for node in self.fields:
+			print(str(node))
 
 class Line():
 	def __init__(self, line):
@@ -34,7 +54,6 @@ class Line():
 	
 	def isPersonHeader(self):
 		if self.level == '0' and self.data == 'INDI':
-			print('HEADER FOUND ' + self.field)
 			return True
 
 	def isInfo(self):
@@ -66,14 +85,27 @@ class Parser():
 		
 	def addPersonData(self):
 		person = self.people[-1]
-		level = self.current_line.level
+		level = int(self.current_line.level)
 		field = self.current_line.field
 		data  = self.current_line.data
 
 		if field == 'NAME':
-			person.setName(level, data)
+			name = self.getPersonName(data)
+			person.setField(level, 'NAME', name['NAME'])
+			person.setField(level+1, 'GIVN', name['GIVN'])
 		else:
 			person.setField(level, field, data)
+
+	def getPersonName(self, data):
+		match = re.search('(.*)/(.*)/', data)
+		name = dict()
+		if match:
+			name['GIVN'] = match.group(1).strip()
+			name['NAME'] = match.group(2).strip()
+		else:
+			print("raise error!")
+
+		return name
 
 	def printPerson(self, idx):
 		self.people[idx].print()
