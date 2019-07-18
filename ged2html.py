@@ -13,17 +13,6 @@ class Node():
 		else:
 			self.children[-1].addNode(attribute)
 
-	def __bool__(self):
-		if self.value != "":
-			return True
-
-		for child in self.children:
-			if child:
-				return True
-
-		return False
-
-
 	def __getitem__(self, index):
 		return self.children[index]
 
@@ -40,6 +29,14 @@ class Node():
 class Person(Node):
 	def __init__(self, id):
 		super().__init__(0, 'ID', id)
+
+	def addName(self, level, value):
+		match = re.search('(.*)/(.*)/', value)
+		if match:
+			self.addAttribute(level, 'NAME', match.group(2).strip())
+			self.addAttribute(level+1, 'GIVN', match.group(1).strip())
+		else:
+			print("raise error!")
 
 	def addAttribute(self, level, attribute, value):
 		attribute = Node(level, attribute, value)
@@ -94,25 +91,12 @@ class Parser():
 		person = self.people[-1]
 		level = int(self.current_line.level)
 		attribute = self.current_line.attribute
-		data  = self.current_line.data
+		value  = self.current_line.data
 
 		if attribute == 'NAME':
-			name = self.getPersonName(data)
-			person.addAttribute(level, 'NAME', name['NAME'])
-			person.addAttribute(level+1, 'GIVN', name['GIVN'])
+			person.addName(level, value)
 		else:
-			person.addAttribute(level, attribute, data)
-
-	def getPersonName(self, data):
-		match = re.search('(.*)/(.*)/', data)
-		name = dict()
-		if match:
-			name['GIVN'] = match.group(1).strip()
-			name['NAME'] = match.group(2).strip()
-		else:
-			print("raise error!")
-
-		return name
+			person.addAttribute(level, attribute, value)
 
 	def printPerson(self, idx):
 		print(self.people[idx])
