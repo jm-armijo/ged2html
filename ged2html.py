@@ -1,42 +1,61 @@
 import re
 
-class Node():
-	def __init__(self, key, value):
+class Attribute():
+	def __init__(self, level, key, value):
+		self.level = level
 		self.key = key
 		self.children = list()
 		self.value = value
 
-	def append(self, node):
-		self.children.append(node)
+	def append(self, attribute):
+		self.children.append(attribute)
+
+	def __bool__(self):
+		if self.value != "":
+			return True
+
+		for child in self.children:
+			if child:
+				return True
+
+		return False
+
 
 	def __getitem__(self, index):
 		return self.children[index]
 
 	def __str__(self):
-		text = self.key + " : " + self.value
-		for child in self.children:
-			text += "\n" + child.__str__()
+		to_str = " " * self.level + self.key
+		if self.value != "":
+			to_str += " : " + self.value
 
-		return text
+		for child in self.children:
+			to_str += "\n" + child.__str__()
+
+		return to_str
 
 class Person():
 	def __init__(self):
-		self.fields = list()
+		self.attributes = list()
 
-	def setField(self, level, field, value):
-		new_node = Node(field, value)
-		parent_node = self.getParentForNewNode(level)
-		parent_node.append(new_node)
+	def setAttribute(self, level, attribute, value):
+		new_attribute = Attribute(level, attribute, value)
+		parent_attribute = self.getParentForNewAttribute(level)
+		parent_attribute.append(new_attribute)
 
-	def getParentForNewNode(self, level):
-		node = self.fields
+	def getParentForNewAttribute(self, level):
+		attribute = self.attributes
 		for i in range(level-1):
-			node = node[-1]
-		return node
+			attribute = attribute[-1]
+		return attribute
 
-	def print(self):
-		for node in self.fields:
-			print(str(node))
+	def __str__(self):
+		to_str = ""
+		for attribute in self.attributes:
+			if attribute:
+				to_str += str(attribute) + "\n"
+
+		return to_str
 
 class Line():
 	def __init__(self, line):
@@ -46,9 +65,9 @@ class Line():
 	def parseLine(self, line):
 		parts = line.split()
 		self.level = parts[0]
-		self.field = parts[1]
+		self.attribute = parts[1]
 		if len(parts) > 2:
-			self.data = line[len(self.level)+len(self.field)+2:].rstrip()
+			self.data = line[len(self.level)+len(self.attribute)+2:].rstrip()
 		else:
 			self.data = ''
 	
@@ -86,15 +105,15 @@ class Parser():
 	def addPersonData(self):
 		person = self.people[-1]
 		level = int(self.current_line.level)
-		field = self.current_line.field
+		attribute = self.current_line.attribute
 		data  = self.current_line.data
 
-		if field == 'NAME':
+		if attribute == 'NAME':
 			name = self.getPersonName(data)
-			person.setField(level, 'NAME', name['NAME'])
-			person.setField(level+1, 'GIVN', name['GIVN'])
+			person.setAttribute(level, 'NAME', name['NAME'])
+			person.setAttribute(level+1, 'GIVN', name['GIVN'])
 		else:
-			person.setField(level, field, data)
+			person.setAttribute(level, attribute, data)
 
 	def getPersonName(self, data):
 		match = re.search('(.*)/(.*)/', data)
@@ -108,7 +127,7 @@ class Parser():
 		return name
 
 	def printPerson(self, idx):
-		self.people[idx].print()
+		print(self.people[idx])
 
 # Read the file into a list of lines
 def readFile(file_name):
@@ -118,4 +137,4 @@ def readFile(file_name):
 lines = readFile('tree.ged')
 parser = Parser()
 parser.parseLines(lines)
-parser.printPerson(2)
+parser.printPerson(3)
