@@ -74,6 +74,8 @@ class Parser():
 		for self.current_line in lines:
 			self.parseCurrentLine()
 
+		return self.people
+
 	def parseCurrentLine(self):
 		if self.current_line.isPersonHeader():
 			self.createPerson()
@@ -98,9 +100,6 @@ class Parser():
 		else:
 			person.addAttribute(level, attribute, value)
 
-	def printPerson(self, idx):
-		print(self.people[idx])
-
 # Read the file into a list of lines
 def readFile(file_name):
 	with open(file_name,mode='r') as tree_file:
@@ -108,5 +107,7 @@ def readFile(file_name):
 
 lines = readFile('tree.ged')
 parser = Parser()
-parser.parseLines(lines)
-parser.printPerson(3)
+people = parser.parseLines(lines)
+for person in people:
+	print(person)
+	print()
