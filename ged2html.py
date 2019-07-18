@@ -1,14 +1,17 @@
 import re
 
-class Attribute():
+class Node():
 	def __init__(self, level, key, value):
 		self.level = level
 		self.key = key
 		self.children = list()
 		self.value = value
 
-	def append(self, attribute):
-		self.children.append(attribute)
+	def addNode(self, attribute):
+		if attribute.level == self.level + 1:
+			self.children.append(attribute)
+		else:
+			self.children[-1].addNode(attribute)
 
 	def __bool__(self):
 		if self.value != "":
@@ -34,28 +37,13 @@ class Attribute():
 
 		return to_str
 
-class Person():
-	def __init__(self):
-		self.attributes = list()
+class Person(Node):
+	def __init__(self, id):
+		super().__init__(0, 'ID', id)
 
-	def setAttribute(self, level, attribute, value):
-		new_attribute = Attribute(level, attribute, value)
-		parent_attribute = self.getParentForNewAttribute(level)
-		parent_attribute.append(new_attribute)
-
-	def getParentForNewAttribute(self, level):
-		attribute = self.attributes
-		for i in range(level-1):
-			attribute = attribute[-1]
-		return attribute
-
-	def __str__(self):
-		to_str = ""
-		for attribute in self.attributes:
-			if attribute:
-				to_str += str(attribute) + "\n"
-
-		return to_str
+	def addAttribute(self, level, attribute, value):
+		attribute = Node(level, attribute, value)
+		super().addNode(attribute)
 
 class Line():
 	def __init__(self, line):
@@ -98,7 +86,7 @@ class Parser():
 			self.is_person = False
 	
 	def createPerson(self):
-		person = Person()
+		person = Person(self.current_line.attribute)
 		self.people.append(person)
 		self.is_person = True
 		
@@ -110,10 +98,10 @@ class Parser():
 
 		if attribute == 'NAME':
 			name = self.getPersonName(data)
-			person.setAttribute(level, 'NAME', name['NAME'])
-			person.setAttribute(level+1, 'GIVN', name['GIVN'])
+			person.addAttribute(level, 'NAME', name['NAME'])
+			person.addAttribute(level+1, 'GIVN', name['GIVN'])
 		else:
-			person.setAttribute(level, attribute, data)
+			person.addAttribute(level, attribute, data)
 
 	def getPersonName(self, data):
 		match = re.search('(.*)/(.*)/', data)
