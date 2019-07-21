@@ -1,4 +1,4 @@
-from person import Person
+from src.person import Person
 
 class Parser():
 	def __init__(self):

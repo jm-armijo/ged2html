@@ -1,5 +1,5 @@
-from line import Line
-from parser import Parser
+from src.line import Line
+from src.parser import Parser
 
 # Read the file into a list of lines
 def readFile(file_name):
