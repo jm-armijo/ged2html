@@ -7,18 +7,53 @@ class Parser():
 		self.line = None
 
 	def parseLines(self, lines):
+		state = 'idle'
 		for self.current_line in lines:
-			self.parseCurrentLine()
+			state = self.getCurrentState(state)
+			self.parseCurrentLine(state)
 
 		return self.people
 
-	def parseCurrentLine(self):
-		if self.current_line.isPersonHeader():
+
+	'''
+	getCurrentState: implements the state machine below
+	in: current state
+	returns: new state
+
+	###########################################################
+	#
+	#             +----------------------------------+
+	#             V                                  |
+	# (idle) -> (ind) -> (ind_data) -> (fam) -> (fam_data)
+	#   |         /\         |          /\   /\      |
+	#   |         +----------+          |    +-------+
+	#   +-------------------------------+
+	#
+	###########################################################
+	'''
+
+	def getCurrentState(self, current_state):
+		new_state = 'idle'
+		if self.current_line.level == 0:
+			new_state = self.current_line.data
+		elif current_state == 'INDI' or current_state == 'INDI_DATA':
+			if self.current_line.level > 0:
+				new_state = 'INDI_DATA'
+		elif current_state == 'FAM' or current_state == 'FAM_DATA':
+			if self.current_line.level > 0:
+				new_state = 'FAM_DATA'
+
+		return new_state
+
+	def parseCurrentLine(self, state):
+		if state == 'INDI':
 			self.createPerson()
-		elif self.is_person and self.current_line.isInfo():
+		elif state == 'INDI_DATA':
 			self.addPersonData()
-		else:
-			self.is_person = False
+		elif state == 'FAM':
+			pass
+		elif state == 'FAM_DATA':
+			pass
 	
 	def createPerson(self):
 		person = Person(self.current_line.attribute)
