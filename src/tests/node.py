@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import patch
 from unittest.mock import Mock
-from node import Node 
 
-class TestLine(unittest.TestCase):
+from ..node import Node
+
+class TestNode(unittest.TestCase):
 	def test_init_001(self):
 		level = 100
 		key = 'key'
