@@ -149,7 +149,7 @@ class TestLine(unittest.TestCase):
 	'''
 	Casts node with 1 child into string
 	'''
-	def test_str_003(self):
+	def test_str_002(self):
 		# Setup Node
 		child_obj = Node.__new__(Node)
 		child_obj.level = 1
@@ -168,21 +168,54 @@ class TestLine(unittest.TestCase):
 		self.assertEqual(str(node_obj), expected)
 
 	'''
-	Inserts an attribute at depth 3
+	Casts node with 2 children into string
 	'''
-	def test_str_002(self):
+	def test_str_003(self):
 		# Setup Node
-		grand_child_obj = Node.__new__(Node)
-		grand_child_obj.level = 2
-		grand_child_obj.key   = "KEY2"
-		grand_child_obj.value  = 'Value2'
-		grand_child_obj.children = list()
+		child1_obj = Node.__new__(Node)
+		child1_obj.level = 1
+		child1_obj.key   = "KEY1"
+		child1_obj.value  = 'Value1'
+		child1_obj.children = list()
+
+		child2_obj = Node.__new__(Node)
+		child2_obj.level = 1
+		child2_obj.key   = "KEY2"
+		child2_obj.value  = 'Value2'
+		child2_obj.children = list()
+
+		node_obj = Node.__new__(Node)
+		node_obj.level = 0
+		node_obj.key   = "INDI"
+		node_obj.value  = '@I000123@'
+		node_obj.children = [child1_obj, child2_obj]
+
+		# Actual test
+		expected = 'INDI : @I000123@\n KEY1 : Value1\n KEY2 : Value2'
+		self.assertEqual(str(node_obj), expected)
+
+	'''
+	Casts node with 1 child and 2 granchild into string
+	'''
+	def test_str_004(self):
+		# Setup Node
+		grand_child1_obj = Node.__new__(Node)
+		grand_child1_obj.level = 2
+		grand_child1_obj.key   = "KEY1"
+		grand_child1_obj.value  = 'Value1'
+		grand_child1_obj.children = list()
+
+		grand_child2_obj = Node.__new__(Node)
+		grand_child2_obj.level = 2
+		grand_child2_obj.key   = "KEY2"
+		grand_child2_obj.value  = 'Value2'
+		grand_child2_obj.children = list()
 
 		child_obj = Node.__new__(Node)
 		child_obj.level = 1
 		child_obj.key   = "KEY"
 		child_obj.value  = 'Value'
-		child_obj.children = [grand_child_obj]
+		child_obj.children = [grand_child1_obj, grand_child2_obj]
 
 		node_obj = Node.__new__(Node)
 		node_obj.level = 0
@@ -191,7 +224,7 @@ class TestLine(unittest.TestCase):
 		node_obj.children = [child_obj]
 
 		# Actual test
-		expected = 'INDI : @I000123@\n KEY : Value\n  KEY2 : Value2'
+		expected = 'INDI : @I000123@\n KEY : Value\n  KEY1 : Value1\n  KEY2 : Value2'
 		self.assertEqual(str(node_obj), expected)
 
 if __name__ == '__main__':
