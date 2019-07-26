@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import patch
-from unittest.mock import Mock
 from ..person import Person
-from ..node import Node
 
 class TestPerson(unittest.TestCase):
 	@patch("src.node.Node.__init__")
