@@ -1,16 +1,16 @@
+import re
 from src.person import Person
 
 class Parser():
 	def __init__(self):
 		self.people = list()
-		self.is_person = False
-		self.line = None
+		self.current_line = None
+		self.state = 'IDLE'
 
 	def parseLines(self, lines):
-		state = 'idle'
 		for self.current_line in lines:
-			state = self.getCurrentState(state)
-			self.parseCurrentLine(state)
+			self.state = self.getCurrentState()
+			self.parseCurrentLine()
 
 		return self.people
 
@@ -20,53 +20,79 @@ class Parser():
 	in: current state
 	returns: new state
 
-	###########################################################
-	#
-	#             +----------------------------------+
-	#             V                                  |
-	# (idle) -> (ind) -> (ind_data) -> (fam) -> (fam_data)
-	#   |         /\         |          /\   /\      |
-	#   |         +----------+          |    +-------+
-	#   +-------------------------------+
-	#
-	###########################################################
+	############################################
+	#                                          #
+	#                    *         +-----+     #
+	#                    |         |     |     #
+	#                    V         |     V     #
+	#             +--->(INDI) -> (INDI_DATA)   #
+	#             |                            #
+	#   * ---> (IDLE)                          #
+	#             |                            #
+	#             +--->(FAM)  -> (FAM_DATA)    #
+	#                    /\        |     /\    #
+	#                    |         |     |     #
+	#                    *         +-----+     #
+	#                                          #
+	############################################
 	'''
 
-	def getCurrentState(self, current_state):
-		new_state = 'idle'
-		if self.current_line.level == 0:
+	def getCurrentState(self):
+		new_state = 'IDLE'
+		if self.current_line.level == 0 and self.current_line.data in ['INDI', 'FAM']:
 			new_state = self.current_line.data
-		elif current_state == 'INDI' or current_state == 'INDI_DATA':
+		elif self.state == 'INDI' or self.state == 'INDI_DATA':
 			if self.current_line.level > 0:
 				new_state = 'INDI_DATA'
-		elif current_state == 'FAM' or current_state == 'FAM_DATA':
+		elif self.state == 'FAM' or self.state == 'FAM_DATA':
 			if self.current_line.level > 0:
 				new_state = 'FAM_DATA'
 
 		return new_state
 
-	def parseCurrentLine(self, state):
-		if state == 'INDI':
+	def parseCurrentLine(self):
+		if self.state == 'INDI':
 			self.createPerson()
-		elif state == 'INDI_DATA':
+		elif self.state == 'INDI_DATA':
 			self.addPersonData()
-		elif state == 'FAM':
+		elif self.state == 'FAM':
 			pass
-		elif state == 'FAM_DATA':
+		elif self.state == 'FAM_DATA':
 			pass
 	
 	def createPerson(self):
 		person = Person(self.current_line.attribute)
 		self.people.append(person)
-		self.is_person = True
 		
 	def addPersonData(self):
-		person = self.people[-1]
-		level = int(self.current_line.level)
 		attribute = self.current_line.attribute
-		value  = self.current_line.data
 
 		if attribute == 'NAME':
-			person.addName(level, value)
+			self.addPersonName()
 		else:
-			person.addAttribute(level, attribute, value)
+			self.addPersonAttribute(attribute)
+
+	def addPersonAttribute(self, attribute):
+		level = int(self.current_line.level)
+		value  = self.current_line.data
+
+		person = self.people[-1]
+		person.addAttribute(level, attribute, value)
+
+	def addPersonName(self):
+		# A person's name is always at level 1
+		level = 1
+		value  = self.current_line.data
+		name = self.splitName(value)
+
+		person = self.people[-1]
+		person.addAttribute(level, 'NAME', "")
+		person.addAttribute(level+1, 'GIVN', name[0])
+		person.addAttribute(level+1, 'LAST', name[1])
+
+	def splitName(self, name):
+		match = re.search('(.*)/(.*)/', name)
+		if match:
+			return (match.group(1).strip(), match.group(2).strip())
+		else:
+			print("raise error!")
