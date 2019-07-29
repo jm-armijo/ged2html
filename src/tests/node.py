@@ -70,24 +70,27 @@ class TestNode(unittest.TestCase):
 
 		# Actual test
 		node_obj.addNode(attribute)
-		self.assertEqual(node_obj.children[-1], attribute)
+		self.assertEqual(node_obj.children[node_obj.last_child], attribute)
 
 	'''
 	Inserts an attribute at depth 3
 	'''
 	def test_add_node_002(self):
 		# Setup tree
-		lvl2 = Node.__new__(Node)
-		lvl2.level = 2
-		lvl2.children = list()
+		node_lvl2 = Node.__new__(Node)
+		node_lvl2.level = 2
+		node_lvl2.children = list()
+		node_lvl2.last_child = None
 
-		lvl1 = Node.__new__(Node)
-		lvl1.level = 1
-		lvl1.children = [lvl2]
+		node_lvl1 = Node.__new__(Node)
+		node_lvl1.level = 1
+		node_lvl1.children = [node_lvl2]
+		node_lvl1.last_child = 0
 
 		root_obj = Node.__new__(Node)
 		root_obj.level = 0
-		root_obj.children = [lvl1]
+		root_obj.children = [node_lvl1]
+		root_obj.last_child = 0
 
 		# Setup new attribute
 		attribute = Mock()
@@ -95,7 +98,10 @@ class TestNode(unittest.TestCase):
 
 		# Actual test
 		root_obj.addNode(attribute)
-		self.assertEqual(root_obj.children[-1].children[-1].children[-1], attribute)
+		child_root = root_obj.children[root_obj.last_child]
+		child_level1 = child_root.children[child_root.last_child]
+		child_level2 = child_level1.children[child_level1.last_child]
+		self.assertEqual(child_level2, attribute)
 
 	'''
 	Gets an attribute from index 0
