@@ -6,10 +6,10 @@ class Node():
 		self.value = value
 
 	def addNode(self, attribute):
-		if attribute.level == self.level + 1:
-			self.children.append(attribute)
-		else:
+		if attribute.level > self.level + 1:
 			self.children[-1].addNode(attribute)
+		else:
+			self.children.append(attribute)
 
 	def __getitem__(self, index):
 		return self.children[index]
