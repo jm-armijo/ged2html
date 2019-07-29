@@ -421,5 +421,12 @@ class TestParser(unittest.TestCase):
 		split_name = parser_obj.splitName(full_name)
 		self.assertEqual(split_name, ('First Name', ''))
 
+	def test_split_name_005(self):
+		parser_obj = Parser.__new__(Parser)
+		full_name = 'First Name /Last Name'
+
+		split_name = parser_obj.splitName(full_name)
+		self.assertEqual(split_name, ('First Name', 'Last Name'))
+
 if __name__ == '__main__':
 	unittest.main()

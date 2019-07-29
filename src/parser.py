@@ -91,7 +91,7 @@ class Parser():
 		person.addAttribute(level+1, 'LAST', name[1])
 
 	def splitName(self, name):
-		match = re.search('(.*)/(.*)/', name)
+		match = re.search('^(.*?)/(.*?)/?\s*$', name)
 		if match:
 			return (match.group(1).strip(), match.group(2).strip())
 		else:
