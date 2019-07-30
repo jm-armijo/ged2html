@@ -15,7 +15,7 @@ class TestNode(unittest.TestCase):
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
 		self.assertEqual(node.value, value)
-		self.assertEqual(node.children, [])
+		self.assertEqual(node.children, {})
 
 	def test_init_002(self):
 		level = -103
@@ -27,7 +27,7 @@ class TestNode(unittest.TestCase):
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
 		self.assertEqual(node.value, value)
-		self.assertEqual(node.children, [])
+		self.assertEqual(node.children, {})
 
 	def test_init_003(self):
 		level = 0
@@ -39,7 +39,7 @@ class TestNode(unittest.TestCase):
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
 		self.assertEqual(node.value, value)
-		self.assertEqual(node.children, [])
+		self.assertEqual(node.children, {})
 
 	def test_init_004(self):
 		level = 0
@@ -51,7 +51,7 @@ class TestNode(unittest.TestCase):
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
 		self.assertEqual(node.value, value)
-		self.assertEqual(node.children, [])
+		self.assertEqual(node.children, {})
 
 	'''
 	Inserts an attribute at the root level (depth 1)
@@ -62,11 +62,12 @@ class TestNode(unittest.TestCase):
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value = '@I000123@'
-		node_obj.children = list()
+		node_obj.children = dict()
 
 		# Setup new attribute
 		attribute = Mock()
 		attribute.level = 1
+		attribute.key = 'KEY1'
 
 		# Actual test
 		node_obj.addNode(attribute)
@@ -78,22 +79,26 @@ class TestNode(unittest.TestCase):
 	def test_add_node_002(self):
 		# Setup tree
 		node_lvl2 = Node.__new__(Node)
+		node_lvl2.key = 'KEY2'
 		node_lvl2.level = 2
-		node_lvl2.children = list()
+		node_lvl2.children = dict()
 		node_lvl2.last_child = None
 
 		node_lvl1 = Node.__new__(Node)
+		node_lvl1.key = 'KEY1'
 		node_lvl1.level = 1
-		node_lvl1.children = [node_lvl2]
-		node_lvl1.last_child = 0
+		node_lvl1.children = {'KEY2':node_lvl2}
+		node_lvl1.last_child = 'KEY2'
 
 		root_obj = Node.__new__(Node)
+		root_obj.key = 'KEY0'
 		root_obj.level = 0
-		root_obj.children = [node_lvl1]
-		root_obj.last_child = 0
+		root_obj.children = {'KEY1':node_lvl1}
+		root_obj.last_child = 'KEY1'
 
 		# Setup new attribute
 		attribute = Mock()
+		attribute.key = 'KEY3'
 		attribute.level = 3
 
 		# Actual test
@@ -133,10 +138,10 @@ class TestNode(unittest.TestCase):
 	def test_get_item_003(self):
 		# Setup Node
 		node_obj = Node.__new__(Node)
-		node_obj.children = list()
+		node_obj.children = dict()
 
 		# Actual test
-		self.assertRaises(IndexError, node_obj.__getitem__, 1)
+		self.assertRaises(KeyError, node_obj.__getitem__, 1)
 
 	'''
 	Casts childrenless node into string
@@ -147,7 +152,7 @@ class TestNode(unittest.TestCase):
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
-		node_obj.children = list()
+		node_obj.children = dict()
 
 		# Actual test
 		expected = 'INDI : @I000123@'
@@ -162,13 +167,13 @@ class TestNode(unittest.TestCase):
 		child_obj.level = 1
 		child_obj.key   = "KEY"
 		child_obj.value  = 'Value'
-		child_obj.children = list()
+		child_obj.children = dict()
 
 		node_obj = Node.__new__(Node)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
-		node_obj.children = [child_obj]
+		node_obj.children = {'KEY':child_obj}
 
 		# Actual test
 		expected = 'INDI : @I000123@\n KEY : Value'
@@ -183,19 +188,19 @@ class TestNode(unittest.TestCase):
 		child1_obj.level = 1
 		child1_obj.key   = "KEY1"
 		child1_obj.value  = 'Value1'
-		child1_obj.children = list()
+		child1_obj.children = dict()
 
 		child2_obj = Node.__new__(Node)
 		child2_obj.level = 1
 		child2_obj.key   = "KEY2"
 		child2_obj.value  = 'Value2'
-		child2_obj.children = list()
+		child2_obj.children = dict()
 
 		node_obj = Node.__new__(Node)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
-		node_obj.children = [child1_obj, child2_obj]
+		node_obj.children = {'KEY1':child1_obj, 'KEY2':child2_obj}
 
 		# Actual test
 		expected = 'INDI : @I000123@\n KEY1 : Value1\n KEY2 : Value2'
@@ -210,25 +215,25 @@ class TestNode(unittest.TestCase):
 		grand_child1_obj.level = 2
 		grand_child1_obj.key   = "KEY1"
 		grand_child1_obj.value  = 'Value1'
-		grand_child1_obj.children = list()
+		grand_child1_obj.children = dict()
 
 		grand_child2_obj = Node.__new__(Node)
 		grand_child2_obj.level = 2
 		grand_child2_obj.key   = "KEY2"
 		grand_child2_obj.value  = 'Value2'
-		grand_child2_obj.children = list()
+		grand_child2_obj.children = dict()
 
 		child_obj = Node.__new__(Node)
 		child_obj.level = 1
 		child_obj.key   = "KEY"
 		child_obj.value  = 'Value'
-		child_obj.children = [grand_child1_obj, grand_child2_obj]
+		child_obj.children = {'KEY1':grand_child1_obj, 'KEY2':grand_child2_obj}
 
 		node_obj = Node.__new__(Node)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
-		node_obj.children = [child_obj]
+		node_obj.children = {'KEY':child_obj}
 
 		# Actual test
 		expected = 'INDI : @I000123@\n KEY : Value\n  KEY1 : Value1\n  KEY2 : Value2'
