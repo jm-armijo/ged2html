@@ -6,14 +6,16 @@ class Node():
 		self.children = dict()
 		self.last_child = None
 
-	def addNode(self, attribute):
+	def pickParent(self, attribute):
 		if attribute.level > self.level + 1:
 			key = self.last_child
-			self.children[key].addNode(attribute)
-		else:
-			key = attribute.key
-			self.last_child = key
-			self.children[key] = attribute
+			return self.children[key].pickParent(attribute)
+		return self
+
+	def addNode(self, attribute):
+		parent = self.pickParent(attribute)
+		parent.last_child = attribute.key
+		parent.children[attribute.key] = attribute
 
 	def __getitem__(self, index):
 		return self.children[index]

@@ -54,9 +54,29 @@ class TestNode(unittest.TestCase):
 		self.assertEqual(node.children, {})
 
 	'''
-	Inserts an attribute at the root level (depth 1)
+	Inserts an attribute on a given parent node
 	'''
-	def test_add_node_001(self):
+	@patch("src.node.Node.pickParent")
+	def test_add_node_001(self, mock_pick):
+		parent = Mock()
+		parent.children = dict()
+		mock_pick.return_value = parent
+
+		# Setup new attribute
+		attribute = Mock()
+		attribute.level = 1
+		attribute.key = 'KEY1'
+
+		# Actual test
+		node_obj = Node.__new__(Node)
+		node_obj.addNode(attribute)
+		self.assertEqual(parent.last_child,'KEY1')
+		self.assertEqual(parent.children['KEY1'], attribute)
+
+	'''
+	Get parent for attribute at depth 1
+	'''
+	def test_pick_parent_001(self):
 		# Setup Node
 		node_obj = Node.__new__(Node)
 		node_obj.level = 0
@@ -70,13 +90,13 @@ class TestNode(unittest.TestCase):
 		attribute.key = 'KEY1'
 
 		# Actual test
-		node_obj.addNode(attribute)
-		self.assertEqual(node_obj.children[node_obj.last_child], attribute)
+		parent = node_obj.pickParent(attribute)
+		self.assertEqual(parent, node_obj)
 
 	'''
-	Inserts an attribute at depth 3
+	Get parent for attribute at depth 3
 	'''
-	def test_add_node_002(self):
+	def test_pick_parent_002(self):
 		# Setup tree
 		node_lvl2 = Node.__new__(Node)
 		node_lvl2.key = 'KEY2'
@@ -102,11 +122,8 @@ class TestNode(unittest.TestCase):
 		attribute.level = 3
 
 		# Actual test
-		root_obj.addNode(attribute)
-		child_root = root_obj.children[root_obj.last_child]
-		child_level1 = child_root.children[child_root.last_child]
-		child_level2 = child_level1.children[child_level1.last_child]
-		self.assertEqual(child_level2, attribute)
+		parent = root_obj.pickParent(attribute)
+		self.assertEqual(parent, node_lvl2)
 
 	'''
 	Gets an attribute from index 0
