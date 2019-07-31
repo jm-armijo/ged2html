@@ -8,14 +8,19 @@ class Node():
 
 	def pickParent(self, attribute):
 		if attribute.level > self.level + 1:
-			key = self.last_child
-			return self.children[key].pickParent(attribute)
+			child = self.children[self.last_child]
+			return child.pickParent(attribute)
 		return self
 
 	def addNode(self, attribute):
 		parent = self.pickParent(attribute)
 		parent.last_child = attribute.key
-		parent.children[attribute.key] = attribute
+
+		if attribute.key in parent.children:
+			child = parent.children[attribute.key]
+			child.value = max((child.value, attribute.value))
+		else:
+			parent.children[attribute.key] = attribute
 
 	def __getitem__(self, index):
 		return self.children[index]

@@ -74,6 +74,65 @@ class TestNode(unittest.TestCase):
 		self.assertEqual(parent.children['KEY1'], attribute)
 
 	'''
+	Inserts duplicated attribute with empty value
+	'''
+	@patch("src.node.Node.pickParent")
+	def test_add_node_002(self, mock_pick):
+		# Setup an attribute
+		attribute = Mock()
+		attribute.level = 1
+		attribute.key = 'KEY1'
+		attribute.value = 'VALUE1'
+
+		# Setup dup attribute with empty value
+		dup_attribute = Mock()
+		dup_attribute.level = 1
+		dup_attribute.key = 'KEY1'
+		dup_attribute.value = ''
+
+		parent = Mock()
+		parent.children = {'KEY1':attribute}
+		mock_pick.return_value = parent
+
+		# Actual test
+		node_obj = Node.__new__(Node)
+		node_obj.addNode(dup_attribute)
+		self.assertEqual(parent.last_child,'KEY1')
+
+		# Attribute is not replaced
+		self.assertEqual(parent.children['KEY1'].value, attribute.value)
+
+	'''
+	Inserts duplicated attribute with longer value
+	'''
+	@patch("src.node.Node.pickParent")
+	def test_add_node_003(self, mock_pick):
+		# Setup an attribute
+		attribute = Mock()
+		attribute.level = 1
+		attribute.key = 'KEY1'
+		attribute.value = ''
+
+		# Setup dup attribute with empty value
+		dup_attribute = Mock()
+		dup_attribute.level = 1
+		dup_attribute.key = 'KEY1'
+		dup_attribute.value = 'This is a long value'
+
+		# Setup parent node
+		parent = Mock()
+		parent.children = {'KEY1':attribute}
+		mock_pick.return_value = parent
+
+		# Actual test
+		node_obj = Node.__new__(Node)
+		node_obj.addNode(dup_attribute)
+		self.assertEqual(parent.last_child,'KEY1')
+
+		# Attribute is replaced
+		self.assertEqual(parent.children['KEY1'].value, dup_attribute.value)
+
+	'''
 	Get parent for attribute at depth 1
 	'''
 	def test_pick_parent_001(self):
