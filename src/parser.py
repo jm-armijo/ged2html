@@ -3,9 +3,10 @@ from src.person import Person
 
 class Parser():
 	def __init__(self):
-		self.people = list()
+		self.people = dict()
 		self.current_line = None
 		self.state = 'IDLE'
+		self.last_person = None
 
 	def parseLines(self, lines):
 		for self.current_line in lines:
@@ -62,7 +63,8 @@ class Parser():
 	
 	def createPerson(self):
 		person = Person(self.current_line.attribute)
-		self.people.append(person)
+		self.people[person.value] = person
+		self.last_person = person.value
 		
 	def addPersonData(self):
 		attribute = self.current_line.attribute
@@ -76,7 +78,7 @@ class Parser():
 		level = int(self.current_line.level)
 		value  = self.current_line.data
 
-		person = self.people[-1]
+		person = self.people[self.last_person]
 		person.addAttribute(level, attribute, value)
 
 	def addPersonName(self):
@@ -85,7 +87,7 @@ class Parser():
 		value  = self.current_line.data
 		name = self.splitName(value)
 
-		person = self.people[-1]
+		person = self.people[self.last_person]
 		person.addAttribute(level, 'NAME', "")
 		person.addAttribute(level+1, 'GIVN', name[0])
 		person.addAttribute(level+1, 'LAST', name[1])

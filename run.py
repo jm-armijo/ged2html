@@ -9,6 +9,6 @@ def readFile(file_name):
 lines = readFile('tree.ged')
 parser = Parser()
 people = parser.parseLines(lines)
-for person in people:
+for person in people.values():
 	print(person)
 	print()

@@ -25,7 +25,7 @@ class TestParser(unittest.TestCase):
 		# Setup
 		lines = [Mock(), Mock(), Mock()]
 		parser_obj = Parser.__new__(Parser)
-		parser_obj.people = list()
+		parser_obj.people = dict()
 
 		# Actual test
 		people = parser_obj.parseLines(lines)
@@ -264,41 +264,132 @@ class TestParser(unittest.TestCase):
 		self.assertFalse(mock_new.called)
 		self.assertFalse(mock_add.called)
 
-
 	##########################################
 	# Parser.createPerson
 	##########################################
 
-	@patch("src.person.Person.__init__")
+	@patch("src.person.Person.__new__")
 	def test_create_person_001(self, mock):
-		# Setup
-		mock.return_value = None
+		# Setup person
+		person_id = '@I000123@'
+		person = Mock()
+		person.value = person_id
 
+		# Mock person
+		mock.return_value = person
+
+		# Setup line
+		line = Mock()
+		line.attribute = person_id
+
+		# Setup parser
 		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
-		parser_obj.current_line.attribute = '@I00012345@'
-		parser_obj.people = list()
+		parser_obj.current_line = line
+		parser_obj.last_person = person_id
+		parser_obj.people = dict()
 
 		# Actual test
 		parser_obj.createPerson()
 		self.assertEqual(len(parser_obj.people), 1)
+		self.assertEqual(parser_obj.people[person.value], person)
 
-	@patch("src.person.Person.__init__")
+	'''
+	When creating 3 Person objects with different values, all of them are crated
+	'''
+	@patch("src.person.Person.__new__")
 	def test_create_person_002(self, mock):
-		# Setup
-		mock.return_value = None
+		# Setup people
+		person1_id = '@I000123@'
+		person2_id = '@I000223@'
+		person3_id = '@I000323@'
 
+		person1 = Mock()
+		person2 = Mock()
+		person3 = Mock()
+
+		person1.value = person1_id
+		person2.value = person2_id
+		person3.value = person3_id
+
+		# Mock person
+		mock.side_effect = [person1, person2, person3]
+
+		# Setup parser
 		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
-		parser_obj.current_line.attribute = '@I00012345@'
-		parser_obj.people = list()
+		parser_obj.last_person = None
+		parser_obj.people = dict()
+
+		# Create Person 1
+		line = Mock()
+		line.attribute = person1_id
+		parser_obj.current_line = line
+		parser_obj.createPerson()
+
+		# Create Person 2
+		line = Mock()
+		line.attribute = person2_id
+		parser_obj.current_line = line
+		parser_obj.createPerson()
+
+		# Create Person 3
+		line = Mock()
+		line.attribute = person3_id
+		parser_obj.current_line = line
+		parser_obj.createPerson()
 
 		# Actual test
-		parser_obj.createPerson()
-		parser_obj.createPerson()
-		parser_obj.createPerson()
 		self.assertEqual(len(parser_obj.people), 3)
+		self.assertEqual(parser_obj.people[person3.value], person3)
+		self.assertEqual(parser_obj.people[person2.value], person2)
+		self.assertEqual(parser_obj.people[person1.value], person1)
 
+	'''
+	When creating Person objects with duplicated values, the duplicated replaces the original
+	'''
+	@patch("src.person.Person.__new__")
+	def test_create_person_002(self, mock):
+		# Setup people
+		dup_id = '@I000123@'
+		person3_id = '@I000323@'
+
+		person1 = Mock()
+		person2 = Mock()
+		person3 = Mock()
+
+		person1.value = dup_id
+		person2.value = dup_id
+		person3.value = person3_id
+
+		# Mock person
+		mock.side_effect = [person1, person2, person3]
+
+		# Setup parser
+		parser_obj = Parser.__new__(Parser)
+		parser_obj.last_person = None
+		parser_obj.people = dict()
+
+		# Create Person 1
+		line = Mock()
+		line.attribute = dup_id
+		parser_obj.current_line = line
+		parser_obj.createPerson()
+
+		# Create Person 2
+		line = Mock()
+		line.attribute = dup_id
+		parser_obj.current_line = line
+		parser_obj.createPerson()
+
+		# Create Person 3
+		line = Mock()
+		line.attribute = person3_id
+		parser_obj.current_line = line
+		parser_obj.createPerson()
+
+		# Actual test
+		self.assertEqual(len(parser_obj.people), 2)
+		self.assertEqual(parser_obj.people[person3.value], person3)
+		self.assertEqual(parser_obj.people[dup_id], person2)
 
 	##########################################
 	# Parser.addPersonData
@@ -310,7 +401,7 @@ class TestParser(unittest.TestCase):
 		parser_obj = Parser.__new__(Parser)
 		parser_obj.current_line = Mock()
 		parser_obj.current_line.attribute = 'NAME'
-		parser_obj.people = list()
+		parser_obj.people = dict()
 
 		# Actual test
 		parser_obj.addPersonName()
@@ -322,7 +413,7 @@ class TestParser(unittest.TestCase):
 		parser_obj = Parser.__new__(Parser)
 		parser_obj.current_line = Mock()
 		parser_obj.current_line.attribute = 'NO NAME'
-		parser_obj.people = list()
+		parser_obj.people = dict()
 
 		# Actual test
 		parser_obj.addPersonAttribute()
@@ -334,16 +425,23 @@ class TestParser(unittest.TestCase):
 
 	@patch.object(Parser, 'splitName')
 	def test_add_person_name_001(self, mock_split):
-		# Setup
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
+		# Mock split function
 		first_name = 'First Name'
 		last_name = 'Last Name'
-		parser_obj.current_line.data = "{} /{}/".format(first_name, last_name)
 		mock_split.return_value = (first_name, last_name)
 
+		# Mock person
 		mock_person = Mock()
-		parser_obj.people = [mock_person]
+
+		# Setup line
+		line = Mock()
+		line.data = "{} /{}/".format(first_name, last_name)
+
+		# Setup parser
+		parser_obj = Parser.__new__(Parser)
+		parser_obj.last_person = '@I0001234@'
+		parser_obj.people = {'@I0001234@': mock_person}
+		parser_obj.current_line = line
 
 		# Actual test
 		parser_obj.addPersonName()
@@ -353,16 +451,23 @@ class TestParser(unittest.TestCase):
 
 	@patch.object(Parser, 'splitName')
 	def test_add_person_name_002(self, mock_split):
-		# Setup
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
+		# Mock split function
 		first_name = ''
 		last_name = 'Last Name'
-		parser_obj.current_line.data = "{} /{}/".format(first_name, last_name)
 		mock_split.return_value = (first_name, last_name)
 
+		# Mock person
 		mock_person = Mock()
-		parser_obj.people = [mock_person]
+
+		# Setup line
+		line = Mock()
+		line.data = "{} /{}/".format(first_name, last_name)
+
+		# Setup parser
+		parser_obj = Parser.__new__(Parser)
+		parser_obj.last_person = '@I0001234@'
+		parser_obj.people = {'@I0001234@': mock_person}
+		parser_obj.current_line = line
 
 		# Actual test
 		parser_obj.addPersonName()
@@ -372,22 +477,79 @@ class TestParser(unittest.TestCase):
 
 	@patch.object(Parser, 'splitName')
 	def test_add_person_name_003(self, mock_split):
-		# Setup
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
+		# Mock split function
 		first_name = 'First Name'
 		last_name = ''
-		parser_obj.current_line.data = "{} /{}/".format(first_name, last_name)
 		mock_split.return_value = (first_name, last_name)
 
+		# Mock person
 		mock_person = Mock()
-		parser_obj.people = [mock_person]
+
+		# Setup line
+		line = Mock()
+		line.data = "{} /{}/".format(first_name, last_name)
+
+		# Setup parser
+		parser_obj = Parser.__new__(Parser)
+		parser_obj.last_person = '@I0001234@'
+		parser_obj.people = {'@I0001234@': mock_person}
+		parser_obj.current_line = line
 
 		# Actual test
 		parser_obj.addPersonName()
 		self.assertTrue(mock_person.addAttribute.called_with(1, 'NAME', ""))
 		self.assertTrue(mock_person.addAttribute.called_with(2, 'GIVN', first_name))
 		self.assertTrue(mock_person.addAttribute.called_with(2, 'LAST', last_name))
+
+	##########################################
+	# Parser.addPersonAttribute
+	##########################################
+
+	def test_add_person_attribute_001(self):
+		# Setup line
+		attribute = 'KEY'
+		level = 2
+		data = "Some data"
+
+		line = Mock()
+		line.level = level
+		line.data = data
+
+		# Mock person
+		mock_person = Mock()
+
+		# Setup parser
+		parser_obj = Parser.__new__(Parser)
+		parser_obj.last_person = '@I0001234@'
+		parser_obj.people = {'@I0001234@': mock_person}
+		parser_obj.current_line = line
+
+		# Actual test
+		parser_obj.addPersonAttribute(attribute)
+		self.assertTrue(mock_person.addAttribute.called_with(level, attribute, data))
+
+	def test_add_person_attribute_002(self):
+		# Setup line
+		attribute = 'KEY'
+		level = 2
+		data = ''
+
+		line = Mock()
+		line.level = level
+		line.data = data
+
+		# Mock person
+		mock_person = Mock()
+
+		# Setup parser
+		parser_obj = Parser.__new__(Parser)
+		parser_obj.last_person = '@I0001234@'
+		parser_obj.people = {'@I0001234@': mock_person}
+		parser_obj.current_line = line
+
+		# Actual test
+		parser_obj.addPersonAttribute(attribute)
+		self.assertTrue(mock_person.addAttribute.called_with(level, attribute, data))
 
 	##########################################
 	# Parser.splitName
