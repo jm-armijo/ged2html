@@ -288,8 +288,14 @@ class TestParser(unittest.TestCase):
 		parser_obj.last_person = person_id
 		parser_obj.people = dict()
 
-		# Actual test
+		# Test that Person constructor is called with right arguments
 		parser_obj.createPerson()
+		self.assertEqual(mock.call_count, 1)
+		args = mock.call_args[0]
+		self.assertEqual(args[1], line.attribute)
+		self.assertEqual(len(args), 2)
+
+		# Teset that the new person is added to the people dictionary
 		self.assertEqual(len(parser_obj.people), 1)
 		self.assertEqual(parser_obj.people[person.value], person)
 
@@ -337,7 +343,22 @@ class TestParser(unittest.TestCase):
 		parser_obj.current_line = line
 		parser_obj.createPerson()
 
-		# Actual test
+		# Test that Person constructor is called with right arguments
+		self.assertEqual(mock.call_count, 3)
+
+		args = mock.call_args_list[0][0]
+		self.assertEqual(args[1], person1_id)
+		self.assertEqual(len(args), 2)
+
+		args = mock.call_args_list[1][0]
+		self.assertEqual(args[1], person2_id)
+		self.assertEqual(len(args), 2)
+
+		args = mock.call_args_list[2][0]
+		self.assertEqual(args[1], person3_id)
+		self.assertEqual(len(args), 2)
+
+		# Test that the new person is added to the people dictionary
 		self.assertEqual(len(parser_obj.people), 3)
 		self.assertEqual(parser_obj.people[person3.value], person3)
 		self.assertEqual(parser_obj.people[person2.value], person2)
@@ -347,7 +368,7 @@ class TestParser(unittest.TestCase):
 	When creating Person objects with duplicated values, the duplicated replaces the original
 	'''
 	@patch("src.person.Person.__new__")
-	def test_create_person_002(self, mock):
+	def test_create_person_003(self, mock):
 		# Setup people
 		dup_id = '@I000123@'
 		person3_id = '@I000323@'
@@ -386,7 +407,22 @@ class TestParser(unittest.TestCase):
 		parser_obj.current_line = line
 		parser_obj.createPerson()
 
-		# Actual test
+		# Test that Person constructor is called with right arguments
+		self.assertEqual(mock.call_count, 3)
+
+		args = mock.call_args_list[0][0]
+		self.assertEqual(args[1], dup_id)
+		self.assertEqual(len(args), 2)
+
+		args = mock.call_args_list[1][0]
+		self.assertEqual(args[1], dup_id)
+		self.assertEqual(len(args), 2)
+
+		args = mock.call_args_list[2][0]
+		self.assertEqual(args[1], person3_id)
+		self.assertEqual(len(args), 2)
+
+		# Test that the new person is added to the people dictionary
 		self.assertEqual(len(parser_obj.people), 2)
 		self.assertEqual(parser_obj.people[person3.value], person3)
 		self.assertEqual(parser_obj.people[dup_id], person2)
