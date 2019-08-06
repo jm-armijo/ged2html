@@ -471,6 +471,7 @@ class TestParser(unittest.TestCase):
 
 		# Setup line
 		line = Mock()
+		line.level = 1
 		line.data = "{} /{}/".format(first_name, last_name)
 
 		# Setup parser
@@ -497,6 +498,7 @@ class TestParser(unittest.TestCase):
 
 		# Setup line
 		line = Mock()
+		line.level = 1
 		line.data = "{} /{}/".format(first_name, last_name)
 
 		# Setup parser
@@ -523,6 +525,7 @@ class TestParser(unittest.TestCase):
 
 		# Setup line
 		line = Mock()
+		line.level = 1
 		line.data = "{} /{}/".format(first_name, last_name)
 
 		# Setup parser

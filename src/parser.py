@@ -82,15 +82,11 @@ class Parser():
 		person.addAttribute(level, attribute, value)
 
 	def addPersonName(self):
-		# A person's name is always at level 1
-		level = 1
-		value  = self.current_line.data
-		name = self.splitName(value)
-
+		name = self.splitName(self.current_line.data)
 		person = self.people[self.last_person]
-		person.addAttribute(level, 'NAME', "")
-		person.addAttribute(level+1, 'GIVN', name[0])
-		person.addAttribute(level+1, 'LAST', name[1])
+		person.addAttribute(self.current_line.level, 'NAME', "")
+		person.addAttribute(self.current_line.level+1, 'GIVN', name[0])
+		person.addAttribute(self.current_line.level+1, 'LAST', name[1])
 
 	def splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
