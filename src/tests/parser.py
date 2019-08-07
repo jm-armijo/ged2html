@@ -275,7 +275,7 @@ class TestParser(unittest.TestCase):
 		person = Mock()
 		person.value = person_id
 
-		# Mock person
+		# Mock person constructor
 		mock.return_value = person
 
 		# Setup line
@@ -427,207 +427,72 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(parser_obj.people[person3.value], person3)
 		self.assertEqual(parser_obj.people[dup_id], person2)
 
-	##########################################
-	# Parser.addPersonData
-	##########################################
+	###########################################
+	## Parser.addPersonData
+	###########################################
 
-	@patch.object(Parser, 'addPersonName')
-	def test_add_person_data_001(self, mock):
-		# Setup
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
-		parser_obj.current_line.attribute = 'NAME'
-		parser_obj.people = dict()
-
-		# Actual test
-		parser_obj.addPersonName()
-		self.assertTrue(mock.called)
-
-	@patch.object(Parser, 'addPersonAttribute')
-	def test_add_person_data_002(self, mock):
-		# Setup
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.current_line = Mock()
-		parser_obj.current_line.attribute = 'NO NAME'
-		parser_obj.people = dict()
-
-		# Actual test
-		parser_obj.addPersonAttribute()
-		self.assertTrue(mock.called)
-
-	##########################################
-	# Parser.addPersonName
-	##########################################
-
-	@patch.object(Parser, 'splitName')
-	def test_add_person_name_001(self, mock_split):
-		# Mock split function
-		first_name = 'First Name'
-		last_name = 'Last Name'
-		mock_split.return_value = (first_name, last_name)
-
-		# Mock person
-		mock_person = Mock()
-
+	def test_add_person_data_001(self):
 		# Setup line
 		line = Mock()
-		line.level = 1
-		line.data = "{} /{}/".format(first_name, last_name)
+		line.level = '1'
+		line.attribute = 'NAME'
+		line.data = 'First /Last'
+
+		# Setup person
+		person = Mock()
+		person.value = '@I000123@'
 
 		# Setup parser
 		parser_obj = Parser.__new__(Parser)
-		parser_obj.last_person = '@I0001234@'
-		parser_obj.people = {'@I0001234@': mock_person}
 		parser_obj.current_line = line
+		parser_obj.people = {person.value: person}
+		parser_obj.last_person = person.value
 
 		# Actual test
-		parser_obj.addPersonName()
-		self.assertTrue(mock_person.addAttribute.called_with(1, 'NAME', ""))
-		self.assertTrue(mock_person.addAttribute.called_with(2, 'GIVN', first_name))
-		self.assertTrue(mock_person.addAttribute.called_with(2, 'LAST', last_name))
+		parser_obj.addPersonData()
+		person.addAttribute.assert_called_with(1, line.attribute, line.data)
 
-	@patch.object(Parser, 'splitName')
-	def test_add_person_name_002(self, mock_split):
-		# Mock split function
-		first_name = ''
-		last_name = 'Last Name'
-		mock_split.return_value = (first_name, last_name)
-
-		# Mock person
-		mock_person = Mock()
-
+	def test_add_person_data_002(self):
 		# Setup line
 		line = Mock()
-		line.level = 1
-		line.data = "{} /{}/".format(first_name, last_name)
+		line.attribute = 'KEY'
+		line.level = '2'
+		line.data = "Some data"
+
+		# Setup person
+		person = Mock()
+		person.value = '@I000123@'
 
 		# Setup parser
 		parser_obj = Parser.__new__(Parser)
-		parser_obj.last_person = '@I0001234@'
-		parser_obj.people = {'@I0001234@': mock_person}
 		parser_obj.current_line = line
+		parser_obj.people = {person.value: person}
+		parser_obj.last_person = person.value
 
 		# Actual test
-		parser_obj.addPersonName()
-		self.assertTrue(mock_person.addAttribute.called_with(1, 'NAME', ""))
-		self.assertTrue(mock_person.addAttribute.called_with(2, 'GIVN', first_name))
-		self.assertTrue(mock_person.addAttribute.called_with(2, 'LAST', last_name))
-
-	@patch.object(Parser, 'splitName')
-	def test_add_person_name_003(self, mock_split):
-		# Mock split function
-		first_name = 'First Name'
-		last_name = ''
-		mock_split.return_value = (first_name, last_name)
-
-		# Mock person
-		mock_person = Mock()
-
-		# Setup line
-		line = Mock()
-		line.level = 1
-		line.data = "{} /{}/".format(first_name, last_name)
-
-		# Setup parser
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.last_person = '@I0001234@'
-		parser_obj.people = {'@I0001234@': mock_person}
-		parser_obj.current_line = line
-
-		# Actual test
-		parser_obj.addPersonName()
-		self.assertTrue(mock_person.addAttribute.called_with(1, 'NAME', ""))
-		self.assertTrue(mock_person.addAttribute.called_with(2, 'GIVN', first_name))
-		self.assertTrue(mock_person.addAttribute.called_with(2, 'LAST', last_name))
-
-	##########################################
-	# Parser.addPersonAttribute
-	##########################################
-
-	def test_add_person_attribute_001(self):
-		# Setup line
-		attribute = 'KEY'
-		level = 2
-		data = "Some data"
-
-		line = Mock()
-		line.level = level
-		line.data = data
-
-		# Mock person
-		mock_person = Mock()
-
-		# Setup parser
-		parser_obj = Parser.__new__(Parser)
-		parser_obj.last_person = '@I0001234@'
-		parser_obj.people = {'@I0001234@': mock_person}
-		parser_obj.current_line = line
-
-		# Actual test
-		parser_obj.addPersonAttribute(attribute)
-		self.assertTrue(mock_person.addAttribute.called_with(level, attribute, data))
+		parser_obj.addPersonData()
+		person.addAttribute.assert_called_with(2, line.attribute, line.data)
 
 	def test_add_person_attribute_002(self):
 		# Setup line
-		attribute = 'KEY'
-		level = 2
-		data = ''
-
 		line = Mock()
-		line.level = level
-		line.data = data
+		line.attribute = 'KEY'
+		line.level = '2'
+		line.data = ''
 
-		# Mock person
-		mock_person = Mock()
+		# Setup person
+		person = Mock()
+		person.value = '@I000123@'
 
 		# Setup parser
 		parser_obj = Parser.__new__(Parser)
-		parser_obj.last_person = '@I0001234@'
-		parser_obj.people = {'@I0001234@': mock_person}
 		parser_obj.current_line = line
+		parser_obj.people = {person.value: person}
+		parser_obj.last_person = person.value
 
 		# Actual test
-		parser_obj.addPersonAttribute(attribute)
-		self.assertTrue(mock_person.addAttribute.called_with(level, attribute, data))
-
-	##########################################
-	# Parser.splitName
-	##########################################
-
-	def test_split_name_001(self):
-		parser_obj = Parser.__new__(Parser)
-		full_name = 'First Name /Last Name/'
-
-		split_name = parser_obj.splitName(full_name)
-		self.assertEqual(split_name, ('First Name', 'Last Name'))
-
-	def test_split_name_002(self):
-		parser_obj = Parser.__new__(Parser)
-		full_name = '     First Name    /    Last Name   /   '
-
-		split_name = parser_obj.splitName(full_name)
-		self.assertEqual(split_name, ('First Name', 'Last Name'))
-
-	def test_split_name_003(self):
-		parser_obj = Parser.__new__(Parser)
-		full_name = '/Last Name/'
-
-		split_name = parser_obj.splitName(full_name)
-		self.assertEqual(split_name, ('', 'Last Name'))
-
-	def test_split_name_004(self):
-		parser_obj = Parser.__new__(Parser)
-		full_name = 'First Name //'
-
-		split_name = parser_obj.splitName(full_name)
-		self.assertEqual(split_name, ('First Name', ''))
-
-	def test_split_name_005(self):
-		parser_obj = Parser.__new__(Parser)
-		full_name = 'First Name /Last Name'
-
-		split_name = parser_obj.splitName(full_name)
-		self.assertEqual(split_name, ('First Name', 'Last Name'))
+		parser_obj.addPersonData()
+		person.addAttribute.assert_called_with(2, line.attribute, line.data)
 
 if __name__ == '__main__':
 	unittest.main()

@@ -1,4 +1,3 @@
-import re
 from src.person import Person
 
 class Parser():
@@ -67,30 +66,9 @@ class Parser():
 		self.last_person = person.value
 		
 	def addPersonData(self):
-		attribute = self.current_line.attribute
-
-		if attribute == 'NAME':
-			self.addPersonName()
-		else:
-			self.addPersonAttribute(attribute)
-
-	def addPersonAttribute(self, attribute):
 		level = int(self.current_line.level)
+		attribute = self.current_line.attribute
 		value  = self.current_line.data
 
 		person = self.people[self.last_person]
 		person.addAttribute(level, attribute, value)
-
-	def addPersonName(self):
-		name = self.splitName(self.current_line.data)
-		person = self.people[self.last_person]
-		person.addAttribute(self.current_line.level, 'NAME', "")
-		person.addAttribute(self.current_line.level+1, 'GIVN', name[0])
-		person.addAttribute(self.current_line.level+1, 'LAST', name[1])
-
-	def splitName(self, name):
-		match = re.search('^(.*?)/(.*?)/?\s*$', name)
-		if match:
-			return (match.group(1).strip(), match.group(2).strip())
-		else:
-			print("raise error!")
