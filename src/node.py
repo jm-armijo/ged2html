@@ -12,7 +12,11 @@ class Node():
 			return child.pickParent(attribute)
 		return self
 
-	def addNode(self, attribute):
+	def addNode(self, level, key, value):
+		attribute = Node(level, key, value)
+		self.appendAttribute(attribute)
+
+	def appendAttribute(self, attribute):
 		parent = self.pickParent(attribute)
 		parent.last_child = attribute.key
 

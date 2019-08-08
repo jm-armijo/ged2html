@@ -33,11 +33,8 @@ class TestPerson(unittest.TestCase):
 	'''
 	Validate function to add a person's name is called for attribute key NAME
 	'''
-	@patch("src.node.Node.__init__")
 	@patch("src.person.Person.addName")
-	def test_add_attribute_001(self, mock_add, mock_init):
-		mock_init.return_value = None
-
+	def test_add_attribute_001(self, mock_add):
 		# Setup Node
 		person_obj = Person.__new__(Person)
 		person_obj.children = list()
@@ -48,8 +45,7 @@ class TestPerson(unittest.TestCase):
 
 		# Actual test
 		person_obj.addAttribute(level, key, value)
-		mock_init.assert_called_with(level, key, value)
-		self.assertTrue(mock_add.called)
+		mock_add.assert_called_with(level, key, value)
 
 	##########################################
 	# Person.addPersonName
@@ -67,14 +63,13 @@ class TestPerson(unittest.TestCase):
 		mock_person = Mock()
 
 		# Setup attribute
-		attribute = Mock()
-		attribute.level = 1
-		attribute.key = 'NAME'
-		attribute.value = "{} /{}/".format(first_name, last_name)
+		level = 1
+		key = 'NAME'
+		value = "{} /{}/".format(first_name, last_name)
 
 		# Setup person
 		person_obj = Person.__new__(Person)
-		person_obj.addName(attribute)
+		person_obj.addName(level, key, value)
 
 		# Actual test
 		calls = [
@@ -97,14 +92,13 @@ class TestPerson(unittest.TestCase):
 		mock_person = Mock()
 
 		# Setup attribute
-		attribute = Mock()
-		attribute.level = 1
-		attribute.key = 'NAME'
-		attribute.value = "{} /{}/".format(first_name, last_name)
+		level = 1
+		key = 'NAME'
+		value = "{} /{}/".format(first_name, last_name)
 
 		# Setup person
 		person_obj = Person.__new__(Person)
-		person_obj.addName(attribute)
+		person_obj.addName(level, key, value)
 
 		# Actual test
 		calls = [
@@ -127,14 +121,13 @@ class TestPerson(unittest.TestCase):
 		mock_person = Mock()
 
 		# Setup attribute
-		attribute = Mock()
-		attribute.level = 1
-		attribute.key = 'NAME'
-		attribute.value = "{} /{}/".format(first_name, last_name)
+		level = 1
+		key = 'NAME'
+		value = "{} /{}/".format(first_name, last_name)
 
 		# Setup person
 		person_obj = Person.__new__(Person)
-		person_obj.addName(attribute)
+		person_obj.addName(level, key, value)
 
 		# Actual test
 		calls = [

@@ -56,8 +56,27 @@ class TestNode(unittest.TestCase):
 	'''
 	Inserts an attribute on a given parent node
 	'''
+	@patch("src.node.Node.__init__")
+	@patch("src.node.Node.appendAttribute")
+	def test_add_node_001(self, mock_append, mock_init):
+		mock_init.return_value = None
+
+		# Setup attribute's values
+		level = 1
+		key = 'KEY1'
+		value = 'Value'
+
+		node_obj = Node.__new__(Node)
+		node_obj.addNode(level, key, value)
+
+		mock_init.assert_called_with(level, key, value)
+
+		mock_append.assert_called()
+		self.assertTrue(isinstance(mock_append.call_args[0][0], Node))
+
 	@patch("src.node.Node.pickParent")
-	def test_add_node_001(self, mock_pick):
+	def test_append_attribute_001(self, mock_pick):
+		# Mock pickParent
 		parent = Mock()
 		parent.children = dict()
 		mock_pick.return_value = parent
@@ -66,18 +85,21 @@ class TestNode(unittest.TestCase):
 		attribute = Mock()
 		attribute.level = 1
 		attribute.key = 'KEY1'
+		attribute.value = 'Value'
 
 		# Actual test
 		node_obj = Node.__new__(Node)
-		node_obj.addNode(attribute)
-		self.assertEqual(parent.last_child,'KEY1')
-		self.assertEqual(parent.children['KEY1'], attribute)
+		node_obj.appendAttribute(attribute)
+		self.assertEqual(parent.last_child, 'KEY1')
+		self.assertEqual(parent.children['KEY1'].level, attribute.level)
+		self.assertEqual(parent.children['KEY1'].key,   attribute.key)
+		self.assertEqual(parent.children['KEY1'].value, attribute.value)
 
 	'''
 	Inserts duplicated attribute with empty value
 	'''
 	@patch("src.node.Node.pickParent")
-	def test_add_node_002(self, mock_pick):
+	def test_append_attribute_002(self, mock_pick):
 		# Setup an attribute
 		attribute = Mock()
 		attribute.level = 1
@@ -96,7 +118,7 @@ class TestNode(unittest.TestCase):
 
 		# Actual test
 		node_obj = Node.__new__(Node)
-		node_obj.addNode(dup_attribute)
+		node_obj.appendAttribute(dup_attribute)
 		self.assertEqual(parent.last_child,'KEY1')
 
 		# Attribute is not replaced
@@ -106,7 +128,7 @@ class TestNode(unittest.TestCase):
 	Inserts duplicated attribute with longer value
 	'''
 	@patch("src.node.Node.pickParent")
-	def test_add_node_003(self, mock_pick):
+	def test_append_attribute_003(self, mock_pick):
 		# Setup an attribute
 		attribute = Mock()
 		attribute.level = 1
@@ -126,7 +148,7 @@ class TestNode(unittest.TestCase):
 
 		# Actual test
 		node_obj = Node.__new__(Node)
-		node_obj.addNode(dup_attribute)
+		node_obj.appendAttribute(dup_attribute)
 		self.assertEqual(parent.last_child,'KEY1')
 
 		# Attribute is replaced
