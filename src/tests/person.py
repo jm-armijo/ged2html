@@ -3,7 +3,7 @@ from unittest.mock import call, Mock, patch
 from ..person import Person
 
 class TestPerson(unittest.TestCase):
-	@patch("src.node.Node.__init__")
+	@patch("src.attribute_node.AttributeNode.__init__")
 	def test_init_001(self, mock_init):
 		id = "@I1234567@"
 		person = Person(id)
@@ -12,12 +12,12 @@ class TestPerson(unittest.TestCase):
 	'''
 	Validate function to add node is called for any attribute key not NAME
 	'''
-	@patch("src.node.Node.__init__")
-	@patch("src.node.Node.addNode")
+	@patch("src.attribute_node.AttributeNode.__init__")
+	@patch("src.attribute_node.AttributeNode.addChildAttribute")
 	def test_add_attribute_001(self, mock_add, mock_init):
 		mock_init.return_value = None
 
-		# Setup Node
+		# Setup AttributeNode
 		person_obj = Person.__new__(Person)
 		person_obj.children = list()
 
@@ -35,7 +35,7 @@ class TestPerson(unittest.TestCase):
 	'''
 	@patch("src.person.Person.addName")
 	def test_add_attribute_001(self, mock_add):
-		# Setup Node
+		# Setup AttributeNode
 		person_obj = Person.__new__(Person)
 		person_obj.children = list()
 
@@ -52,7 +52,7 @@ class TestPerson(unittest.TestCase):
 	##########################################
 
 	@patch.object(Person, 'splitName')
-	@patch("src.node.Node.addNode")
+	@patch("src.attribute_node.AttributeNode.addChildAttribute")
 	def test_add_person_name_001(self, mock_add, mock_split):
 		# Mock split function
 		first_name = 'First Name'
@@ -81,7 +81,7 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(mock_add.call_count, len(calls))
 
 	@patch.object(Person, 'splitName')
-	@patch("src.node.Node.addNode")
+	@patch("src.attribute_node.AttributeNode.addChildAttribute")
 	def test_add_person_name_002(self, mock_add, mock_split):
 		# Mock split function
 		first_name = ''
@@ -110,7 +110,7 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(mock_add.call_count, len(calls))
 
 	@patch.object(Person, 'splitName')
-	@patch("src.node.Node.addNode")
+	@patch("src.attribute_node.AttributeNode.addChildAttribute")
 	def test_add_person_name_003(self, mock_add, mock_split):
 		# Mock split function
 		first_name = 'First Name'

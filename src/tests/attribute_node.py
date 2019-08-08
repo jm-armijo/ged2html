@@ -2,15 +2,15 @@ import unittest
 from unittest.mock import patch
 from unittest.mock import Mock
 
-from ..node import Node
+from ..attribute_node import AttributeNode
 
-class TestNode(unittest.TestCase):
+class TestAttributeNode(unittest.TestCase):
 	def test_init_001(self):
 		level = 100
 		key = 'key'
 		value = 'value'
 
-		node = Node(level, key, value)
+		node = AttributeNode(level, key, value)
 	
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
@@ -22,7 +22,7 @@ class TestNode(unittest.TestCase):
 		key = 'this is a key'
 		value = 'and this is a value'
 
-		node = Node(level, key, value)
+		node = AttributeNode(level, key, value)
 	
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
@@ -34,7 +34,7 @@ class TestNode(unittest.TestCase):
 		key = 'key'
 		value = ''
 
-		node = Node(level, key, value)
+		node = AttributeNode(level, key, value)
 	
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
@@ -46,7 +46,7 @@ class TestNode(unittest.TestCase):
 		key = 'key'
 		value = ''
 
-		node = Node(level, key, value)
+		node = AttributeNode(level, key, value)
 	
 		self.assertEqual(node.level, level)
 		self.assertEqual(node.key,   key)
@@ -56,9 +56,9 @@ class TestNode(unittest.TestCase):
 	'''
 	Inserts an attribute on a given parent node
 	'''
-	@patch("src.node.Node.__init__")
-	@patch("src.node.Node.appendAttribute")
-	def test_add_node_001(self, mock_append, mock_init):
+	@patch("src.attribute_node.AttributeNode.__init__")
+	@patch("src.attribute_node.AttributeNode.appendAttribute")
+	def test_add_child_attribute_001(self, mock_append, mock_init):
 		mock_init.return_value = None
 
 		# Setup attribute's values
@@ -66,15 +66,15 @@ class TestNode(unittest.TestCase):
 		key = 'KEY1'
 		value = 'Value'
 
-		node_obj = Node.__new__(Node)
-		node_obj.addNode(level, key, value)
+		node_obj = AttributeNode.__new__(AttributeNode)
+		node_obj.addChildAttribute(level, key, value)
 
 		mock_init.assert_called_with(level, key, value)
 
 		mock_append.assert_called()
-		self.assertTrue(isinstance(mock_append.call_args[0][0], Node))
+		self.assertTrue(isinstance(mock_append.call_args[0][0], AttributeNode))
 
-	@patch("src.node.Node.pickParent")
+	@patch("src.attribute_node.AttributeNode.pickParent")
 	def test_append_attribute_001(self, mock_pick):
 		# Mock pickParent
 		parent = Mock()
@@ -88,7 +88,7 @@ class TestNode(unittest.TestCase):
 		attribute.value = 'Value'
 
 		# Actual test
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.appendAttribute(attribute)
 		self.assertEqual(parent.last_child, 'KEY1')
 		self.assertEqual(parent.children['KEY1'].level, attribute.level)
@@ -98,7 +98,7 @@ class TestNode(unittest.TestCase):
 	'''
 	Inserts duplicated attribute with empty value
 	'''
-	@patch("src.node.Node.pickParent")
+	@patch("src.attribute_node.AttributeNode.pickParent")
 	def test_append_attribute_002(self, mock_pick):
 		# Setup an attribute
 		attribute = Mock()
@@ -117,7 +117,7 @@ class TestNode(unittest.TestCase):
 		mock_pick.return_value = parent
 
 		# Actual test
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.appendAttribute(dup_attribute)
 		self.assertEqual(parent.last_child,'KEY1')
 
@@ -127,7 +127,7 @@ class TestNode(unittest.TestCase):
 	'''
 	Inserts duplicated attribute with longer value
 	'''
-	@patch("src.node.Node.pickParent")
+	@patch("src.attribute_node.AttributeNode.pickParent")
 	def test_append_attribute_003(self, mock_pick):
 		# Setup an attribute
 		attribute = Mock()
@@ -147,7 +147,7 @@ class TestNode(unittest.TestCase):
 		mock_pick.return_value = parent
 
 		# Actual test
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.appendAttribute(dup_attribute)
 		self.assertEqual(parent.last_child,'KEY1')
 
@@ -158,8 +158,8 @@ class TestNode(unittest.TestCase):
 	Get parent for attribute at depth 1
 	'''
 	def test_pick_parent_001(self):
-		# Setup Node
-		node_obj = Node.__new__(Node)
+		# Setup AttributeNode
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value = '@I000123@'
@@ -179,19 +179,19 @@ class TestNode(unittest.TestCase):
 	'''
 	def test_pick_parent_002(self):
 		# Setup tree
-		node_lvl2 = Node.__new__(Node)
+		node_lvl2 = AttributeNode.__new__(AttributeNode)
 		node_lvl2.key = 'KEY2'
 		node_lvl2.level = 2
 		node_lvl2.children = dict()
 		node_lvl2.last_child = None
 
-		node_lvl1 = Node.__new__(Node)
+		node_lvl1 = AttributeNode.__new__(AttributeNode)
 		node_lvl1.key = 'KEY1'
 		node_lvl1.level = 1
 		node_lvl1.children = {'KEY2':node_lvl2}
 		node_lvl1.last_child = 'KEY2'
 
-		root_obj = Node.__new__(Node)
+		root_obj = AttributeNode.__new__(AttributeNode)
 		root_obj.key = 'KEY0'
 		root_obj.level = 0
 		root_obj.children = {'KEY1':node_lvl1}
@@ -210,9 +210,9 @@ class TestNode(unittest.TestCase):
 	Gets an attribute from index 0
 	'''
 	def test_get_item_001(self):
-		# Setup Node
+		# Setup AttributeNode
 		attribute = Mock()
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.children = [attribute, Mock()]
 
 		# Actual test
@@ -222,9 +222,9 @@ class TestNode(unittest.TestCase):
 	Gets an attribute from index 1
 	'''
 	def test_get_item_002(self):
-		# Setup Node
+		# Setup AttributeNode
 		attribute = Mock()
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.children = [Mock(), attribute]
 
 		# Actual test
@@ -234,8 +234,8 @@ class TestNode(unittest.TestCase):
 	Gets an attribute from empty list
 	'''
 	def test_get_item_003(self):
-		# Setup Node
-		node_obj = Node.__new__(Node)
+		# Setup AttributeNode
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.children = dict()
 
 		# Actual test
@@ -245,8 +245,8 @@ class TestNode(unittest.TestCase):
 	Casts childrenless node into string
 	'''
 	def test_str_001(self):
-		# Setup Node
-		node_obj = Node.__new__(Node)
+		# Setup AttributeNode
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
@@ -260,14 +260,14 @@ class TestNode(unittest.TestCase):
 	Casts node with 1 child into string
 	'''
 	def test_str_002(self):
-		# Setup Node
-		child_obj = Node.__new__(Node)
+		# Setup AttributeNode
+		child_obj = AttributeNode.__new__(AttributeNode)
 		child_obj.level = 1
 		child_obj.key   = "KEY"
 		child_obj.value  = 'Value'
 		child_obj.children = dict()
 
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
@@ -281,20 +281,20 @@ class TestNode(unittest.TestCase):
 	Casts node with 2 children into string
 	'''
 	def test_str_003(self):
-		# Setup Node
-		child1_obj = Node.__new__(Node)
+		# Setup AttributeNode
+		child1_obj = AttributeNode.__new__(AttributeNode)
 		child1_obj.level = 1
 		child1_obj.key   = "KEY1"
 		child1_obj.value  = 'Value1'
 		child1_obj.children = dict()
 
-		child2_obj = Node.__new__(Node)
+		child2_obj = AttributeNode.__new__(AttributeNode)
 		child2_obj.level = 1
 		child2_obj.key   = "KEY2"
 		child2_obj.value  = 'Value2'
 		child2_obj.children = dict()
 
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'
@@ -308,26 +308,26 @@ class TestNode(unittest.TestCase):
 	Casts node with 1 child and 2 granchild into string
 	'''
 	def test_str_004(self):
-		# Setup Node
-		grand_child1_obj = Node.__new__(Node)
+		# Setup AttributeNode
+		grand_child1_obj = AttributeNode.__new__(AttributeNode)
 		grand_child1_obj.level = 2
 		grand_child1_obj.key   = "KEY1"
 		grand_child1_obj.value  = 'Value1'
 		grand_child1_obj.children = dict()
 
-		grand_child2_obj = Node.__new__(Node)
+		grand_child2_obj = AttributeNode.__new__(AttributeNode)
 		grand_child2_obj.level = 2
 		grand_child2_obj.key   = "KEY2"
 		grand_child2_obj.value  = 'Value2'
 		grand_child2_obj.children = dict()
 
-		child_obj = Node.__new__(Node)
+		child_obj = AttributeNode.__new__(AttributeNode)
 		child_obj.level = 1
 		child_obj.key   = "KEY"
 		child_obj.value  = 'Value'
 		child_obj.children = {'KEY1':grand_child1_obj, 'KEY2':grand_child2_obj}
 
-		node_obj = Node.__new__(Node)
+		node_obj = AttributeNode.__new__(AttributeNode)
 		node_obj.level = 0
 		node_obj.key   = "INDI"
 		node_obj.value  = '@I000123@'

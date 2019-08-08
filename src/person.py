@@ -1,7 +1,7 @@
 import re
-from src.node import Node
+from src.attribute_node import AttributeNode
 
-class Person(Node):
+class Person(AttributeNode):
 	def __init__(self, id):
 		super().__init__(0, 'ID', id)
 
@@ -9,14 +9,14 @@ class Person(Node):
 		if key == 'NAME':
 			self.addName(level, key, value)
 		else:
-			super().addNode(level, key, value)
+			super().addChildAttribute(level, key, value)
 
 	def addName(self, level, key, value):
 		name = self.splitName(value)
 
-		super().addNode(level, key, '')
-		super().addNode(level + 1, 'GIVN', name[0])
-		super().addNode(level + 1, 'LAST', name[1])
+		super().addChildAttribute(level, key, '')
+		super().addChildAttribute(level + 1, 'GIVN', name[0])
+		super().addChildAttribute(level + 1, 'LAST', name[1])
 
 	def splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)

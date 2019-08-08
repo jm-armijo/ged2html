@@ -1,4 +1,4 @@
-class Node():
+class AttributeNode():
 	def __init__(self, level, key, value):
 		self.level = level
 		self.key = key
@@ -12,8 +12,8 @@ class Node():
 			return child.pickParent(attribute)
 		return self
 
-	def addNode(self, level, key, value):
-		attribute = Node(level, key, value)
+	def addChildAttribute(self, level, key, value):
+		attribute = AttributeNode(level, key, value)
 		self.appendAttribute(attribute)
 
 	def appendAttribute(self, attribute):
