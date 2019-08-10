@@ -66,7 +66,7 @@ class Parser():
 			self.addUnionData()
 
 	def createPerson(self):
-		person = Person(self.current_line.attribute)
+		person = self.getPersonOrCreate(self.current_line.attribute)
 		self.people[person.id] = person
 		self.last_person = person.id
 
@@ -99,12 +99,18 @@ class Parser():
 		union = self.unions[-1]
 
 		if attribute == 'HUSB':
-			union.setSpouse1(value)
+			union.setSpouse1(self.getPersonOrCreate(value))
 		elif attribute == 'WIFE':
-			union.setSpouse2(value)
+			union.setSpouse2(self.getPersonOrCreate(value))
 		elif attribute == 'CHIL':
-			union.addChild(value)
+			union.addChild(self.getPersonOrCreate(value))
 		elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'MARR':
 			union.setDate(value)
 		elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'MARR':
 			union.setPlace(value)
+
+	def getPersonOrCreate(self, id):
+		if id not in self.people:
+			self.people[id] = Person(id)
+
+		return self.people[id]

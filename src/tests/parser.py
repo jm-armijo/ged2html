@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, call, ANY
 from ..parser import Parser
 
 class TestParser(unittest.TestCase):
@@ -409,8 +409,7 @@ class TestParser(unittest.TestCase):
 	'''
 	When creating Person objects with duplicated values, the duplicated replaces the original
 	'''
-	@patch("src.person.Person.__new__")
-	def test_create_person_003(self, mock):
+	def test_create_person_003(self):
 		# Setup people
 		dup_id = '@I000123@'
 		person3_id = '@I000323@'
@@ -423,13 +422,11 @@ class TestParser(unittest.TestCase):
 		person2.id = dup_id
 		person3.id = person3_id
 
-		# Mock person
-		mock.side_effect = [person1, person2, person3]
-
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.last_person = None
 		parser.people = dict()
+		parser.getPersonOrCreate = MagicMock(side_effect = [person1, person2, person3])
 
 		# Create Person 1
 		line = Mock()
@@ -449,25 +446,37 @@ class TestParser(unittest.TestCase):
 		parser.current_line = line
 		parser.createPerson()
 
+
 		# Test that Person constructor is called with right arguments
-		self.assertEqual(mock.call_count, 3)
+		self.assertEqual(parser.getPersonOrCreate.call_count,3)
+		self.assertEqual(parser.getPersonOrCreate.mock_calls, [call(dup_id), call(dup_id), call(person3_id)])
 
-		args = mock.call_args_list[0][0]
-		self.assertEqual(args[1], dup_id)
-		self.assertEqual(len(args), 2)
-
-		args = mock.call_args_list[1][0]
-		self.assertEqual(args[1], dup_id)
-		self.assertEqual(len(args), 2)
-
-		args = mock.call_args_list[2][0]
-		self.assertEqual(args[1], person3_id)
-		self.assertEqual(len(args), 2)
-
-		# Test that the new person is added to the people dictionary
+		# Test that the new persons are added to the people dictionary
 		self.assertEqual(len(parser.people), 2)
 		self.assertEqual(parser.people[person3.id], person3)
 		self.assertEqual(parser.people[dup_id], person2)
+
+	###########################################
+	## Parser.getPersonOrCreate
+	###########################################
+
+	@patch("src.person.Person.__new__")
+	def test_get_person_or_create_001(self, mock_person):
+		id = '@I001234@'
+		parser = Parser.__new__(Parser)
+		parser.people = dict()
+
+		parser.getPersonOrCreate(id)
+		mock_person.assert_called_with(ANY, id)
+
+	@patch("src.person.Person.__new__")
+	def test_get_person_or_create_002(self, mock_person):
+		id = '@I001234@'
+		parser = Parser.__new__(Parser)
+		parser.people = {id: Mock()}
+
+		parser.getPersonOrCreate(id)
+		mock_person.assert_not_called()
 
 	###########################################
 	## Parser.addPersonData
