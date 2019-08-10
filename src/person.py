@@ -1,22 +1,39 @@
 import re
-from src.attribute_node import AttributeNode
 
-class Person(AttributeNode):
+class Person():
 	def __init__(self, id):
-		super().__init__(0, 'ID', id)
+		self.id = id
+		self.given_name = ''
+		self.last_name = ''
+		self.sex = ''
+		self.birth_date = ''
+		self.birth_place = ''
+		self.death_date = ''
+		self.death_place = ''
 
-	def addAttribute(self, level, key, value):
-		if key == 'NAME':
-			self.addName(level, key, value)
-		else:
-			super().addChildAttribute(level, key, value)
+	def setName(self, name):
+		name_parts = self.splitName(name)
+		self.setGivenName(name_parts[0] )
+		self.last_name = name_parts[1]
 
-	def addName(self, level, key, value):
-		name = self.splitName(value)
+	def setGivenName(self, given_name):
+		if self.given_name == '':
+			self.given_name = given_name
 
-		super().addChildAttribute(level, key, '')
-		super().addChildAttribute(level + 1, 'GIVN', name[0])
-		super().addChildAttribute(level + 1, 'LAST', name[1])
+	def setSex(self, sex):
+		self.sex = sex
+
+	def setBirthDate(self, date):
+		self.birth_date = date
+
+	def setBirthPlace(self, place):
+		self.birth_place = place
+
+	def setDeadthDate(self, date):
+		self.death_date = date
+
+	def setDeadthPlace(self, place):
+		self.death_place = place
 
 	def splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
@@ -24,3 +41,6 @@ class Person(AttributeNode):
 			return (match.group(1).strip(), match.group(2).strip())
 		else:
 			print("raise error!")
+
+	def __str__(self):
+		return "{} {} ({} - {})".format(self.given_name, self.last_name, self.birth_date, self.death_date)

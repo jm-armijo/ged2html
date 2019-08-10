@@ -315,7 +315,7 @@ class TestParser(unittest.TestCase):
 		# Setup person
 		person_id = '@I000123@'
 		person = Mock()
-		person.value = person_id
+		person.id = person_id
 
 		# Mock person constructor
 		mock.return_value = person
@@ -339,7 +339,7 @@ class TestParser(unittest.TestCase):
 
 		# Teset that the new person is added to the people dictionary
 		self.assertEqual(len(parser.people), 1)
-		self.assertEqual(parser.people[person.value], person)
+		self.assertEqual(parser.people[person.id], person)
 
 	'''
 	When creating 3 Person objects with different values, all of them are crated
@@ -355,9 +355,9 @@ class TestParser(unittest.TestCase):
 		person2 = Mock()
 		person3 = Mock()
 
-		person1.value = person1_id
-		person2.value = person2_id
-		person3.value = person3_id
+		person1.id = person1_id
+		person2.id = person2_id
+		person3.id = person3_id
 
 		# Mock person
 		mock.side_effect = [person1, person2, person3]
@@ -402,9 +402,9 @@ class TestParser(unittest.TestCase):
 
 		# Test that the new person is added to the people dictionary
 		self.assertEqual(len(parser.people), 3)
-		self.assertEqual(parser.people[person3.value], person3)
-		self.assertEqual(parser.people[person2.value], person2)
-		self.assertEqual(parser.people[person1.value], person1)
+		self.assertEqual(parser.people[person3.id], person3)
+		self.assertEqual(parser.people[person2.id], person2)
+		self.assertEqual(parser.people[person1.id], person1)
 
 	'''
 	When creating Person objects with duplicated values, the duplicated replaces the original
@@ -419,9 +419,9 @@ class TestParser(unittest.TestCase):
 		person2 = Mock()
 		person3 = Mock()
 
-		person1.value = dup_id
-		person2.value = dup_id
-		person3.value = person3_id
+		person1.id = dup_id
+		person2.id = dup_id
+		person3.id = person3_id
 
 		# Mock person
 		mock.side_effect = [person1, person2, person3]
@@ -466,7 +466,7 @@ class TestParser(unittest.TestCase):
 
 		# Test that the new person is added to the people dictionary
 		self.assertEqual(len(parser.people), 2)
-		self.assertEqual(parser.people[person3.value], person3)
+		self.assertEqual(parser.people[person3.id], person3)
 		self.assertEqual(parser.people[dup_id], person2)
 
 	###########################################
@@ -474,67 +474,146 @@ class TestParser(unittest.TestCase):
 	###########################################
 
 	def test_add_person_data_001(self):
-		# Setup line
-		line = Mock()
-		line.level = '1'
-		line.attribute = 'NAME'
-		line.data = 'First /Last'
-
 		# Setup person
 		person = Mock()
-		person.value = '@I000123@'
+		person.id = '@I000123@'
+		person.setName = MagicMock()
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = 'NAME'
+		line.data = 'First /Last'
 
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.people = {person.value: person}
-		parser.last_person = person.value
+		parser.people = {person.id: person}
+		parser.last_person = person.id
 
 		# Actual test
 		parser.addPersonData()
-		person.addAttribute.assert_called_with(1, line.attribute, line.data)
+		person.setName.assert_called_with(line.data)
 
 	def test_add_person_data_002(self):
+		# Setup person
+		person = Mock()
+		person.id = '@I000123@'
+		person.setGivenName = MagicMock()
+
+		# Setup line
+		line = Mock()
+		line.level = 2
+		line.attribute = 'GIVN'
+		line.data = 'First'
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.people = {person.id: person}
+		parser.last_person = person.id
+
+		# Actual test
+		parser.addPersonData()
+		person.setGivenName.assert_called_with(line.data)
+
+	def test_add_person_data_003(self):
+		# Setup person
+		person = Mock()
+		person.id = '@I000123@'
+		person.setSex= MagicMock()
+
+		# Setup line
+		line = Mock()
+		line.attribute = 'SEX'
+		line.level = 1
+		line.data = 'F'
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.people = {person.id: person}
+		parser.last_person = person.id
+
+		# Actual test
+		parser.addPersonData()
+		person.setSex.assert_called_with(line.data)
+
+	def test_add_person_data_004(self):
+		# Setup person
+		person = Mock()
+		person.id = '@I000123@'
+		person.setBirthDate= MagicMock()
+
+		# Setup line
+		line = Mock()
+		line.attribute = 'DATE'
+		line.level = 2
+		line.data = 'F'
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.people = {person.id: person}
+		parser.last_person = person.id
+		parser.last_key_per_level = {1: 'BIRT'}
+
+		# Actual test
+		parser.addPersonData()
+		person.setBirthDate.assert_called_with(line.data)
+
+	def test_add_person_data_005(self):
+		# Setup person
+		person = Mock()
+		person.id = '@I000123@'
+		person.setBirthPlace= MagicMock()
+
+		# Setup line
+		line = Mock()
+		line.attribute = 'PLAC'
+		line.level = 2
+		line.data = 'Town, City, Country'
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.people = {person.id: person}
+		parser.last_person = person.id
+		parser.last_key_per_level = {1: 'BIRT'}
+
+		# Actual test
+		parser.addPersonData()
+		person.setBirthPlace.assert_called_with(line.data)
+
+	def test_add_person_data_006(self):
+		# Setup person
+		person = Mock()
+		person.id = '@I000123@'
+		person.setName = MagicMock()
+		person.setGivenName = MagicMock()
+		person.setSex= MagicMock()
+		person.setBirthDate= MagicMock()
+		person.setBirthPlace= MagicMock()
+
 		# Setup line
 		line = Mock()
 		line.attribute = 'KEY'
 		line.level = '2'
 		line.data = "Some data"
 
-		# Setup person
-		person = Mock()
-		person.value = '@I000123@'
-
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.people = {person.value: person}
-		parser.last_person = person.value
+		parser.people = {person.id: person}
+		parser.last_person = person.id
 
 		# Actual test
 		parser.addPersonData()
-		person.addAttribute.assert_called_with(2, line.attribute, line.data)
-
-	def test_add_person_attribute_002(self):
-		# Setup line
-		line = Mock()
-		line.attribute = 'KEY'
-		line.level = '2'
-		line.data = ''
-
-		# Setup person
-		person = Mock()
-		person.value = '@I000123@'
-
-		# Setup parser
-		parser = Parser.__new__(Parser)
-		parser.current_line = line
-		parser.people = {person.value: person}
-		parser.last_person = person.value
-
-		# Actual test
-		parser.addPersonData()
-		person.addAttribute.assert_called_with(2, line.attribute, line.data)
+		person.setName.assert_not_called()
+		person.setGivenName.assert_not_called()
+		person.setSex= MagicMock()
+		person.setBirthDate= MagicMock()
+		person.setBirthPlace= MagicMock()
 
 if __name__ == '__main__':
 	unittest.main()

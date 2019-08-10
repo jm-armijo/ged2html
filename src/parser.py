@@ -67,17 +67,27 @@ class Parser():
 
 	def createPerson(self):
 		person = Person(self.current_line.attribute)
-		self.people[person.value] = person
-		self.last_person = person.value
+		self.people[person.id] = person
+		self.last_person = person.id
 
 	def addPersonData(self):
-		level = int(self.current_line.level)
+		level = self.current_line.level
 		attribute = self.current_line.attribute
 		value  = self.current_line.data
 
 		person = self.people[self.last_person]
-		person.addAttribute(level, attribute, value)
-	
+
+		if attribute == 'NAME':
+			person.setName(value)
+		elif attribute == 'GIVN':
+			person.setGivenName(value)
+		elif attribute == 'SEX':
+			person.setSex(value)
+		elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
+			person.setBirthDate(value)
+		elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'BIRT':
+			person.setBirthPlace(value)
+
 	def createUnion(self):
 		self.unions.append(Union(self.current_line.attribute))
 

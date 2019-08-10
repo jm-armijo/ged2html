@@ -1,142 +1,187 @@
 import unittest
-from unittest.mock import call, Mock, patch
+from unittest.mock import MagicMock
 from ..person import Person
 
 class TestPerson(unittest.TestCase):
-	@patch("src.attribute_node.AttributeNode.__init__")
-	def test_init_001(self, mock_init):
+	##########################################
+	# Person.init
+	##########################################
+
+	def test_init_001(self):
 		id = "@I1234567@"
 		person = Person(id)
-		mock_init.assert_called_with(0, 'ID', id)
-
-	'''
-	Validate function to add node is called for any attribute key not NAME
-	'''
-	@patch("src.attribute_node.AttributeNode.__init__")
-	@patch("src.attribute_node.AttributeNode.addChildAttribute")
-	def test_add_attribute_001(self, mock_add, mock_init):
-		mock_init.return_value = None
-
-		# Setup AttributeNode
-		person_obj = Person.__new__(Person)
-		person_obj.children = list()
-
-		level = '1'
-		key = 'ATTR'
-		value = 'VAL'
-
-		# Actual test
-		person_obj.addAttribute(level, key, value)
-		mock_init.assert_called_with(level, key, value)
-		self.assertTrue(mock_add.called)
-
-	'''
-	Validate function to add a person's name is called for attribute key NAME
-	'''
-	@patch("src.person.Person.addName")
-	def test_add_attribute_001(self, mock_add):
-		# Setup AttributeNode
-		person_obj = Person.__new__(Person)
-		person_obj.children = list()
-
-		level = '1'
-		key = 'NAME'
-		value = 'VAL'
-
-		# Actual test
-		person_obj.addAttribute(level, key, value)
-		mock_add.assert_called_with(level, key, value)
+		self.assertEqual(person.id, id)
+		self.assertEqual(person.given_name, '')
+		self.assertEqual(person.last_name, '')
+		self.assertEqual(person.sex, '')
+		self.assertEqual(person.birth_date, '')
+		self.assertEqual(person.birth_place, '')
+		self.assertEqual(person.death_date, '')
+		self.assertEqual(person.death_place, '')
 
 	##########################################
-	# Person.addPersonName
+	# Person.setName
 	##########################################
 
-	@patch.object(Person, 'splitName')
-	@patch("src.attribute_node.AttributeNode.addChildAttribute")
-	def test_add_person_name_001(self, mock_add, mock_split):
-		# Mock split function
-		first_name = 'First Name'
+	def test_set_name_001(self):
+		# Setup name
+		given_name = 'Given Name'
 		last_name = 'Last Name'
-		mock_split.return_value = (first_name, last_name)
+		full_name = "{} /{}/".format(given_name, last_name)
 
 		# Mock person
-		mock_person = Mock()
-
-		# Setup attribute
-		level = 1
-		key = 'NAME'
-		value = "{} /{}/".format(first_name, last_name)
-
-		# Setup person
-		person_obj = Person.__new__(Person)
-		person_obj.addName(level, key, value)
+		person = Person.__new__(Person)
+		person.given_name = ''
+		person.splitName = MagicMock(return_value=[given_name, last_name])
+		person.setGivenName = MagicMock()
 
 		# Actual test
-		calls = [
-			call(1, 'NAME', ""),
-			call(2, 'GIVN', first_name),
-			call(2, 'LAST', last_name)
-		]
-		mock_add.assert_has_calls(calls)
-		self.assertEqual(mock_add.call_count, len(calls))
+		person.setName(full_name)
+		person.splitName.assert_called_with(full_name)
+		person.setGivenName.assert_called_with(given_name)
+		self.assertEqual(person.last_name, last_name)
 
-	@patch.object(Person, 'splitName')
-	@patch("src.attribute_node.AttributeNode.addChildAttribute")
-	def test_add_person_name_002(self, mock_add, mock_split):
-		# Mock split function
-		first_name = ''
+	def test_set_name_002(self):
+		# Setup name
+		given_name = 'Given Name'
 		last_name = 'Last Name'
-		mock_split.return_value = (first_name, last_name)
+		full_name = "{} /{}/".format(given_name, last_name)
 
 		# Mock person
-		mock_person = Mock()
-
-		# Setup attribute
-		level = 1
-		key = 'NAME'
-		value = "{} /{}/".format(first_name, last_name)
-
-		# Setup person
-		person_obj = Person.__new__(Person)
-		person_obj.addName(level, key, value)
+		person = Person.__new__(Person)
+		person.given_name = 'A name'
+		person.splitName = MagicMock(return_value=[given_name, last_name])
+		person.setGivenName = MagicMock()
 
 		# Actual test
-		calls = [
-			call(1, 'NAME', ""),
-			call(2, 'GIVN', first_name),
-			call(2, 'LAST', last_name)
-		]
-		mock_add.assert_has_calls(calls)
-		self.assertEqual(mock_add.call_count, len(calls))
+		person.setName(full_name)
+		person.splitName.assert_called_with(full_name)
+		person.setGivenName.assert_called_with(given_name)
+		self.assertEqual(person.last_name, last_name)
 
-	@patch.object(Person, 'splitName')
-	@patch("src.attribute_node.AttributeNode.addChildAttribute")
-	def test_add_person_name_003(self, mock_add, mock_split):
-		# Mock split function
-		first_name = 'First Name'
+	def test_set_name_003(self):
+		# Setup name
+		given_name = ''
 		last_name = ''
-		mock_split.return_value = (first_name, last_name)
+		full_name = "{} /{}/".format(given_name, last_name)
 
 		# Mock person
-		mock_person = Mock()
-
-		# Setup attribute
-		level = 1
-		key = 'NAME'
-		value = "{} /{}/".format(first_name, last_name)
-
-		# Setup person
-		person_obj = Person.__new__(Person)
-		person_obj.addName(level, key, value)
+		person = Person.__new__(Person)
+		person.given_name = ''
+		person.splitName = MagicMock(return_value=[given_name, last_name])
+		person.setGivenName = MagicMock()
 
 		# Actual test
-		calls = [
-			call(1, 'NAME', ""),
-			call(2, 'GIVN', first_name),
-			call(2, 'LAST', last_name)
-		]
-		mock_add.assert_has_calls(calls)
-		self.assertEqual(mock_add.call_count, len(calls))
+		person.setName(full_name)
+		person.splitName.assert_called_with(full_name)
+		person.setGivenName.assert_called_with(given_name)
+		self.assertEqual(person.last_name, last_name)
+
+	##########################################
+	# Person.setGivenName
+	##########################################
+
+	def test_set_given_name_001(self):
+		# Setup name
+		old_given_name = ''
+		new_given_name = ''
+
+		# Mock person
+		person = Person.__new__(Person)
+		person.given_name = old_given_name
+
+		# Actual test
+		person.setGivenName(new_given_name)
+		self.assertEqual(person.given_name, new_given_name)
+
+	def test_set_given_name_002(self):
+		# Setup name
+		old_given_name = ''
+		new_given_name = 'New Given Name'
+
+		# Mock person
+		person = Person.__new__(Person)
+		person.given_name = old_given_name
+
+		# Actual test
+		person.setGivenName(new_given_name)
+		self.assertEqual(person.given_name, new_given_name)
+
+	def test_set_given_name_003(self):
+		# Setup name
+		old_given_name = 'Existing Given Name'
+		new_given_name = ''
+
+		# Mock person
+		person = Person.__new__(Person)
+		person.given_name = old_given_name
+
+		# Actual test
+		person.setGivenName(new_given_name)
+		self.assertEqual(person.given_name, old_given_name)
+
+	def test_set_given_name_004(self):
+		# Setup name
+		old_given_name = 'Existing Given Name'
+		new_given_name = 'New Given Name'
+
+		# Mock person
+		person = Person.__new__(Person)
+		person.given_name = old_given_name
+
+		# Actual test
+		person.setGivenName(new_given_name)
+		self.assertEqual(person.given_name, old_given_name)
+
+	##########################################
+	# Person.setSex
+	##########################################
+
+	def test_set_sex(self):
+		person = Person.__new__(Person)
+		sex = 'M'
+		person.setSex(sex)
+		self.assertEqual(person.sex, sex)
+
+	##########################################
+	# Person.setBirthDate
+	##########################################
+
+	def test_set_birth_date(self):
+		person = Person.__new__(Person)
+		date = '19 DEC 1800'
+		person.setBirthDate(date)
+		self.assertEqual(person.birth_date, date)
+
+	##########################################
+	# Person.setBirthPlace
+	##########################################
+
+	def test_set_birth_place(self):
+		person = Person.__new__(Person)
+		place = 'Town, City, Country'
+		person.setBirthPlace(place)
+		self.assertEqual(person.birth_place, place)
+
+	##########################################
+	# Person.setDeathDate
+	##########################################
+
+	def test_set_death_date(self):
+		person = Person.__new__(Person)
+		date = '19 DEC 1800'
+		person.setDeadthDate(date)
+		self.assertEqual(person.death_date, date)
+
+	##########################################
+	# Person.setDeathPlace
+	##########################################
+
+	def test_set_death_place(self):
+		person = Person.__new__(Person)
+		place = 'Town, City, Country'
+		person.setDeadthPlace(place)
+		self.assertEqual(person.death_place, place)
 
 	##########################################
 	# Person.splitName
