@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock, Mock
 from ..union import Union
 
 
@@ -6,54 +7,64 @@ class TestUnion(unittest.TestCase):
 
 	def test_init_001(self):
 		id = "@F1234567@"
-		node = Union(id)
+		union = Union(id)
 
-		self.assertEqual(node.id, id)
-		self.assertEqual(node.spouse1, None)
-		self.assertEqual(node.spouse2, None)
-		self.assertEqual(node.children, list())
-		self.assertEqual(node.date, None)
-		self.assertEqual(node.place, None)
+		self.assertEqual(union.id, id)
+		self.assertEqual(union.spouse1, None)
+		self.assertEqual(union.spouse2, None)
+		self.assertEqual(union.children, list())
+		self.assertEqual(union.date, None)
+		self.assertEqual(union.place, None)
 
 	def test_set_spouse1(self):
-		node = Union.__new__(Union)
-		spouse = 'Husband id'
-		node.setSpouse1(spouse)
-		self.assertEqual(node.spouse1, spouse)
+		spouse = Mock()
+		spouse.addUnion = MagicMock()
+
+		union = Union.__new__(Union)
+		union.setSpouse1(spouse)
+		self.assertEqual(union.spouse1, spouse)
+		spouse.addUnion.assert_called_with(union)
 
 	def test_set_spouse2(self):
-		node = Union.__new__(Union)
-		spouse = 'Wife id'
-		node.setSpouse2(spouse)
-		self.assertEqual(node.spouse2, spouse)
+		spouse = Mock()
+		spouse.addUnion = MagicMock()
+
+		union = Union.__new__(Union)
+		union.setSpouse2(spouse)
+		self.assertEqual(union.spouse2, spouse)
+		spouse.addUnion.assert_called_with(union)
 
 	def test_add_child_001(self):
-		node = Union.__new__(Union)
-		node.children = list()
+		child = Mock()
+		child.setParents = MagicMock()
 
-		child = 'Child 1'
-		node.addChild(child)
-		self.assertEqual(node.children, [child])
+		union = Union.__new__(Union)
+		union.children = list()
+		union.addChild(child)
+		self.assertEqual(union.children, [child])
+		child.setParents.assert_called_with(union)
 
 	def test_add_child_002(self):
-		node = Union.__new__(Union)
-		child1 = 'Child 1'
-		child2 = 'Child 2'
-		child3 = 'Child 3'
-		node.children = [child1, child2]
+		child1 = Mock()
+		child2 = Mock()
+		child3 = Mock()
+		child3.setParents = MagicMock()
 
-		node.addChild(child3)
-		self.assertEqual(node.children, [child1, child2, child3])
+		union = Union.__new__(Union)
+		union.children = [child1, child2]
+		union.addChild(child3)
+		self.assertEqual(union.children, [child1, child2, child3])
+		child3.setParents.assert_called_with(union)
 
 	def test_set_date(self):
-		node = Union.__new__(Union)
+		union = Union.__new__(Union)
 		date = '28 FEB 1800'
-		node.setDate(date)
-		self.assertEqual(node.date, date)
+		union.setDate(date)
+		self.assertEqual(union.date, date)
 
 	def test_set_place(self):
-		node = Union.__new__(Union)
+		union = Union.__new__(Union)
 		place = 'Somewhere'
-		node.setPlace(place)
-		self.assertEqual(node.place, place)
+		union.setPlace(place)
+		self.assertEqual(union.place, place)
 

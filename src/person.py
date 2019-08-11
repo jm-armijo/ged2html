@@ -10,9 +10,11 @@ class Person():
 		self.birth_place = ''
 		self.death_date = ''
 		self.death_place = ''
+		self.parents = None
+		self.unions = list()
 
 	def setName(self, name):
-		name_parts = self.splitName(name)
+		name_parts = self._splitName(name)
 		self.setGivenName(name_parts[0] )
 		self.last_name = name_parts[1]
 
@@ -35,7 +37,13 @@ class Person():
 	def setDeadthPlace(self, place):
 		self.death_place = place
 
-	def splitName(self, name):
+	def setParents(self, parents):
+		self.parents = parents
+
+	def addUnion(self, union):
+		self.unions.append(union)
+
+	def _splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
 		if match:
 			return (match.group(1).strip(), match.group(2).strip())

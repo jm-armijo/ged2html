@@ -8,12 +8,15 @@ class Union():
 		self.place = None
 
 	def setSpouse1(self, spouse):
+		spouse.addUnion(self)
 		self.spouse1 = spouse
 
 	def setSpouse2(self, spouse):
+		spouse.addUnion(self)
 		self.spouse2 = spouse
 
 	def addChild(self, child):
+		child.setParents(self)
 		self.children.append(child)
 
 	def setDate(self, date):

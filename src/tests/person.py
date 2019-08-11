@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 from ..person import Person
 
 class TestPerson(unittest.TestCase):
@@ -18,6 +18,8 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.birth_place, '')
 		self.assertEqual(person.death_date, '')
 		self.assertEqual(person.death_place, '')
+		self.parents = None
+		self.assertEqual(person.unions, list())
 
 	##########################################
 	# Person.setName
@@ -32,12 +34,12 @@ class TestPerson(unittest.TestCase):
 		# Mock person
 		person = Person.__new__(Person)
 		person.given_name = ''
-		person.splitName = MagicMock(return_value=[given_name, last_name])
+		person._splitName = MagicMock(return_value=[given_name, last_name])
 		person.setGivenName = MagicMock()
 
 		# Actual test
 		person.setName(full_name)
-		person.splitName.assert_called_with(full_name)
+		person._splitName.assert_called_with(full_name)
 		person.setGivenName.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
@@ -50,12 +52,12 @@ class TestPerson(unittest.TestCase):
 		# Mock person
 		person = Person.__new__(Person)
 		person.given_name = 'A name'
-		person.splitName = MagicMock(return_value=[given_name, last_name])
+		person._splitName = MagicMock(return_value=[given_name, last_name])
 		person.setGivenName = MagicMock()
 
 		# Actual test
 		person.setName(full_name)
-		person.splitName.assert_called_with(full_name)
+		person._splitName.assert_called_with(full_name)
 		person.setGivenName.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
@@ -68,12 +70,12 @@ class TestPerson(unittest.TestCase):
 		# Mock person
 		person = Person.__new__(Person)
 		person.given_name = ''
-		person.splitName = MagicMock(return_value=[given_name, last_name])
+		person._splitName = MagicMock(return_value=[given_name, last_name])
 		person.setGivenName = MagicMock()
 
 		# Actual test
 		person.setName(full_name)
-		person.splitName.assert_called_with(full_name)
+		person._splitName.assert_called_with(full_name)
 		person.setGivenName.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
@@ -184,42 +186,71 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.death_place, place)
 
 	##########################################
-	# Person.splitName
+	# Person.setParents
+	##########################################
+
+	def test_set_parent_union_001(self):
+		person = Person.__new__(Person)
+		person.parents = None
+		parents = Mock()
+		person.setParents(parents)
+		self.assertEqual(person.parents, parents)
+
+	##########################################
+	# Person.addUnion
+	##########################################
+
+	def test_add_union_001(self):
+		person = Person.__new__(Person)
+		person.unions = list()
+		union = Mock()
+		person.addUnion(union)
+		self.assertEqual(person.unions[0], union)
+
+	def test_add_union_002(self):
+		person = Person.__new__(Person)
+		person.unions = [Mock()]
+		union = Mock()
+		person.addUnion(union)
+		self.assertEqual(person.unions[1], union)
+
+	##########################################
+	# Person._splitName
 	##########################################
 
 	def test_split_name_001(self):
 		parser_obj = Person.__new__(Person)
 		full_name = 'First Name /Last Name/'
 
-		split_name = parser_obj.splitName(full_name)
+		split_name = parser_obj._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	def test_split_name_002(self):
 		parser_obj = Person.__new__(Person)
 		full_name = '     First Name    /    Last Name   /   '
 
-		split_name = parser_obj.splitName(full_name)
+		split_name = parser_obj._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	def test_split_name_003(self):
 		parser_obj = Person.__new__(Person)
 		full_name = '/Last Name/'
 
-		split_name = parser_obj.splitName(full_name)
+		split_name = parser_obj._splitName(full_name)
 		self.assertEqual(split_name, ('', 'Last Name'))
 
 	def test_split_name_004(self):
 		parser_obj = Person.__new__(Person)
 		full_name = 'First Name //'
 
-		split_name = parser_obj.splitName(full_name)
+		split_name = parser_obj._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', ''))
 
 	def test_split_name_005(self):
 		parser_obj = Person.__new__(Person)
 		full_name = 'First Name /Last Name'
 
-		split_name = parser_obj.splitName(full_name)
+		split_name = parser_obj._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 if __name__ == '__main__':
