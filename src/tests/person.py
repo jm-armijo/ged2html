@@ -18,7 +18,7 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.birth_place, '')
 		self.assertEqual(person.death_date, '')
 		self.assertEqual(person.death_place, '')
-		self.parents = None
+		self.assertEqual(person.parents, None)
 		self.assertEqual(person.unions, list())
 
 	##########################################
@@ -219,39 +219,58 @@ class TestPerson(unittest.TestCase):
 	##########################################
 
 	def test_split_name_001(self):
-		parser_obj = Person.__new__(Person)
+		person = Person.__new__(Person)
 		full_name = 'First Name /Last Name/'
 
-		split_name = parser_obj._splitName(full_name)
+		split_name = person._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	def test_split_name_002(self):
-		parser_obj = Person.__new__(Person)
+		person = Person.__new__(Person)
 		full_name = '     First Name    /    Last Name   /   '
 
-		split_name = parser_obj._splitName(full_name)
+		split_name = person._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	def test_split_name_003(self):
-		parser_obj = Person.__new__(Person)
+		person = Person.__new__(Person)
 		full_name = '/Last Name/'
 
-		split_name = parser_obj._splitName(full_name)
+		split_name = person._splitName(full_name)
 		self.assertEqual(split_name, ('', 'Last Name'))
 
 	def test_split_name_004(self):
-		parser_obj = Person.__new__(Person)
+		person = Person.__new__(Person)
 		full_name = 'First Name //'
 
-		split_name = parser_obj._splitName(full_name)
+		split_name = person._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', ''))
 
 	def test_split_name_005(self):
-		parser_obj = Person.__new__(Person)
+		person = Person.__new__(Person)
 		full_name = 'First Name /Last Name'
 
-		split_name = parser_obj._splitName(full_name)
+		split_name = person._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
+
+	##########################################
+	# Person.__str__
+	##########################################
+
+	def test_str_001(self):
+		person = Person.__new__(Person)
+		person.id = "@I1234567@"
+		person.given_name = 'First Name'
+		person.last_name = 'Last Name'
+		person.sex = ''
+		person.birth_date = ''
+		person.birth_place = ''
+		person.death_date = ''
+		person.death_place = ''
+		person.parents = None
+		person.unions = list()
+
+		self.assertEqual(str(person), "[First Name Last Name]")
 
 if __name__ == '__main__':
 	unittest.main()

@@ -51,4 +51,4 @@ class Person():
 			print("raise error!")
 
 	def __str__(self):
-		return "{} {} ({} - {})".format(self.given_name, self.last_name, self.birth_date, self.death_date)
+		return "[{} {}]".format(self.given_name, self.last_name)

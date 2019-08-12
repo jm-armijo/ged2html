@@ -26,7 +26,5 @@ class Union():
 		self.place = place
 
 	def __str__(self):
-		to_str = "{} & {} ({}, {}) --> ".format(self.spouse1, self.spouse2, self.place, self.date)
-		for child in self.children:
-			to_str += "{} ".format(child)
+		to_str = "{{ {} & {} }}".format(self.spouse1, self.spouse2)
 		return to_str

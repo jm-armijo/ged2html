@@ -68,3 +68,32 @@ class TestUnion(unittest.TestCase):
 		union.setPlace(place)
 		self.assertEqual(union.place, place)
 
+	def test_str_001(self):
+		union = Union.__new__(Union)
+		union.id = "@F1234567@"
+		union.children = list()
+		union.date = None
+		union.place = None
+
+		union.spouse1 = Mock()
+		union.spouse2 = Mock()
+		union.spouse1.__str__ = MagicMock(return_value = '[Name Spouse 1]')
+		union.spouse2.__str__ = MagicMock(return_value = '[Name Spouse 2]')
+
+		self.assertEqual(str(union), "{ [Name Spouse 1] & [Name Spouse 2] }")
+
+	def test_str_002(self):
+		union = Union.__new__(Union)
+		union.id = "@F1234567@"
+		union.children = list()
+		union.date = None
+		union.place = None
+		union.spouse1 = None
+
+		union.spouse2 = Mock()
+		union.spouse2.__str__ = MagicMock(return_value = '[Name Spouse 2]')
+
+		self.assertEqual(str(union), "{ None & [Name Spouse 2] }")
+
+if __name__ == '__main__':
+	unittest.main()
