@@ -1,6 +1,5 @@
 import unittest
-from unittest.mock import patch
-from unittest.mock import Mock, MagicMock, call, ANY
+from unittest.mock import Mock, MagicMock, call, ANY, patch
 from ..parser import Parser
 
 class TestParser(unittest.TestCase):

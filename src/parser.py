@@ -1,5 +1,6 @@
 from src.person import Person
 from src.union import Union
+from src.tree import Tree
 
 class Parser():
 	def __init__(self):
@@ -7,6 +8,7 @@ class Parser():
 		self.current_line = None
 		self.state = 'IDLE'
 		self.last_person = None
+		self.tree = Tree()
 
 		self.last_key_per_level = dict()
 		self.unions = list()
@@ -114,3 +116,18 @@ class Parser():
 			self.people[id] = Person(id)
 
 		return self.people[id]
+
+	def find(self):
+		level = 0
+		person = next(iter(self.people.values()))
+		self.addToTree(level, person)
+		print(self.tree)
+
+	def addToTree(self, level, person):
+		if len(person.unions) == 0:
+			self.tree.add(level, person)
+		else:
+			for union in person.unions:
+				self.tree.add(level, union)
+				for child in union.children:
+					self.addToTree(level+1, child)
