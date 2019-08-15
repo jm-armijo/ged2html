@@ -1,26 +1,37 @@
+from src.line import Line
 from src.person import Person
-from src.union import Union
 from src.tree import Tree
+from src.union import Union
 
 class Parser():
 	def __init__(self):
 		self.people = dict()
-		self.current_line = None
-		self.state = 'IDLE'
-		self.last_person = None
-		self.tree = Tree()
-
-		self.last_key_per_level = dict()
 		self.unions = list()
+		self.tree = None
+
+		self.state = 'IDLE'
+		self.current_line = None
+		self.last_person = None
+		self.last_key_per_level = dict()
+
+	def makeTree(self, file_name):
+		lines = self._readFile(file_name)
+		self.parseLines(lines)
+		if len(self.people) > 0:
+			return Tree(self.people)
+		else:
+			return None
+
+	# Reads the file into a list of lines
+	def _readFile(self, file_name):
+		with open(file_name,mode='r') as tree_file:
+			return map(Line, tree_file.readlines())
 
 	def parseLines(self, lines):
 		for self.current_line in lines:
 			self.last_key_per_level[self.current_line.level] = self.current_line.attribute
 			self.state = self.getCurrentState()
 			self.parseCurrentLine()
-
-		return self.people
-
 
 	'''
 	getCurrentState: implements the state machine below
@@ -117,17 +128,3 @@ class Parser():
 
 		return self.people[id]
 
-	def find(self):
-		level = 0
-		person = next(iter(self.people.values()))
-		self.addToTree(level, person)
-		print(self.tree)
-
-	def addToTree(self, level, person):
-		if len(person.unions) == 0:
-			self.tree.add(level, person)
-		else:
-			for union in person.unions:
-				self.tree.add(level, union)
-				for child in union.children:
-					self.addToTree(level+1, child)

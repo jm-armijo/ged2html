@@ -15,24 +15,68 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(parser.state, 'IDLE')
 
 	##########################################
+	# Parser.makeTree
+	##########################################
+
+	def test_make_tree_001(self):
+		# Setup data
+		file_name = 'file.ged'
+		tree = None
+		lines = Mock()
+
+		# Setup Parser
+		parser = Parser.__new__(Parser)
+		parser._readFile = MagicMock(return_value = lines)
+		parser.parseLines = MagicMock()
+		parser.people = dict()
+
+		# Actual test
+		returned_tree = parser.makeTree(file_name)
+		parser._readFile.assert_called_once_with(file_name)
+		parser.parseLines.assert_called_once_with(lines)
+		self.assertEqual(returned_tree, tree)
+
+	@patch("src.tree.Tree.__new__")
+	def test_make_tree_002(self, mock_tree):
+		# Setup data
+		file_name = 'file.ged'
+		lines = Mock()
+		tree = Mock()
+		mock_tree.return_value = tree
+
+		# Setup people
+		people = {'@I000123':Mock()}
+
+		# Setup Parser
+		parser = Parser.__new__(Parser)
+		parser._readFile = MagicMock(return_value = lines)
+		parser.parseLines = MagicMock()
+		parser.people = people
+
+		# Actual test
+		returned_tree = parser.makeTree(file_name)
+		parser._readFile.assert_called_once_with(file_name)
+		parser.parseLines.assert_called_once_with(lines)
+		self.assertEqual(returned_tree, tree)
+
+	##########################################
 	# Parser.parse_lines
 	##########################################
 
-	@patch.object(Parser, 'getCurrentState')
-	@patch.object(Parser, 'parseCurrentLine')
-	def test_parse_lines_001(self, mock_parse, mock_get):
+	def test_parse_lines_001(self):
 		# Setup
 		lines = [Mock(), Mock(), Mock()]
 		parser = Parser.__new__(Parser)
 		parser.people = dict()
 		parser.unions = dict()
 		parser.last_key_per_level = dict()
+		parser.getCurrentState = MagicMock()
+		parser.parseCurrentLine = MagicMock()
 
 		# Actual test
-		people = parser.parseLines(lines)
-		self.assertEqual(mock_get.call_count, len(lines))
-		self.assertEqual(mock_parse.call_count, len(lines))
-		self.assertEqual(people, parser.people)
+		parser.parseLines(lines)
+		self.assertEqual(parser.getCurrentState.call_count, len(lines))
+		self.assertEqual(parser.parseCurrentLine.call_count, len(lines))
 
 	##########################################
 	# Parser.get_current_state
