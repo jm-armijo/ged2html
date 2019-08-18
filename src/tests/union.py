@@ -68,6 +68,95 @@ class TestUnion(unittest.TestCase):
 		union.setPlace(place)
 		self.assertEqual(union.place, place)
 
+	##########################################
+	# Union.getChildren
+	##########################################
+
+	def test_get_children_001(self):
+		children = Mock()
+		union = Union.__new__(Union)
+		union.children = children
+
+		returned_children = union.getChildren()
+		self.assertEqual(returned_children, children)
+
+	def test_get_children_002(self):
+		union = Union.__new__(Union)
+		union.spouse1 = None
+		union.spouse2 = None
+
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, [])
+
+	def test_get_children_003(self):
+		# Setup parents
+		parents1 = [Mock()]
+		parents2 = []
+
+		# Setup spouses
+		spouse1 = Mock()
+		spouse1.getParents = MagicMock(return_value = parents1)
+
+		spouse2 = Mock()
+		spouse2.getParents = MagicMock(return_value = parents2)
+
+		# Setup union of spouses
+		union = Union.__new__(Union)
+		union.spouse1 = spouse1
+		union.spouse2 = spouse2
+
+		# Test
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents1)
+
+	def test_get_children_003(self):
+		# Setup parents
+		parents1 = []
+		parents2 = [Mock()]
+
+		# Setup spouses
+		spouse1 = Mock()
+		spouse1.getParents = MagicMock(return_value = parents1)
+
+		spouse2 = Mock()
+		spouse2.getParents = MagicMock(return_value = parents2)
+
+		# Setup union of spouses
+		union = Union.__new__(Union)
+		union.spouse1 = spouse1
+		union.spouse2 = spouse2
+
+		# Test
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents2)
+
+	def test_get_children_004(self):
+		# Setup parents
+		parents1 = [Mock()]
+		parents2 = [Mock()]
+
+		# Setup spouses
+		spouse1 = Mock()
+		spouse1.getParents = MagicMock(return_value = parents1)
+
+		spouse2 = Mock()
+		spouse2.getParents = MagicMock(return_value = parents2)
+
+		# Setup union of spouses
+		union = Union.__new__(Union)
+		union.spouse1 = spouse1
+		union.spouse2 = spouse2
+
+		# Test
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents1 + parents2)
+
+
+
+	##########################################
+	# Union.__str__
+	##########################################
+
 	def test_str_001(self):
 		union = Union.__new__(Union)
 		union.id = "@F1234567@"

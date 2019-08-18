@@ -254,6 +254,61 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	##########################################
+	# Person.getChildren
+	##########################################
+
+	def test_get_children_001(self):
+		person = Person.__new__(Person)
+		person.unions = list()
+
+		returned_children = person.getChildren()
+		self.assertEqual(returned_children, list())
+
+	def test_get_children_002(self):
+		children = [Mock(), Mock()]
+		union = Mock()
+		union.getChildren = MagicMock(return_value = children)
+
+		person = Person.__new__(Person)
+		person.unions = [union]
+
+		returned_children = person.getChildren()
+		self.assertEqual(returned_children, children)
+
+	def test_get_children_003(self):
+		children1 = [Mock(), Mock()]
+		children2 = [Mock(), Mock()]
+		union1 = Mock()
+		union2 = Mock()
+		union1.getChildren = MagicMock(return_value = children1)
+		union2.getChildren = MagicMock(return_value = children2)
+
+		person = Person.__new__(Person)
+		person.unions = [union1, union2]
+
+		returned_children = person.getChildren()
+		self.assertEqual(returned_children, children1 + children2)
+
+	##########################################
+	# Person.getParents
+	##########################################
+
+	def test_get_parents_001(self):
+		person = Person.__new__(Person)
+		person.parents = None
+
+		returned_parents = person.getParents()
+		self.assertEqual(returned_parents, list())
+
+	def test_get_parents_002(self):
+		parents = Mock()
+		person = Person.__new__(Person)
+		person.parents = parents
+
+		returned_parents = person.getParents()
+		self.assertEqual(returned_parents, [parents])
+
+	##########################################
 	# Person.__str__
 	##########################################
 

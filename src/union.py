@@ -1,4 +1,6 @@
-class Union():
+from src.node import Node
+
+class Union(Node):
 	def __init__(self, id):
 		self.id = id
 		self.spouse1 = None
@@ -25,6 +27,26 @@ class Union():
 	def setPlace(self, place):
 		self.place = place
 
+	def getChildren(self):
+		return self.children
+
+	def getParents(self):
+		parents = list()
+		if self.spouse1 is not None:
+			parents += self.spouse1.getParents()
+		if self.spouse2 is not None:
+			parents += self.spouse2.getParents()
+
+		return parents
+
+	def getUnions(self):
+		parents = list()
+		if self.spouse1 is not None:
+			parents += self.spouse1.getUnions()
+		if self.spouse2 is not None:
+			parents += self.spouse2.getUnions()
+
+		return parents
 	def __str__(self):
 		to_str = "{{ {} & {} }}".format(self.spouse1, self.spouse2)
 		return to_str

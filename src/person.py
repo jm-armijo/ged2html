@@ -1,6 +1,7 @@
+from src.node import Node
 import re
 
-class Person():
+class Person(Node):
 	def __init__(self, id):
 		self.id = id
 		self.given_name = ''
@@ -42,6 +43,21 @@ class Person():
 
 	def addUnion(self, union):
 		self.unions.append(union)
+
+	def getChildren(self):
+		children = list()
+		for union in self.unions:
+			children += union.getChildren()
+		return children
+
+	def getParents(self):
+		if self.parents is None:
+			return list()
+		else:
+			return [self.parents]
+
+	def getUnions(self):
+		return self.unions
 
 	def _splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
