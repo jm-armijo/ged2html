@@ -5,6 +5,10 @@ from ..union import Union
 
 class TestUnion(unittest.TestCase):
 
+	##########################################
+	# Union.__init__
+	##########################################
+
 	def test_init_001(self):
 		id = "@F1234567@"
 		union = Union(id)
@@ -16,6 +20,10 @@ class TestUnion(unittest.TestCase):
 		self.assertEqual(union.date, None)
 		self.assertEqual(union.place, None)
 
+	##########################################
+	# Union.setSpouse1
+	##########################################
+
 	def test_set_spouse1(self):
 		spouse = Mock()
 		spouse.addUnion = MagicMock()
@@ -25,6 +33,10 @@ class TestUnion(unittest.TestCase):
 		self.assertEqual(union.spouse1, spouse)
 		spouse.addUnion.assert_called_with(union)
 
+	##########################################
+	# Union.setSpouse2
+	##########################################
+
 	def test_set_spouse2(self):
 		spouse = Mock()
 		spouse.addUnion = MagicMock()
@@ -33,6 +45,10 @@ class TestUnion(unittest.TestCase):
 		union.setSpouse2(spouse)
 		self.assertEqual(union.spouse2, spouse)
 		spouse.addUnion.assert_called_with(union)
+
+	##########################################
+	# Union.addChild
+	##########################################
 
 	def test_add_child_001(self):
 		child = Mock()
@@ -56,11 +72,19 @@ class TestUnion(unittest.TestCase):
 		self.assertEqual(union.children, [child1, child2, child3])
 		child3.setParents.assert_called_with(union)
 
+	##########################################
+	# Union.setDate
+	##########################################
+
 	def test_set_date(self):
 		union = Union.__new__(Union)
 		date = '28 FEB 1800'
 		union.setDate(date)
 		self.assertEqual(union.date, date)
+
+	##########################################
+	# Union.setPlace
+	##########################################
 
 	def test_set_place(self):
 		union = Union.__new__(Union)
@@ -151,7 +175,101 @@ class TestUnion(unittest.TestCase):
 		returned_parents = union.getParents()
 		self.assertEqual(returned_parents, parents1 + parents2)
 
+	##########################################
+	# Union.getParents
+	##########################################
 
+	def test_get_parents_001(self):
+		parents = list()
+		union = Union.__new__(Union)
+		union.spouse1 = None
+		union.spouse2 = None
+
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents)
+
+	def test_get_parents_002(self):
+		parents_spouse2 = [Mock()]
+
+		union = Union.__new__(Union)
+		union.spouse1 = None
+		union.spouse2 = Mock()
+		union.spouse2.getParents = MagicMock(return_value = parents_spouse2)
+
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents_spouse2)
+
+	def test_get_parents_003(self):
+		parents_spouse1 = [Mock()]
+
+		union = Union.__new__(Union)
+		union.spouse1 = Mock()
+		union.spouse1.getParents = MagicMock(return_value = parents_spouse1)
+		union.spouse2 = None
+
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents_spouse1)
+
+	def test_get_parents_004(self):
+		parents_spouse1 = [Mock()]
+		parents_spouse2 = [Mock()]
+
+		union = Union.__new__(Union)
+		union.spouse1 = Mock()
+		union.spouse1.getParents = MagicMock(return_value = parents_spouse1)
+		union.spouse2 = Mock()
+		union.spouse2.getParents = MagicMock(return_value = parents_spouse2)
+
+		returned_parents = union.getParents()
+		self.assertEqual(returned_parents, parents_spouse1 + parents_spouse2)
+
+	##########################################
+	# Union.getUnions
+	##########################################
+
+	def test_get_unions_001(self):
+		unions = list()
+		union = Union.__new__(Union)
+		union.spouse1 = None
+		union.spouse2 = None
+
+		returned_unions = union.getUnions()
+		self.assertEqual(returned_unions, unions)
+
+	def test_get_unions_002(self):
+		unions_spouse2 = [Mock()]
+
+		union = Union.__new__(Union)
+		union.spouse1 = None
+		union.spouse2 = Mock()
+		union.spouse2.getUnions = MagicMock(return_value = unions_spouse2)
+
+		returned_unions = union.getUnions()
+		self.assertEqual(returned_unions, unions_spouse2)
+
+	def test_get_unions_003(self):
+		unions_spouse1 = [Mock()]
+
+		union = Union.__new__(Union)
+		union.spouse1 = Mock()
+		union.spouse1.getUnions = MagicMock(return_value = unions_spouse1)
+		union.spouse2 = None
+
+		returned_unions = union.getUnions()
+		self.assertEqual(returned_unions, unions_spouse1)
+
+	def test_get_unions_004(self):
+		unions_spouse1 = [Mock()]
+		unions_spouse2 = [Mock()]
+
+		union = Union.__new__(Union)
+		union.spouse1 = Mock()
+		union.spouse1.getUnions = MagicMock(return_value = unions_spouse1)
+		union.spouse2 = Mock()
+		union.spouse2.getUnions = MagicMock(return_value = unions_spouse2)
+
+		returned_unions = union.getUnions()
+		self.assertEqual(returned_unions, unions_spouse1 + unions_spouse2)
 
 	##########################################
 	# Union.__str__
