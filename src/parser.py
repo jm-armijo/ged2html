@@ -102,7 +102,8 @@ class Parser():
 			person.setBirthPlace(value)
 
 	def createUnion(self):
-		self.unions.append(Union(self.current_line.attribute))
+		union = Union(self.current_line.attribute)
+		self.unions.append(union)
 
 	def addUnionData(self):
 		level = self.current_line.level

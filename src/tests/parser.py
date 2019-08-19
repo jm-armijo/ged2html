@@ -261,7 +261,7 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(new_state, 'FAM_DATA')
 
 	##########################################
-	# Parser.get_current_line
+	# Parser.parse_current_line
 	##########################################
 
 	def test_parse_current_line_001(self):
@@ -499,31 +499,9 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(parser.people[person3.id], person3)
 		self.assertEqual(parser.people[dup_id], person2)
 
-	###########################################
-	## Parser.getPersonOrCreate
-	###########################################
-
-	@patch("src.person.Person.__new__")
-	def test_get_person_or_create_001(self, mock_person):
-		id = '@I001234@'
-		parser = Parser.__new__(Parser)
-		parser.people = dict()
-
-		parser.getPersonOrCreate(id)
-		mock_person.assert_called_with(ANY, id)
-
-	@patch("src.person.Person.__new__")
-	def test_get_person_or_create_002(self, mock_person):
-		id = '@I001234@'
-		parser = Parser.__new__(Parser)
-		parser.people = {id: Mock()}
-
-		parser.getPersonOrCreate(id)
-		mock_person.assert_not_called()
-
-	###########################################
-	## Parser.addPersonData
-	###########################################
+	##########################################
+	# Parser.addPersonData
+	##########################################
 
 	def test_add_person_data_001(self):
 		# Setup person
@@ -667,5 +645,303 @@ class TestParser(unittest.TestCase):
 		person.setBirthDate= MagicMock()
 		person.setBirthPlace= MagicMock()
 
+	##########################################
+	# Parser.createUnion
+	##########################################
+
+	@patch("src.union.Union.__new__")
+	def test_create_union_001(self, mock_union):
+		union = Mock()
+		mock_union.return_value = union
+
+		attribute = Mock()
+		parser = Parser.__new__(Parser)
+		parser.current_line = Mock()
+		parser.current_line.attribute = attribute
+		parser.unions = list()
+
+		parser.createUnion()
+		mock_union.assert_called_with(ANY, attribute)
+		self.assertEqual(parser.unions, [union])
+
+	@patch("src.union.Union.__new__")
+	def test_create_union_002(self, mock_union):
+		union1 = Mock()
+		union2 = Mock()
+		mock_union.return_value = union2
+
+		attribute = Mock()
+		parser = Parser.__new__(Parser)
+		parser.current_line = Mock()
+		parser.current_line.attribute = attribute
+		parser.unions = [union1]
+
+		parser.createUnion()
+		mock_union.assert_called_with(ANY, attribute)
+		self.assertEqual(parser.unions, [union1, union2])
+
+	##########################################
+	# Parser.addUnionData
+	##########################################
+
+	def test_add_union_data_001(self):
+		attribute = 'HUSB'
+		value = '@I0001@'
+		person = Mock()
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock(return_value = person)
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_called_once_with(value)
+		union1.setSpouse1.assert_called_once_with(person)
+		union1.setSpouse2.assert_not_called()
+		union1.addChild.assert_not_called()
+		union1.setDate.assert_not_called()
+		union1.setPlace.assert_not_called()
+
+	def test_add_union_data_002(self):
+		attribute = 'WIFE'
+		value = '@I0002@'
+		person = Mock()
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock(return_value = person)
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_called_once_with(value)
+		union1.setSpouse1.assert_not_called()
+		union1.setSpouse2.assert_called_once_with(person)
+		union1.addChild.assert_not_called()
+		union1.setDate.assert_not_called()
+		union1.setPlace.assert_not_called()
+
+	def test_add_union_data_003(self):
+		attribute = 'CHIL'
+		value = '@I0003@'
+		person = Mock()
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock(return_value = person)
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_called_once_with(value)
+		union1.setSpouse1.assert_not_called()
+		union1.setSpouse2.assert_not_called()
+		union1.addChild.assert_called_once_with(person)
+		union1.setDate.assert_not_called()
+		union1.setPlace.assert_not_called()
+
+	def test_add_union_data_004(self):
+		attribute = 'DATE'
+		value = '01-02-1900'
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock()
+		parser.last_key_per_level = {0: 'MARR'}
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_not_called()
+		union1.setSpouse1.assert_not_called()
+		union1.setSpouse2.assert_not_called()
+		union1.addChild.assert_not_called()
+		union1.setDate.assert_called_once_with(value)
+		union1.setPlace.assert_not_called()
+
+	def test_add_union_data_005(self):
+		attribute = 'DATE'
+		value = '01-02-1900'
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock()
+		parser.last_key_per_level = {0: 'ANY'}
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_not_called()
+		union1.setSpouse1.assert_not_called()
+		union1.setSpouse2.assert_not_called()
+		union1.addChild.assert_not_called()
+		union1.setDate.assert_not_called()
+		union1.setPlace.assert_not_called()
+
+	def test_add_union_data_006(self):
+		attribute = 'PLAC'
+		value = 'Somewhere'
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock()
+		parser.last_key_per_level = {0: 'MARR'}
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_not_called()
+		union1.setSpouse1.assert_not_called()
+		union1.setSpouse2.assert_not_called()
+		union1.addChild.assert_not_called()
+		union1.setDate.assert_not_called()
+		union1.setPlace.assert_called_once_with(value)
+
+	def test_add_union_data_007(self):
+		attribute = 'PLAC'
+		value = 'Somewhere'
+
+		# Setup line
+		line = Mock()
+		line.level = 1
+		line.attribute = attribute
+		line.data = value
+
+		# Setup parser
+		parser = Parser.__new__(Parser)
+		parser.current_line = line
+		parser.getPersonOrCreate = MagicMock()
+		parser.last_key_per_level = {0: 'ANY'}
+
+		# Setup parser unions
+		union1 = Mock()
+		union1.setSpouse1 = MagicMock()
+		union1.setSpouse2 = MagicMock()
+		union1.addChild = MagicMock()
+		union1.setDate = MagicMock()
+		union1.setPlace = MagicMock()
+		parser.unions = [union1]
+
+		# Actual test
+		parser.addUnionData()
+		parser.getPersonOrCreate.assert_not_called()
+		union1.setSpouse1.assert_not_called()
+		union1.setSpouse2.assert_not_called()
+		union1.addChild.assert_not_called()
+		union1.setDate.assert_not_called()
+		union1.setPlace.assert_not_called()
+
+	##########################################
+	# Parser.getPersonOrCreate
+	##########################################
+
+	@patch("src.person.Person.__new__")
+	def test_get_person_or_create_001(self, mock_person):
+		id = '@I001234@'
+		parser = Parser.__new__(Parser)
+		parser.people = dict()
+
+		parser.getPersonOrCreate(id)
+		mock_person.assert_called_with(ANY, id)
+
+	@patch("src.person.Person.__new__")
+	def test_get_person_or_create_002(self, mock_person):
+		id = '@I001234@'
+		parser = Parser.__new__(Parser)
+		parser.people = {id: Mock()}
+
+		parser.getPersonOrCreate(id)
+		mock_person.assert_not_called()
 if __name__ == '__main__':
 	unittest.main()
