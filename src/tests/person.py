@@ -215,45 +215,6 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.unions[1], union)
 
 	##########################################
-	# Person._splitName
-	##########################################
-
-	def test_split_name_001(self):
-		person = Person.__new__(Person)
-		full_name = 'First Name /Last Name/'
-
-		split_name = person._splitName(full_name)
-		self.assertEqual(split_name, ('First Name', 'Last Name'))
-
-	def test_split_name_002(self):
-		person = Person.__new__(Person)
-		full_name = '     First Name    /    Last Name   /   '
-
-		split_name = person._splitName(full_name)
-		self.assertEqual(split_name, ('First Name', 'Last Name'))
-
-	def test_split_name_003(self):
-		person = Person.__new__(Person)
-		full_name = '/Last Name/'
-
-		split_name = person._splitName(full_name)
-		self.assertEqual(split_name, ('', 'Last Name'))
-
-	def test_split_name_004(self):
-		person = Person.__new__(Person)
-		full_name = 'First Name //'
-
-		split_name = person._splitName(full_name)
-		self.assertEqual(split_name, ('First Name', ''))
-
-	def test_split_name_005(self):
-		person = Person.__new__(Person)
-		full_name = 'First Name /Last Name'
-
-		split_name = person._splitName(full_name)
-		self.assertEqual(split_name, ('First Name', 'Last Name'))
-
-	##########################################
 	# Person.getChildren
 	##########################################
 
@@ -307,6 +268,65 @@ class TestPerson(unittest.TestCase):
 
 		returned_parents = person.getParents()
 		self.assertEqual(returned_parents, [parents])
+
+	##########################################
+	# Person.getUnions
+	##########################################
+
+	def test_get_unions_001(self):
+		unions = []
+		person = Person.__new__(Person)
+		person.unions = unions
+
+		returned_unions = person.getUnions()
+		self.assertEqual(returned_unions, unions)
+
+	def test_get_unions_002(self):
+		unions = [Mock(), Mock()]
+		person = Person.__new__(Person)
+		person.unions = unions
+
+		returned_unions = person.getUnions()
+		self.assertEqual(returned_unions, unions)
+
+	##########################################
+	# Person._splitName
+	##########################################
+
+	def test_split_name_001(self):
+		person = Person.__new__(Person)
+		full_name = 'First Name /Last Name/'
+
+		split_name = person._splitName(full_name)
+		self.assertEqual(split_name, ('First Name', 'Last Name'))
+
+	def test_split_name_002(self):
+		person = Person.__new__(Person)
+		full_name = '     First Name    /    Last Name   /   '
+
+		split_name = person._splitName(full_name)
+		self.assertEqual(split_name, ('First Name', 'Last Name'))
+
+	def test_split_name_003(self):
+		person = Person.__new__(Person)
+		full_name = '/Last Name/'
+
+		split_name = person._splitName(full_name)
+		self.assertEqual(split_name, ('', 'Last Name'))
+
+	def test_split_name_004(self):
+		person = Person.__new__(Person)
+		full_name = 'First Name //'
+
+		split_name = person._splitName(full_name)
+		self.assertEqual(split_name, ('First Name', ''))
+
+	def test_split_name_005(self):
+		person = Person.__new__(Person)
+		full_name = 'First Name /Last Name'
+
+		split_name = person._splitName(full_name)
+		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	##########################################
 	# Person.__str__
