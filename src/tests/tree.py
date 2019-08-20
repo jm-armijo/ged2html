@@ -224,76 +224,104 @@ class TestTree(unittest.TestCase):
 	##########################################
 	# Tree._extendNode
 	##########################################
-
-	# Returns unions of all spouses of a union, and of their spouses
-	# Ex. Given:
-	# u1{ X & J}
-	#   u2{ J & F }
-	#       u3{ F & A }
-	#           u4{ A & H }
-	# Returns: u1, u2, u3
-
 	def test_extend_node_001(self):
-		# Create Person and Union objects
-		personX = Mock()
-		personJ = Mock()
-		personF = Mock()
-		personA = Mock()
-		personH = Mock()
+		# TODO : implement test
+		self.assertTrue(False)
 
-		personX.id = '@I001@'
-		personJ.id = '@I002@'
-		personF.id = '@I003@'
-		personA.id = '@I004@'
-		personH.id = '@I005@'
+	##########################################
+	# Tree._extendPerson
+	##########################################
+	def test_extend_peson_001(self):
+		# TODO : implement test
+		self.assertTrue(False)
 
-		personX.unions = list()
-		personJ.unions = list()
-		personF.unions = list()
-		personA.unions = list()
-		personH.unions = list()
+	##########################################
+	# Tree._extendUnion
+	##########################################
+	def test_extend_union_001(self):
+		# TODO : implement test
+		self.assertTrue(False)
 
-		union1 = Mock()
-		union2 = Mock()
-		union3 = Mock()
-		union4 = Mock()
+	##########################################
+	# Tree._findNotOpenedUnions
+	##########################################
+	def test_find_not_opened_unions_001(self):
+		# TODO : implement test
+		self.assertTrue(False)
 
-		union1.id = '@F0001@'
-		union2.id = '@F0002@'
-		union3.id = '@F0003@'
-		union4.id = '@F0004@'
+	###########################################
+	## Tree._extendNode
+	###########################################
 
-		# Link Union and Person objects
-		union1.spouse1 = personX
-		union1.spouse2 = personJ
-		personX.unions.append(union1)
-		personJ.unions.append(union1)
+	## Returns unions of all spouses of a union, and of their spouses
+	## Ex. Given:
+	## u1{ X & J}
+	##   u2{ J & F }
+	##       u3{ F & A }
+	##           u4{ A & H }
+	## Returns: u1, u2, u3
 
-		union2.spouse1 = personJ
-		union2.spouse2 = personF
-		personJ.unions.append(union2)
-		personF.unions.append(union2)
+	#def test_extend_node_001(self):
+	#	# Create Person and Union objects
+	#	personX = Mock()
+	#	personJ = Mock()
+	#	personF = Mock()
+	#	personA = Mock()
+	#	personH = Mock()
 
-		union3.spouse1 = personF
-		union3.spouse2 = personA
-		personF.unions.append(union3)
-		personA.unions.append(union3)
+	#	personX.id = '@I001@'
+	#	personJ.id = '@I002@'
+	#	personF.id = '@I003@'
+	#	personA.id = '@I004@'
+	#	personH.id = '@I005@'
 
-		union4.spouse1 = personA
-		union4.spouse2 = personH
-		personA.unions.append(union4)
-		personH.unions.append(union4)
+	#	personX.unions = list()
+	#	personJ.unions = list()
+	#	personF.unions = list()
+	#	personA.unions = list()
+	#	personH.unions = list()
 
-		# Setup parser
-		parser = Tree.__new__(Tree)
+	#	union1 = Mock()
+	#	union2 = Mock()
+	#	union3 = Mock()
+	#	union4 = Mock()
 
-		# Actual test
-		unions = parser._extendNode(union3)
-		self.assertEqual(len(unions), 4)
-		self.assertTrue(union1 in unions)
-		self.assertTrue(union2 in unions)
-		self.assertTrue(union3 in unions)
-		self.assertTrue(union3 in unions)
+	#	union1.id = '@F0001@'
+	#	union2.id = '@F0002@'
+	#	union3.id = '@F0003@'
+	#	union4.id = '@F0004@'
+
+	#	# Link Union and Person objects
+	#	union1.spouse1 = personX
+	#	union1.spouse2 = personJ
+	#	personX.unions.append(union1)
+	#	personJ.unions.append(union1)
+
+	#	union2.spouse1 = personJ
+	#	union2.spouse2 = personF
+	#	personJ.unions.append(union2)
+	#	personF.unions.append(union2)
+
+	#	union3.spouse1 = personF
+	#	union3.spouse2 = personA
+	#	personF.unions.append(union3)
+	#	personA.unions.append(union3)
+
+	#	union4.spouse1 = personA
+	#	union4.spouse2 = personH
+	#	personA.unions.append(union4)
+	#	personH.unions.append(union4)
+
+	#	# Setup parser
+	#	parser = Tree.__new__(Tree)
+
+	#	# Actual test
+	#	unions = parser._extendNode(union3)
+	#	self.assertEqual(len(unions), 4)
+	#	self.assertTrue(union1 in unions)
+	#	self.assertTrue(union2 in unions)
+	#	self.assertTrue(union3 in unions)
+	#	self.assertTrue(union3 in unions)
 
 	##########################################
 	# Tree._getLevels

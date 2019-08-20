@@ -59,6 +59,9 @@ class Person(Node):
 	def getUnions(self):
 		return self.unions
 
+	def isSingle(self):
+		return len(self.unions) == 0
+
 	def _splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
 		if match:

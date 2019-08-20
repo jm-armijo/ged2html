@@ -27,11 +27,14 @@ class Tree():
 		for node in nodes:
 			self._addNode(level, node)
 
+	def _openNode(self, node):
+		self.opened.append(node.id)
+
 	def _addNode(self, level, node):
 		if node.id in self.opened:
 			return
 
-		self.opened.append(node.id)
+		self._openNode(node)
 		self._addToTree(level, node)
 		self._extendNodesAndAdd(level+1, node.getChildren())
 		self._extendNodesAndAdd(level-1, node.getParents())
@@ -47,13 +50,20 @@ class Tree():
 
 		return extended
 
-	# TODO : make this return for person and unions
 	def _extendNode(self, node):
 		if isinstance(node, Person):
-			return [node]
+			return self._extendPerson(node)
+		else:
+			return self._extendUnion(node)
 
-		union = node
-		count = 0
+	def _extendPerson(self, person):
+		if person.isSingle():
+			return [person]
+		else:
+			self._openNode(person)
+			return self._extendNodes(person.getUnions())
+
+	def _extendUnion(self, union):
 		opened = list()
 		to_open = deque([union])
 
@@ -62,12 +72,17 @@ class Tree():
 			opened.append(union)
 
 			unions = union.getUnions()
-
-			for union in unions:
-				if union not in opened:
-					to_open.append(union)
+			to_open += self._findNotOpenedUnions(unions, opened)
 
 		return opened
+
+	def _findNotOpenedUnions(self, unions, opened):
+		to_open = deque([])
+		for union in unions:
+			if union not in opened:
+				to_open.append(union)
+		return to_open
+
 
 	'''
 	Gets a Person object to start building the tree.

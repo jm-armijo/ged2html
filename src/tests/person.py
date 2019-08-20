@@ -329,6 +329,13 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	##########################################
+	# Person.isSingle()
+	##########################################
+	def test_is_single_001(self):
+		# TODO : implement test
+		self.assertTrue(False)
+
+	##########################################
 	# Person.__str__
 	##########################################
 
