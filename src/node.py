@@ -2,5 +2,5 @@ class Node():
 	def getChildren(self):
 		return list()
 
-	def getChildren(self):
+	def getParents(self):
 		return list()

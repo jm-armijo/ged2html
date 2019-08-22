@@ -62,6 +62,16 @@ class Person(Node):
 	def isSingle(self):
 		return len(self.unions) == 0
 
+	def toHTML(self):
+		to_html = (
+			'<div class="person">\n'
+			'  <div class="given">{}</div>\n'
+			'  <div class="last">{}</div>\n'
+			'  <div class="dates">{} - {}</div>\n'
+			'</div>\n'
+		).format(self.given_name, self.last_name, self.birth_date, self.death_date)
+		return to_html
+
 	def _splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
 		if match:

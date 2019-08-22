@@ -1,6 +1,7 @@
 from collections import deque
 from src.person import Person
 from src.unique_queue import unique_queue
+from src.html import HTMLDocument
 
 class Tree():
 	'''
@@ -16,6 +17,26 @@ class Tree():
 		starting_person = self._getStartingPerson()
 
 		self._extendNodesAndAdd(0, [starting_person])
+
+	def toHTML(self, out_file):
+		to_html = ''
+		for level in self._getLevels():
+			to_html += self._levelToHTML(level)
+
+		title = "My Genealogy Tree"
+		doc = HTMLDocument(title, to_html)
+		to_html = doc.getHTML()
+
+		file_handler = open(out_file, 'w')
+		file_handler.write(to_html)
+
+	def _levelToHTML(self, level):
+		to_html = '<div class="level">\n'
+		for union in self.nodes[level]:
+			to_html += union.toHTML() + '\n'
+		to_html += '</div>\n'
+		return to_html
+
 
 	# Example tree
 	#            [ A & B ]
