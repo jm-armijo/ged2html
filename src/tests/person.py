@@ -332,8 +332,11 @@ class TestPerson(unittest.TestCase):
 	# Person.isSingle()
 	##########################################
 	def test_is_single_001(self):
-		# TODO : implement test
-		self.assertTrue(False)
+		person = Person.__new__(Person)
+		person.unions = list()
+
+		single = person.isSingle()
+		self.assertTrue(single)
 
 	##########################################
 	# Person.__str__

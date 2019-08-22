@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import Mock, patch, MagicMock, call
 from ..tree import Tree
+from ..person import Person
+from ..union import Union
 
 class TestTree(unittest.TestCase):
 
@@ -225,103 +227,130 @@ class TestTree(unittest.TestCase):
 	# Tree._extendNode
 	##########################################
 	def test_extend_node_001(self):
-		# TODO : implement test
-		self.assertTrue(False)
+		extended = [Mock(), Mock()]
+		node = Mock(spec = Union)
+
+		tree = Tree.__new__(Tree)
+		tree._extendPerson = MagicMock()
+		tree._extendUnion = MagicMock(return_value = extended)
+
+		returned_value = tree._extendNode(node)
+		tree._extendPerson.assert_not_called()
+		tree._extendUnion.assert_called_once_with(node)
+		self.assertEqual(returned_value, extended)
+
+	def test_extend_node_002(self):
+		extended = [Mock(), Mock()]
+		node = Mock(spec = Person)
+
+		tree = Tree.__new__(Tree)
+		tree._extendPerson = MagicMock(return_value = extended)
+		tree._extendUnion = MagicMock()
+
+		returned_value = tree._extendNode(node)
+		tree._extendPerson.assert_called_once_with(node)
+		tree._extendUnion.assert_not_called()
+		self.assertEqual(returned_value, extended)
 
 	##########################################
 	# Tree._extendPerson
 	##########################################
 	def test_extend_peson_001(self):
-		# TODO : implement test
-		self.assertTrue(False)
+		person = Mock()
+		person.isSingle = MagicMock(return_value = True)
+		person.getUnions = MagicMock()
+
+		tree = Tree.__new__(Tree)
+		tree._openNode = MagicMock()
+		tree._extendNodes = MagicMock()
+
+		extended = tree._extendPerson(person)
+		person.isSingle.assert_called_once_with()
+		person.getUnions.assert_not_called()
+		tree._openNode.assert_not_called()
+		tree._extendNodes.assert_not_called()
+		self.assertEqual(extended, [person])
+
+	def test_extend_peson_002(self):
+		unions = Mock()
+		person = Mock()
+		person.isSingle = MagicMock(return_value = False)
+		person.getUnions = MagicMock(return_value = unions)
+
+		extended = Mock()
+		tree = Tree.__new__(Tree)
+		tree._openNode = MagicMock()
+		tree._extendNodes = MagicMock(return_value = extended)
+
+		returned_extended = tree._extendPerson(person)
+		person.isSingle.assert_called_once_with()
+		person.getUnions.assert_called_once_with()
+		tree._openNode.assert_called_once_with(person)
+		tree._extendNodes.assert_called_once_with(unions)
+		self.assertEqual(returned_extended, extended)
 
 	##########################################
 	# Tree._extendUnion
 	##########################################
-	def test_extend_union_001(self):
-		# TODO : implement test
-		self.assertTrue(False)
 
-	##########################################
-	# Tree._findNotOpenedUnions
-	##########################################
-	def test_find_not_opened_unions_001(self):
-		# TODO : implement test
-		self.assertTrue(False)
+	'''
+	Test when there is nothing to dequeu
+	'''
+	@patch("src.unique_queue.unique_queue.__new__")
+	def test_extend_union_001(self, class_queue):
+		all = []
 
-	###########################################
-	## Tree._extendNode
-	###########################################
+		union = Mock()
+		union.getUnions = MagicMock()
 
-	## Returns unions of all spouses of a union, and of their spouses
-	## Ex. Given:
-	## u1{ X & J}
-	##   u2{ J & F }
-	##       u3{ F & A }
-	##           u4{ A & H }
-	## Returns: u1, u2, u3
+		queue = Mock()
+		queue.isEmpty = MagicMock(return_value = True)
+		queue.pop = MagicMock()
+		queue.pushList = MagicMock()
+		queue.getAll = MagicMock(return_value = all)
 
-	#def test_extend_node_001(self):
-	#	# Create Person and Union objects
-	#	personX = Mock()
-	#	personJ = Mock()
-	#	personF = Mock()
-	#	personA = Mock()
-	#	personH = Mock()
+		class_queue.return_value = queue
 
-	#	personX.id = '@I001@'
-	#	personJ.id = '@I002@'
-	#	personF.id = '@I003@'
-	#	personA.id = '@I004@'
-	#	personH.id = '@I005@'
+		tree = Tree.__new__(Tree)
 
-	#	personX.unions = list()
-	#	personJ.unions = list()
-	#	personF.unions = list()
-	#	personA.unions = list()
-	#	personH.unions = list()
+		# Checks
+		returned_value = tree._extendUnion(union)
+		queue.isEmpty.assert_called_once_with()
+		queue.pop.assert_not_called()
+		union.getUnions.assert_not_called()
+		queue.pushList.assert_not_called()
+		queue.getAll.assert_called_once_with()
+		self.assertEqual(returned_value, all)
 
-	#	union1 = Mock()
-	#	union2 = Mock()
-	#	union3 = Mock()
-	#	union4 = Mock()
+	'''
+	Test when the queue has elements
+	'''
+	@patch("src.unique_queue.unique_queue.__new__")
+	def test_extend_union_002(self, class_queue):
+		unions = []
 
-	#	union1.id = '@F0001@'
-	#	union2.id = '@F0002@'
-	#	union3.id = '@F0003@'
-	#	union4.id = '@F0004@'
+		union = Mock()
+		union.getUnions = MagicMock(return_value = unions)
+		all = Mock()
 
-	#	# Link Union and Person objects
-	#	union1.spouse1 = personX
-	#	union1.spouse2 = personJ
-	#	personX.unions.append(union1)
-	#	personJ.unions.append(union1)
+		queue = Mock()
+		queue.isEmpty = MagicMock(side_effect = [False, True])
+		queue.pop = MagicMock(return_value = union)
+		queue.pushList = MagicMock()
+		queue.getAll = MagicMock(return_value = all)
 
-	#	union2.spouse1 = personJ
-	#	union2.spouse2 = personF
-	#	personJ.unions.append(union2)
-	#	personF.unions.append(union2)
+		class_queue.return_value = queue
 
-	#	union3.spouse1 = personF
-	#	union3.spouse2 = personA
-	#	personF.unions.append(union3)
-	#	personA.unions.append(union3)
+		tree = Tree.__new__(Tree)
 
-	#	union4.spouse1 = personA
-	#	union4.spouse2 = personH
-	#	personA.unions.append(union4)
-	#	personH.unions.append(union4)
-
-	#	# Setup parser
-	#	parser = Tree.__new__(Tree)
-
-	#	# Actual test
-	#	unions = parser._extendNode(union3)
-	#	self.assertEqual(len(unions), 4)
-	#	self.assertTrue(union1 in unions)
-	#	self.assertTrue(union2 in unions)
-	#	self.assertTrue(union3 in unions)
-	#	self.assertTrue(union3 in unions)
+		# Checks
+		returned_value = tree._extendUnion(union)
+		self.assertEqual(queue.isEmpty.mock_calls, [call(), call()])
+		queue.pop.assert_called_once_with()
+		union.getUnions.assert_called_once_with()
+		queue.pushList.assert_called_once_with(unions)
+		queue.getAll.assert_called_once_with()
+		self.assertEqual(returned_value, all)
 
 	##########################################
 	# Tree._getLevels

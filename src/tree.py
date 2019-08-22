@@ -1,5 +1,6 @@
 from collections import deque
 from src.person import Person
+from src.unique_queue import unique_queue
 
 class Tree():
 	'''
@@ -64,25 +65,13 @@ class Tree():
 			return self._extendNodes(person.getUnions())
 
 	def _extendUnion(self, union):
-		opened = list()
-		to_open = deque([union])
+		queue = unique_queue([union])
 
-		while (len(to_open) > 0):
-			union = to_open.popleft()
-			opened.append(union)
+		while (not queue.isEmpty()):
+			union = queue.pop()
+			queue.pushList(union.getUnions())
 
-			unions = union.getUnions()
-			to_open += self._findNotOpenedUnions(unions, opened)
-
-		return opened
-
-	def _findNotOpenedUnions(self, unions, opened):
-		to_open = deque([])
-		for union in unions:
-			if union not in opened:
-				to_open.append(union)
-		return to_open
-
+		return queue.getAll()
 
 	'''
 	Gets a Person object to start building the tree.
