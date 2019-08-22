@@ -1,0 +1,19 @@
+div.level {
+    display: block;
+    border: 1px solid blue;
+}
+
+div.union {
+    display: inline-block;
+    border: 2px solid green;
+}
+
+div.person {
+    display: inline-block;
+    border: 2px solid orange;
+}
+
+div.date {
+    display: inline-block;
+    border: 2px solid red;
+}
