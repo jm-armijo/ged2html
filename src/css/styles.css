@@ -1,6 +1,15 @@
 div.level {
     display: block;
     border: 1px solid blue;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+div.node {
+    display: inline-block;
+    border: 2px solid pink;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 div.union {
