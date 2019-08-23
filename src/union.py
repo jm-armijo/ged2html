@@ -51,12 +51,17 @@ class Union(Node):
 
 	def toHTML(self):
 		to_html = (
-			'<div class="union">\n'
+			'<div class="union" id="{}">\n'
 			'  {}\n'
 			'  <div class="date">{}</div>\n'
 			'  {}\n'
 			'</div>\n'
-		).format(self.spouse1.toHTML(), self.date, self.spouse2.toHTML())
+		).format(
+			self.id,
+			self.spouse1.toHTML(),
+			self.date,
+			self.spouse2.toHTML()
+		)
 		return to_html
 
 	def __str__(self):

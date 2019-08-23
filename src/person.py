@@ -64,12 +64,19 @@ class Person(Node):
 
 	def toHTML(self):
 		to_html = (
-			'<div class="person">\n'
+			'<div class="person" id="{}">\n'
 			'  <div class="given">{}</div>\n'
 			'  <div class="last">{}</div>\n'
 			'  <div class="dates">{} - {}</div>\n'
 			'</div>\n'
-		).format(self.given_name, self.last_name, self.birth_date, self.death_date)
+		).format(
+			self.id,
+			self.given_name,
+			self.last_name,
+			self.birth_date,
+			self.death_date
+		)
+
 		return to_html
 
 	def _splitName(self, name):
