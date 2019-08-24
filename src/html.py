@@ -1,4 +1,4 @@
-class HTMLDocument():
+class HTMLGenerator():
 	def __init__(self, file_name):
 		self.file_name = file_name
 
@@ -10,6 +10,14 @@ class HTMLDocument():
 		file_handler = open(self.file_name, 'w')
 		file_handler.write(html)
 		file_handler.close()
+
+	@staticmethod
+	def wrap(category, value):
+		return (
+			'<div class="{}">\n'
+			'{}\n'
+			'</div>\n'
+		).format(category, value)
 
 	def _getHTML(self, head, body):
 		return (

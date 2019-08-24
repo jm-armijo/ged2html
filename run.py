@@ -1,4 +1,4 @@
-from src.html import HTMLDocument
+from src.html import HTMLGenerator
 from shutil import copyfile
 import os
 
@@ -18,5 +18,5 @@ tree = parser.makeTree(file_name)
 html_tree = tree.toHTML()
 
 title = "My Genealogy Tree"
-doc = HTMLDocument('html/index.html')
+doc = HTMLGenerator('html/index.html')
 to_html = doc.generate(title, html_tree)

@@ -1,5 +1,6 @@
 from collections import deque
 from src.person import Person
+from src.tree_level import TreeLevel
 from src.unique_queue import unique_queue
 
 class Tree():
@@ -17,7 +18,6 @@ class Tree():
 		self._extendNodeAndAdd(0, starting_node)
 
 	def toHTML(self):
-
 		html_levels = self._levelsToHTML(self._getLevels())
 		html_connections = self._connectHTMLElements(self.opened)
 
@@ -29,28 +29,8 @@ class Tree():
 	def _levelsToHTML(self, levels):
 		html_levels = ''
 		for level in reversed(levels):
-			html_levels += self._levelToHTML(level)
+			html_levels += self.levels[level].toHTML()
 		return html_levels
-
-	def _levelToHTML(self, level):
-		return (
-			'<div class="level">\n'
-			'{}\n'
-			'</div>\n'
-		).format(self._nodesToHTML(self.levels[level]))
-
-	def _nodesToHTML(self, nodes):
-		html_nodes = ''
-		for node in nodes:
-			html_nodes += self._nodeToHTML(node)
-		return html_nodes
-
-	def _nodeToHTML(self, node):
-		return (
-			'<div class="node">\n'
-			'{}\n'
-			'</div>'
-		).format(node.toHTML())
 
 	def _connectHTMLElements(self, nodes):
 		return (
@@ -147,20 +127,10 @@ class Tree():
 
 	def _addToTree(self, level, node):
 		if level not in self.levels:
-			self.levels[level] = list()
+			self.levels[level] = TreeLevel()
 		self.levels[level].append(node)
 
 	def _getLevels(self):
 		levels = list(self.levels.keys())
 		levels.sort()
 		return levels
-
-	def __str__(self):
-		to_str = ""
-
-		for level in self._getLevels():
-			for union in self.levels[level]:
-				to_str += str(union)
-			to_str += '\n'
-
-		return to_str
