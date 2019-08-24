@@ -14,7 +14,7 @@ class Tree():
 
 		level = 0
 		starting_person = self._getStartingPerson()
-		self._extendNodesAndAdd(0, [starting_person])
+		self._extendNodesAndAdd(0, starting_person)
 
 	def toHTML(self):
 
@@ -132,13 +132,13 @@ class Tree():
 	It can be any person, so the one with the lowest id is picked
 	'''
 	def _getStartingPerson(self):
-		person = None
+		person = list()
 		people_ids = list(self.people.keys())
 
 		if len(people_ids) > 0:
 			people_ids.sort()
 			person_id = people_ids[0]
-			person = self.people[person_id]
+			person.append(self.people[person_id])
 
 		return person
 

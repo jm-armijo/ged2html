@@ -17,10 +17,7 @@ class Parser():
 	def makeTree(self, file_name):
 		lines = self._readFile(file_name)
 		self.parseLines(lines)
-		if len(self.people) > 0:
-			return Tree(self.people)
-		else:
-			return None
+		return Tree(self.people)
 
 	# Reads the file into a list of lines
 	def _readFile(self, file_name):
