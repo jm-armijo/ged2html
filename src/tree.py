@@ -13,8 +13,8 @@ class Tree():
 		self.people = people
 
 		level = 0
-		starting_person = self._getStartingPerson()
-		self._extendNodesAndAdd(0, starting_person)
+		starting_node = self._getStartingNode()
+		self._extendNodeAndAdd(0, starting_node)
 
 	def toHTML(self):
 
@@ -78,12 +78,17 @@ class Tree():
 	#            \
 	#            F
 
+	def _extendNodesAndAdd(self, level, nodes):
+		for node in nodes:
+			self._extendNodeAndAdd(level, node)
+
+	def _extendNodeAndAdd(self, level, node):
+		extended = self._extendNode(node)
+		self._addNodes(level, extended)
+
 	def _addNodes(self, level, nodes):
 		for node in nodes:
 			self._addNode(level, node)
-
-	def _openNode(self, node):
-		self.opened.append(node)
 
 	def _addNode(self, level, node):
 		if node in self.opened:
@@ -94,15 +99,13 @@ class Tree():
 		self._extendNodesAndAdd(level+1, node.getChildren())
 		self._extendNodesAndAdd(level-1, node.getParents())
 
-	def _extendNodesAndAdd(self, level, nodes):
-		extended = self._extendNodes(nodes)
-		self._addNodes(level, extended)
+	def _openNode(self, node):
+		self.opened.append(node)
 
 	def _extendNodes(self, nodes):
 		extended = list()
 		for node in nodes:
 			extended += self._extendNode(node)
-
 		return extended
 
 	def _extendNode(self, node):
@@ -131,16 +134,16 @@ class Tree():
 	Gets a Person object to start building the tree.
 	It can be any person, so the one with the lowest id is picked
 	'''
-	def _getStartingPerson(self):
-		person = list()
+	def _getStartingNode(self):
+		node = None
 		people_ids = list(self.people.keys())
 
 		if len(people_ids) > 0:
 			people_ids.sort()
 			person_id = people_ids[0]
-			person.append(self.people[person_id])
+			node = self.people[person_id]
 
-		return person
+		return node
 
 	def _addToTree(self, level, node):
 		if level not in self.nodes:
