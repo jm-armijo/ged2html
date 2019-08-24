@@ -8,7 +8,7 @@ class Tree():
 	At least 1 valid Person object must be passed in the 'people' argument
 	'''
 	def __init__(self, people):
-		self.nodes = dict()
+		self.levels = dict()
 		self.opened = list()
 		self.people = people
 
@@ -37,7 +37,7 @@ class Tree():
 			'<div class="level">\n'
 			'{}\n'
 			'</div>\n'
-		).format(self._nodesToHTML(self.nodes[level]))
+		).format(self._nodesToHTML(self.levels[level]))
 
 	def _nodesToHTML(self, nodes):
 		html_nodes = ''
@@ -146,12 +146,12 @@ class Tree():
 		return node
 
 	def _addToTree(self, level, node):
-		if level not in self.nodes:
-			self.nodes[level] = list()
-		self.nodes[level].append(node)
+		if level not in self.levels:
+			self.levels[level] = list()
+		self.levels[level].append(node)
 
 	def _getLevels(self):
-		levels = list(self.nodes.keys())
+		levels = list(self.levels.keys())
 		levels.sort()
 		return levels
 
@@ -159,7 +159,7 @@ class Tree():
 		to_str = ""
 
 		for level in self._getLevels():
-			for union in self.nodes[level]:
+			for union in self.levels[level]:
 				to_str += str(union)
 			to_str += '\n'
 
