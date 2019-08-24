@@ -11,11 +11,5 @@ class TreeLevel():
 		self.nodes.append(node)
 
 	def toHTML(self):
-		value = self._nodesToHTML(self.nodes)
+		value = HTMLGenerator.listToHTML(self.nodes)
 		return HTMLGenerator.wrap(self.category, value)
-
-	def _nodesToHTML(self, nodes):
-		html_nodes = ''
-		for node in nodes:
-			html_nodes += node.toHTML()
-		return html_nodes

@@ -1,4 +1,5 @@
 from collections import deque
+from src.html import HTMLGenerator
 from src.person import Person
 from src.tree_level import TreeLevel
 from src.unique_queue import unique_queue
@@ -18,19 +19,13 @@ class Tree():
 		self._extendNodeAndAdd(0, starting_node)
 
 	def toHTML(self):
-		html_levels = self._levelsToHTML(self._getLevels())
-		html_connections = self._connectHTMLElements(self.opened)
+		levels = HTMLGenerator.listToHTML(self._getLevels())
+		connections = self._connectHTMLElements(self.opened)
 
 		return (
 			'{}'
 			'{}'
-		).format(html_levels, html_connections)
-
-	def _levelsToHTML(self, levels):
-		html_levels = ''
-		for level in reversed(levels):
-			html_levels += self.levels[level].toHTML()
-		return html_levels
+		).format(levels, connections)
 
 	def _connectHTMLElements(self, nodes):
 		return (
@@ -131,6 +126,8 @@ class Tree():
 		self.levels[level].append(node)
 
 	def _getLevels(self):
-		levels = list(self.levels.keys())
-		levels.sort()
+		keys = sorted(self.levels.keys(), reverse=True)
+		levels = []
+		for key in keys:
+			levels.append(self.levels[key])
 		return levels

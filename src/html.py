@@ -19,6 +19,13 @@ class HTMLGenerator():
 			'</div>\n'
 		).format(category, value)
 
+	@staticmethod
+	def listToHTML(items):
+		html = ''
+		for item in items:
+			html += item.toHTML()
+		return html
+
 	def _getHTML(self, head, body):
 		return (
 			'<!doctype html>\n'
