@@ -14,16 +14,23 @@ class Tree():
 
 		level = 0
 		starting_person = self._getStartingPerson()
-
 		self._extendNodesAndAdd(0, [starting_person])
 
 	def toHTML(self):
-		html_tree = ''
-		for level in reversed(self._getLevels()):
-			html_tree += self._levelToHTML(level)
 
-		return html_tree
+		html_levels = self._levelsToHTML(self._getLevels())
+		html_connections = self._connectHTMLElements(self.opened)
 
+		return (
+			'{}'
+			'{}'
+		).format(html_levels, html_connections)
+
+	def _levelsToHTML(self, levels):
+		html_levels = ''
+		for level in reversed(levels):
+			html_levels += self._levelToHTML(level)
+		return html_levels
 
 	def _levelToHTML(self, level):
 		return (
@@ -45,6 +52,25 @@ class Tree():
 			'</div>'
 		).format(node.toHTML())
 
+	def _connectHTMLElements(self, nodes):
+		return (
+			'  <script>\n'
+			'    window.addEventListener(\n'
+			'      "load",\n'
+			'      function() {{\n'
+			'        "use strict";\n'
+			'{}'
+			'      }}\n'
+			'    );\n'
+			'  </script>'
+		).format(self._drawLines(nodes))
+
+	def _drawLines(self, nodes):
+		lines = ''
+		for node in nodes:
+			lines += node.toLineScript()
+		return lines
+
 	# Example tree
 	#            [ A & B ]
 	#              /   \
@@ -57,10 +83,10 @@ class Tree():
 			self._addNode(level, node)
 
 	def _openNode(self, node):
-		self.opened.append(node.id)
+		self.opened.append(node)
 
 	def _addNode(self, level, node):
-		if node.id in self.opened:
+		if node in self.opened:
 			return
 
 		self._openNode(node)

@@ -34,13 +34,5 @@ class HTMLDocument():
 		return (
 			'  <body>\n'
 			'{}\n'
-			'  <script>\n'
-			'    window.addEventListener(\n'
-			'      load",\n'
-			'      function() {{\n'
-			'        "use strict";\n'
-			'{}'
-			'      }}\n'
-			'    );\n'
 			'  </body>'
 		).format(body, '')

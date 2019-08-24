@@ -64,6 +64,17 @@ class Union(Node):
 		)
 		return to_html
 
+	def toLineScript(self):
+		to_html = ''
+		for child in self.children:
+			to_html += (
+				'var a = new LeaderLine(\n'
+				'document.getElementById("{}"),\n'
+				'document.getElementById("{}"),\n'
+				');\n'
+			).format(self.id, child.id)
+		return to_html
+
 	def __str__(self):
 		to_str = "{{ {} & {} }}".format(self.spouse1, self.spouse2)
 		return to_str

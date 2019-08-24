@@ -4,3 +4,6 @@ class Node():
 
 	def getParents(self):
 		return list()
+
+	def toLineScript(self):
+		return ''
