@@ -3,7 +3,6 @@ from src.tree_node import TreeNode
 
 class TreeLevel():
 	def __init__(self):
-		self.category = 'level'
 		self.nodes = list()
 
 	def append(self, node):
@@ -12,4 +11,4 @@ class TreeLevel():
 
 	def toHTML(self):
 		value = HTMLGenerator.listToHTML(self.nodes)
-		return HTMLGenerator.wrap(self.category, value)
+		return HTMLGenerator.wrap(self, value)

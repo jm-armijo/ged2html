@@ -1,5 +1,6 @@
 from src.node import Node
 from src.null_person import NullPerson
+from src.html import HTMLGenerator
 
 class Union(Node):
 	def __init__(self, id):
@@ -50,19 +51,18 @@ class Union(Node):
 		return parents
 
 	def toHTML(self):
-		to_html = (
-			'<div class="union" id="{}">\n'
+		value = (
 			'  {}\n'
-			'  <div class="date">{}</div>\n'
+			'  <div class="date" id="{}">{}</div>\n'
 			'  {}\n'
-			'</div>\n'
 		).format(
-			self.id,
 			self.spouse1.toHTML(),
+			self.id,
 			self.date,
 			self.spouse2.toHTML()
 		)
-		return to_html
+
+		return HTMLGenerator.wrap(self, value)
 
 	def toLineScript(self):
 		to_html = ''

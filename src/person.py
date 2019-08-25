@@ -1,4 +1,5 @@
 from src.node import Node
+from src.html import HTMLGenerator
 import re
 
 class Person(Node):
@@ -63,21 +64,18 @@ class Person(Node):
 		return len(self.unions) == 0
 
 	def toHTML(self):
-		to_html = (
-			'<div class="person" id="{}">\n'
+		value = (
 			'  <div class="given">{}</div>\n'
 			'  <div class="last">{}</div>\n'
 			'  <div class="dates">{} - {}</div>\n'
-			'</div>\n'
 		).format(
-			self.id,
 			self.given_name,
 			self.last_name,
 			self.birth_date,
 			self.death_date
 		)
 
-		return to_html
+		return HTMLGenerator.wrap(self, value, self.id)
 
 	def _splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)

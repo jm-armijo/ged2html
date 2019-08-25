@@ -12,12 +12,22 @@ class HTMLGenerator():
 		file_handler.close()
 
 	@staticmethod
-	def wrap(category, value):
+	def wrap(instance, value, id=''):
+		class_name = type(instance).__name__.lower()
+		attributes = HTMLGenerator._getAttributes(class_name, id)
+
 		return (
-			'<div class="{}">\n'
+			'<div {}>\n'
 			'{}\n'
 			'</div>\n'
-		).format(category, value)
+		).format(attributes, value)
+
+	@staticmethod
+	def _getAttributes(class_name, id):
+		tag = list()
+		tag.append('class="{}"'.format(class_name))
+		tag.append('id="{}"'.format(id)) if id != '' else ''
+		return " ".join(tag)
 
 	@staticmethod
 	def listToHTML(items):
