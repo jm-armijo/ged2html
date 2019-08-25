@@ -9,10 +9,10 @@ class Tree():
 	Creates a new Tree object.
 	At least 1 valid Person object must be passed in the 'people' argument
 	'''
-	def __init__(self, people):
+	def __init__(self, nodes):
 		self.levels = dict()
 		self.opened = list()
-		self.people = people
+		self.nodes = nodes
 
 		level = 0
 		starting_node = self._getStartingNode()
@@ -111,12 +111,12 @@ class Tree():
 	'''
 	def _getStartingNode(self):
 		node = None
-		people_ids = list(self.people.keys())
+		people_ids = list(self.nodes.keys())
 
 		if len(people_ids) > 0:
 			people_ids.sort()
 			person_id = people_ids[0]
-			node = self.people[person_id]
+			node = self.nodes[person_id]
 
 		return node
 
