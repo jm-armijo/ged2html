@@ -9,49 +9,25 @@ class Tree():
 	Creates a new Tree object.
 	At least 1 valid Person object must be passed in the 'people' argument
 	'''
-	def __init__(self, nodes):
+	def __init__(self, nodes, edges):
 		self.levels = dict()
 		self.opened = list()
 		self.nodes = nodes
+		self.edges = edges
 
 		level = 0
 		starting_node = self._getStartingNode()
 		self._extendNodeAndAdd(0, starting_node)
 
 	def toHTML(self):
-		levels = HTMLGenerator.listToHTML(self._getLevels())
-		connections = self._connectHTMLElements(self.opened)
+		nodes = HTMLGenerator.listToHTML(self._getLevels())
+		edges = HTMLGenerator.listToHTML(self.edges)
+		edges_script = HTMLGenerator.getOnLoadScript(edges)
 
 		return (
 			'{}'
 			'{}'
-		).format(levels, connections)
-
-	def _connectHTMLElements(self, nodes):
-		return (
-			'  <script>\n'
-			'    window.addEventListener(\n'
-			'      "load",\n'
-			'      function() {{\n'
-			'        "use strict";\n'
-			'{}'
-			'      }}\n'
-			'    );\n'
-			'  </script>'
-		).format(self._drawLines(nodes))
-
-	def _drawLines(self, nodes):
-		lines = ''
-		for node in nodes:
-			lines += node.toLineScript()
-		return lines
-
-	# Example tree
-	#            [ A & B ]
-	#              /   \
-	#        [C & D]  [E & G]
-	#            \
-	#            F
+		).format(nodes, edges_script)
 
 	def _extendNodesAndAdd(self, level, nodes):
 		for node in nodes:

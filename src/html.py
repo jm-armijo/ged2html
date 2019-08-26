@@ -23,18 +23,32 @@ class HTMLGenerator():
 		).format(attributes, value)
 
 	@staticmethod
-	def _getAttributes(class_name, id):
-		tag = list()
-		tag.append('class="{}"'.format(class_name))
-		tag.append('id="{}"'.format(id)) if id != '' else ''
-		return " ".join(tag)
-
-	@staticmethod
 	def listToHTML(items):
 		html = ''
 		for item in items:
 			html += item.toHTML()
 		return html
+
+	@staticmethod
+	def getOnLoadScript(script):
+		return (
+			'  <script>\n'
+			'    window.addEventListener(\n'
+			'      "load",\n'
+			'      function() {{\n'
+			'        "use strict";\n'
+			'{}'
+			'      }}\n'
+			'    );\n'
+			'  </script>'
+		).format(script)
+
+	@staticmethod
+	def _getAttributes(class_name, id):
+		tag = list()
+		tag.append('class="{}"'.format(class_name))
+		tag.append('id="{}"'.format(id)) if id != '' else ''
+		return " ".join(tag)
 
 	def _getHTML(self, head, body):
 		return (

@@ -2,6 +2,7 @@ from src.text_line import TextLine
 from src.person import Person
 from src.tree import Tree
 from src.union import Union
+from src.edge import Edge
 
 class Parser():
 	def __init__(self):
@@ -15,14 +16,24 @@ class Parser():
 		self.last_key_per_level = dict()
 
 	def makeTree(self, file_name):
-		lines = self._readFile(file_name)
-		self.parseLines(lines)
-		return Tree(self.people)
+		text_lines = self._readFile(file_name)
+		self.parseLines(text_lines)
+
+		edges = self._getEdges()
+		return Tree(self.people, edges)
+
+	def _getEdges(self):
+		edges = list()
+		for union in self.unions:
+			for child in union.getChildren():
+				if child.id in self.people.keys():
+					edges.append(Edge(union.id, child.id))
+		return edges
 
 	# Reads the file into a list of lines
 	def _readFile(self, file_name):
 		with open(file_name,mode='r') as tree_file:
-			return map(Line, tree_file.readlines())
+			return map(TextLine, tree_file.readlines())
 
 	def parseLines(self, lines):
 		for self.current_line in lines:
