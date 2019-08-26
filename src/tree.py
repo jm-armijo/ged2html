@@ -17,9 +17,7 @@ class Tree():
 		self.levels = dict()
 		self.opened = list()
 
-		level = 0
-		starting_node = self._getStartingNode(people)
-		self._extendNodeAndAdd(0, starting_node)
+		self.nodes = self._createNodes(people)
 		self.edges = self._createEdges(unions)
 
 	def toHTML(self):
@@ -33,6 +31,13 @@ class Tree():
 		).format(nodes, edges_script)
 
 # private:
+
+	def _createNodes(self, people):
+		level = 0
+		starting_node = self._getStartingNode(people)
+		self._extendNodeAndAdd(0, starting_node)
+
+		return None
 
 	def _createEdges(self, unions):
 		edges = list()
