@@ -1,4 +1,4 @@
-class Line():
+class TextLine():
 	def __init__(self, line):
 		self.line = line
 		self.parseLine(line)

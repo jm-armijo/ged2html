@@ -2,13 +2,13 @@ import unittest
 from unittest.mock import patch
 from unittest.mock import Mock
 
-from ..line import Line
+from ..text_line import TextLine
 
-class TestLine(unittest.TestCase):
-	@patch.object(Line, 'parseLine')
+class TestTextLine(unittest.TestCase):
+	@patch.object(TextLine, 'parseLine')
 	def test_init_001(self, mock_req):
 		line_str = '0 @IND00032@ INDI'
-		line_obj = Line(line_str)
+		line_obj = TextLine(line_str)
 
 		self.assertEqual(line_obj.line, line_str)
 		self.assertFalse(hasattr(line_obj, 'level'))
@@ -21,8 +21,8 @@ class TestLine(unittest.TestCase):
 		data = "INDI"
 		line_str = '{} {} {}'.format(level, attribute, data)
 
-		# Creates a raw object of class Line
-		line_obj = Line.__new__(Line)
+		# Creates a raw object of class TextLine
+		line_obj = TextLine.__new__(TextLine)
 
 		line_obj.parseLine(line_str)
 		self.assertEqual(line_obj.level, level)
@@ -35,8 +35,8 @@ class TestLine(unittest.TestCase):
 		data = "A B C D E"
 		line_str = '{} {} {}'.format(level, attribute, data)
 
-		# Creates a raw object of class Line
-		line_obj = Line.__new__(Line)
+		# Creates a raw object of class TextLine
+		line_obj = TextLine.__new__(TextLine)
 
 		line_obj.parseLine(line_str)
 		self.assertEqual(line_obj.level, level)

@@ -1,4 +1,4 @@
-from src.line import Line
+from src.text_line import TextLine
 from src.person import Person
 from src.tree import Tree
 from src.union import Union
