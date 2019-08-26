@@ -1,4 +1,5 @@
 from collections import deque
+from src.edge import Edge
 from src.html import HTMLGenerator
 from src.person import Person
 from src.tree_level import TreeLevel
@@ -9,15 +10,15 @@ class Tree():
 	Creates a new Tree object.
 	At least 1 valid Person object must be passed in the 'people' argument
 	'''
-	def __init__(self, nodes, edges):
+	def __init__(self, nodes, unions):
 		self.levels = dict()
 		self.opened = list()
 		self.nodes = nodes
-		self.edges = edges
 
 		level = 0
 		starting_node = self._getStartingNode()
 		self._extendNodeAndAdd(0, starting_node)
+		self.edges = self._createEdges(unions)
 
 	def toHTML(self):
 		nodes = HTMLGenerator.listToHTML(self._getLevels())
@@ -28,6 +29,34 @@ class Tree():
 			'{}'
 			'{}'
 		).format(nodes, edges_script)
+
+	def _createEdges(self, unions):
+		edges = list()
+		for union in unions:
+			edges += self._createdEdgesFromNode(union)
+		return edges
+
+	def _createdEdgesFromNode(self, start):
+		edges = list()
+		if start not in self.opened:
+			print("Element {} not processed. Check your ged file for inconsistent data.".format(start.id))
+		else:
+			edges = self._createEdgesToNodes(start, start.getChildren())
+		return edges
+
+	def _createEdgesToNodes(self, start, end_nodes):
+		edges = list()
+		for end in end_nodes:
+			edges += self._createEdgeToNode(start, end)
+		return edges
+
+	def _createEdgeToNode(self, start, end):
+		edges = list()
+		if end not in self.opened:
+			print("Element {} not processed. Check your ged file for inconsistent data.".format(end.id))
+		else:
+			edges.append(Edge(start.id, end.id))
+		return edges
 
 	def _extendNodesAndAdd(self, level, nodes):
 		for node in nodes:
