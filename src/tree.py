@@ -6,17 +6,19 @@ from src.tree_level import TreeLevel
 from src.unique_queue import unique_queue
 
 class Tree():
+
+# public:
+
 	'''
 	Creates a new Tree object.
 	At least 1 valid Person object must be passed in the 'people' argument
 	'''
-	def __init__(self, nodes, unions):
+	def __init__(self, people, unions):
 		self.levels = dict()
 		self.opened = list()
-		self.nodes = nodes
 
 		level = 0
-		starting_node = self._getStartingNode()
+		starting_node = self._getStartingNode(people)
 		self._extendNodeAndAdd(0, starting_node)
 		self.edges = self._createEdges(unions)
 
@@ -29,6 +31,8 @@ class Tree():
 			'{}'
 			'{}'
 		).format(nodes, edges_script)
+
+# private:
 
 	def _createEdges(self, unions):
 		edges = list()
@@ -114,14 +118,14 @@ class Tree():
 	Gets a Person object to start building the tree.
 	It can be any person, so the one with the lowest id is picked
 	'''
-	def _getStartingNode(self):
+	def _getStartingNode(self, people):
 		node = None
-		people_ids = list(self.nodes.keys())
+		people_ids = list(people.keys())
 
 		if len(people_ids) > 0:
 			people_ids.sort()
 			person_id = people_ids[0]
-			node = self.nodes[person_id]
+			node = people[person_id]
 
 		return node
 
