@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, Mock
 from ..person import Person
+from ..html import HTMLGenerator
 
 class TestPerson(unittest.TestCase):
 	##########################################
@@ -290,6 +291,87 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(returned_unions, unions)
 
 	##########################################
+	# Person.isSingle()
+	##########################################
+
+	def test_is_single_001(self):
+		person = Person.__new__(Person)
+		person.unions = list()
+
+		single = person.isSingle()
+		self.assertTrue(single)
+
+	##########################################
+	# Person.toHTML()
+	##########################################
+
+	def test_to_html_001(self):
+		person = Person.__new__(Person)
+		person.unions = list()
+		person.id = '@I000001@'
+		person.given_name = 'Given'
+		person.last_name = 'Last'
+		person.birth_date = '01-01-1900'
+		person.death_date = '31-12-1999'
+
+		value = (
+			'  <div class="given">Given</div>\n'
+			'  <div class="last">Last</div>\n'
+			'  <div class="dates">01-01-1900 - 31-12-1999</div>\n'
+		)
+
+		wrapped = "<div>"+value+"</div>"
+		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+
+		html = person.toHTML()
+		HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
+		self.assertEqual(wrapped, html)
+
+	def test_to_html_002(self):
+		person = Person.__new__(Person)
+		person.unions = list()
+		person.id = '@I000001@'
+		person.given_name = 'Given'
+		person.last_name = 'Last'
+		person.birth_date = '01-01-1900'
+		person.death_date = ''
+
+		value = (
+			'  <div class="given">Given</div>\n'
+			'  <div class="last">Last</div>\n'
+			'  <div class="dates">01-01-1900 - </div>\n'
+		)
+
+		wrapped = "<div>"+value+"</div>"
+		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+
+		html = person.toHTML()
+		HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
+		self.assertEqual(wrapped, html)
+
+	def test_to_html_003(self):
+		person = Person.__new__(Person)
+		person.unions = list()
+		person.id = '@I000001@'
+		person.given_name = ''
+		person.last_name = 'Last'
+		person.birth_date = '01-01-1900'
+		person.death_date = ''
+
+		value = (
+			'  <div class="given"></div>\n'
+			'  <div class="last">Last</div>\n'
+			'  <div class="dates">01-01-1900 - </div>\n'
+		)
+
+		wrapped = "<div>"+value+"</div>"
+		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+
+		html = person.toHTML()
+		HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
+		self.assertEqual(wrapped, html)
+
+	##########################################
 	# Person._splitName
 	##########################################
 
@@ -327,16 +409,6 @@ class TestPerson(unittest.TestCase):
 
 		split_name = person._splitName(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
-
-	##########################################
-	# Person.isSingle()
-	##########################################
-	def test_is_single_001(self):
-		person = Person.__new__(Person)
-		person.unions = list()
-
-		single = person.isSingle()
-		self.assertTrue(single)
 
 	##########################################
 	# Person.__str__

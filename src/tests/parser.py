@@ -18,17 +18,20 @@ class TestParser(unittest.TestCase):
 	# Parser.makeTree
 	##########################################
 
-	def test_make_tree_001(self):
+	@patch("src.tree.Tree.__new__")
+	def test_make_tree_001(self, class_tree):
 		# Setup data
 		file_name = 'file.ged'
-		tree = None
+		tree = Mock()
 		lines = Mock()
+		class_tree.return_value = tree
 
 		# Setup Parser
 		parser = Parser.__new__(Parser)
 		parser._readFile = MagicMock(return_value = lines)
 		parser.parseLines = MagicMock()
 		parser.people = dict()
+		parser.unions = list()
 
 		# Actual test
 		returned_tree = parser.makeTree(file_name)
@@ -37,12 +40,12 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(returned_tree, tree)
 
 	@patch("src.tree.Tree.__new__")
-	def test_make_tree_002(self, mock_tree):
+	def test_make_tree_002(self, class_tree):
 		# Setup data
 		file_name = 'file.ged'
 		lines = Mock()
 		tree = Mock()
-		mock_tree.return_value = tree
+		class_tree.return_value = tree
 
 		# Setup people
 		people = {'@I000123':Mock()}
@@ -52,6 +55,7 @@ class TestParser(unittest.TestCase):
 		parser._readFile = MagicMock(return_value = lines)
 		parser.parseLines = MagicMock()
 		parser.people = people
+		parser.unions = list()
 
 		# Actual test
 		returned_tree = parser.makeTree(file_name)
