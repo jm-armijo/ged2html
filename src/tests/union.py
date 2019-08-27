@@ -1,5 +1,7 @@
 import unittest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, patch
+from ..html import HTMLGenerator
+from ..null_person import NullPerson
 from ..union import Union
 
 
@@ -9,16 +11,20 @@ class TestUnion(unittest.TestCase):
 	# Union.__init__
 	##########################################
 
-	def test_init_001(self):
+	@patch("src.null_person.NullPerson.__new__")
+	def test_init_001(self, class_null_person):
 		id = "@F1234567@"
-		union = Union(id)
+		null_person1 = Mock()
+		null_person2 = Mock()
+		class_null_person.side_effect = [null_person1, null_person2]
 
+		union = Union(id)
 		self.assertEqual(union.id, id)
-		self.assertEqual(union.spouse1, None)
-		self.assertEqual(union.spouse2, None)
+		self.assertEqual(union.spouse1, null_person1)
+		self.assertEqual(union.spouse2, null_person2)
 		self.assertEqual(union.children, list())
-		self.assertEqual(union.date, None)
-		self.assertEqual(union.place, None)
+		self.assertEqual(union.date, '')
+		self.assertEqual(union.place, '')
 
 	##########################################
 	# Union.setSpouse1
@@ -270,6 +276,62 @@ class TestUnion(unittest.TestCase):
 
 		returned_unions = union.getUnions()
 		self.assertEqual(returned_unions, unions_spouse1 + unions_spouse2)
+
+	##########################################
+	# Union.toHTML()
+	##########################################
+
+	def test_to_html_001(self):
+		union = Union.__new__(Union)
+		union.id = '@F00003@'
+		union.date = '20-02-2002'
+		union.spouse1 = Mock()
+		union.spouse2 = Mock()
+
+		spouse1_html = "<div>Spouse1</div>"
+		spouse2_html = "<div>Spouse2</div>"
+
+		union.spouse1.toHTML = MagicMock(return_value = spouse1_html)
+		union.spouse2.toHTML = MagicMock(return_value = spouse2_html)
+
+		value = (
+			'  {}\n'
+			'  <div class="date" id="@F00003@">20-02-2002</div>\n'
+			'  {}\n'
+		).format(spouse1_html, spouse2_html)
+
+		wrapped = "<div>"+value+"</div>"
+		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+
+		html = union.toHTML()
+		HTMLGenerator.wrap.assert_called_once_with(union, value)
+		self.assertEqual(wrapped, html)
+
+	def test_to_html_002(self):
+		union = Union.__new__(Union)
+		union.id = '@F00003@'
+		union.date = ''
+		union.spouse1 = Mock()
+		union.spouse2 = Mock()
+
+		spouse1_html = "<div>Spouse1</div>"
+		spouse2_html = ""
+
+		union.spouse1.toHTML = MagicMock(return_value = spouse1_html)
+		union.spouse2.toHTML = MagicMock(return_value = spouse2_html)
+
+		value = (
+			'  {}\n'
+			'  <div class="date" id="@F00003@"></div>\n'
+			'  {}\n'
+		).format(spouse1_html, spouse2_html)
+
+		wrapped = "<div>"+value+"</div>"
+		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+
+		html = union.toHTML()
+		HTMLGenerator.wrap.assert_called_once_with(union, value)
+		self.assertEqual(wrapped, html)
 
 	##########################################
 	# Union.__str__
