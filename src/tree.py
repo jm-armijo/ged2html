@@ -21,14 +21,14 @@ class Tree():
 		self.edges = self._createEdges(unions)
 
 	def toHTML(self):
-		nodes = HTMLGenerator.listToHTML(self._getLevels())
-		edges = HTMLGenerator.listToHTML(self.edges)
-		edges_script = HTMLGenerator.getOnLoadScript(edges)
+		nodes_html = HTMLGenerator.listToHTML(self.nodes)
+		edges_html = HTMLGenerator.listToHTML(self.edges)
+		edges_script = HTMLGenerator.getOnLoadScript(edges_html)
 
 		return (
 			'{}'
 			'{}'
-		).format(nodes, edges_script)
+		).format(nodes_html, edges_script)
 
 # private:
 
@@ -36,36 +36,7 @@ class Tree():
 		level = 0
 		starting_node = self._getStartingNode(people)
 		self._extendNodeAndAdd(0, starting_node)
-
-		return None
-
-	def _createEdges(self, unions):
-		edges = list()
-		for union in unions:
-			edges += self._createdEdgesFromNode(union)
-		return edges
-
-	def _createdEdgesFromNode(self, start):
-		edges = list()
-		if start not in self.opened:
-			print("Element {} not processed. Check your ged file for inconsistent data.".format(start.id))
-		else:
-			edges = self._createEdgesToNodes(start, start.getChildren())
-		return edges
-
-	def _createEdgesToNodes(self, start, end_nodes):
-		edges = list()
-		for end in end_nodes:
-			edges += self._createEdgeToNode(start, end)
-		return edges
-
-	def _createEdgeToNode(self, start, end):
-		edges = list()
-		if end not in self.opened:
-			print("Element {} not processed. Check your ged file for inconsistent data.".format(end.id))
-		else:
-			edges.append(Edge(start.id, end.id))
-		return edges
+		return self._levelsToNodes()
 
 	def _extendNodesAndAdd(self, level, nodes):
 		for node in nodes:
@@ -119,6 +90,34 @@ class Tree():
 
 		return queue.getAll()
 
+	def _createEdges(self, unions):
+		edges = list()
+		for union in unions:
+			edges += self._createdEdgesFromNode(union)
+		return edges
+
+	def _createdEdgesFromNode(self, start):
+		edges = list()
+		if start not in self.opened:
+			print("Element {} not processed. Check your ged file for inconsistent data.".format(start.id))
+		else:
+			edges = self._createEdgesToNodes(start, start.getChildren())
+		return edges
+
+	def _createEdgesToNodes(self, start, end_nodes):
+		edges = list()
+		for end in end_nodes:
+			edges += self._createEdgeToNode(start, end)
+		return edges
+
+	def _createEdgeToNode(self, start, end):
+		edges = list()
+		if end not in self.opened:
+			print("Element {} not processed. Check your ged file for inconsistent data.".format(end.id))
+		else:
+			edges.append(Edge(start.id, end.id))
+		return edges
+
 	'''
 	Gets a Person object to start building the tree.
 	It can be any person, so the one with the lowest id is picked
@@ -139,9 +138,9 @@ class Tree():
 			self.levels[level] = TreeLevel()
 		self.levels[level].append(node)
 
-	def _getLevels(self):
+	def _levelsToNodes(self):
 		keys = sorted(self.levels.keys(), reverse=True)
-		levels = []
+		nodes = []
 		for key in keys:
-			levels.append(self.levels[key])
-		return levels
+			nodes.append(self.levels[key])
+		return nodes
