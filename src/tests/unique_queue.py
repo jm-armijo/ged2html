@@ -151,3 +151,6 @@ class TestPerson(unittest.TestCase):
 		queue = unique_queue.__new__(unique_queue)
 		queue.opened = opened
 		self.assertEqual(queue.getAll(), opened)
+
+if __name__ == '__main__':
+	unittest.main()
