@@ -93,10 +93,10 @@ class Tree():
 	def _createEdges(self, unions):
 		edges = list()
 		for union in unions:
-			edges += self._createdEdgesFromNode(union)
+			edges += self._createEdgesFromNode(union)
 		return edges
 
-	def _createdEdgesFromNode(self, start):
+	def _createEdgesFromNode(self, start):
 		edges = list()
 		if start not in self.opened:
 			print("Element {} not processed. Check your ged file for inconsistent data.".format(start.id))
