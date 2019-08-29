@@ -1,0 +1,242 @@
+import unittest
+from unittest.mock import MagicMock, Mock, patch
+from ..html import HTMLGenerator
+
+class TestHTMLGenerator(unittest.TestCase):
+
+	##########################################
+	# HTMLGenerator.init
+	##########################################
+
+	def test_init_001(self):
+		file_name = 'my_tree.ged'
+		generator = HTMLGenerator(file_name)
+		self.assertEqual(generator.file_name, file_name)
+
+	##########################################
+	# HTMLGenerator.generate
+	##########################################
+
+	@patch("src.html.open", create=True)
+	def test_generate_001(self, mock_open):
+		# Mock HTMLGenerator methods
+		permission = 'w'
+		file_name = Mock()
+		head = Mock()
+		body = Mock()
+		html = Mock()
+
+		generator = HTMLGenerator.__new__(HTMLGenerator)
+		generator._getHead = MagicMock(return_value = head)
+		generator._getBody = MagicMock(return_value = body)
+		generator._getHTML = MagicMock(return_value = html)
+		generator.file_name = file_name
+
+		# Mock file handler
+		file_handler = Mock()
+		file_handler.write = MagicMock()
+		file_handler.close = MagicMock()
+		mock_open.return_value = file_handler
+
+		# Calling function to be tested
+		title = Mock()
+		tree = Mock()
+		generator.generate(title, tree)
+
+		# Actual checks
+		generator._getHead.assert_called_once_with(title)
+		generator._getBody.assert_called_once_with(tree)
+		generator._getHTML.assert_called_once_with(head, body)
+
+		mock_open.assert_called_once_with(file_name, permission)
+		file_handler.write.assert_called_once_with(html)
+		file_handler.close.assert_called_once_with()
+
+	##########################################
+	# HTMLGenerator.wrap
+	##########################################
+
+	def test_wrap_001(self):
+		attributes = 'Y'
+		HTMLGenerator._getAttributes = MagicMock(return_value = attributes)
+
+		instance = Mock()
+		value = 'X'
+
+		expected = '<div Y>\nX\n</div>\n'
+		actual = HTMLGenerator.wrap(instance, value)
+
+		HTMLGenerator._getAttributes.assert_called_once_with('mock', '')
+		self.assertEqual(actual, expected)
+
+	def test_wrap_002(self):
+		attributes = 'Y'
+		HTMLGenerator._getAttributes = MagicMock(return_value = attributes)
+
+		instance_id = '12345'
+		instance = Mock()
+		value = 'X'
+
+		expected = '<div Y>\nX\n</div>\n'
+		actual = HTMLGenerator.wrap(instance, value, instance_id)
+
+		HTMLGenerator._getAttributes.assert_called_once_with('mock', instance_id)
+		self.assertEqual(actual, expected)
+
+	##########################################
+	# HTMLGenerator.listToHTML
+	##########################################
+
+	def test_list_to_html_001(self):
+		# Mock list of items
+		items = list()
+		expected = ''
+		actual = HTMLGenerator.listToHTML(items)
+		self.assertEqual(expected, actual)
+
+	def test_list_to_html_002(self):
+		# Mock list of items
+		item1 = Mock()
+		item2 = Mock()
+
+		html1 = '<div>X</div>'
+		html2 = '<div>Y</div>'
+		item1.toHTML = MagicMock(return_value = html1)
+		item2.toHTML = MagicMock(return_value = html2)
+
+		items = [item1, item2]
+
+		expected = html1 + html2
+		actual = HTMLGenerator.listToHTML(items)
+		self.assertEqual(expected, actual)
+
+	##########################################
+	# HTMLGenerator.getOnLoadScript
+	##########################################
+
+	def test_get_on_load_script_001(self):
+		script = 'X'
+		expected = (
+			'  <script>\n'
+			'    window.addEventListener(\n'
+			'      "load",\n'
+			'      function() {\n'
+			'        "use strict";\n'
+			'X'
+			'      }\n'
+			'    );\n'
+			'  </script>'
+		)
+		actual = HTMLGenerator.getOnLoadScript(script)
+		self.assertEqual(expected, actual)
+
+	##########################################
+	# HTMLGenerator._getAttributes
+	##########################################
+
+	def test_get_attributes_001(self):
+		class_name = 'SomeClass'
+		id = 'SomeId'
+
+		expected = 'class="SomeClass" id="SomeId"'
+		actual = HTMLGenerator._getAttributes(class_name, id)
+		self.assertEqual(expected, actual)
+
+	def test_get_attributes_002(self):
+		class_name = 'SomeClass'
+		id = ''
+
+		expected = 'class="SomeClass"'
+		actual = HTMLGenerator._getAttributes(class_name, id)
+		self.assertEqual(expected, actual)
+
+	def test_get_attributes_003(self):
+		class_name = 'SomeClass'
+		id = 1
+
+		expected = 'class="SomeClass" id="1"'
+		actual = HTMLGenerator._getAttributes(class_name, id)
+		self.assertEqual(expected, actual)
+
+	##########################################
+	# HTMLGenerator._getHTML
+	##########################################
+
+	def test_get_html_001(self):
+		head = 'X'
+		body = 'Y'
+		expected = (
+			'<!doctype html>\n'
+			'<html lang="en">\n'
+			'X\n'
+			'Y\n'
+			'</html>'
+		)
+		generator = HTMLGenerator.__new__(HTMLGenerator)
+		actual = generator._getHTML(head, body)
+		self.assertEqual(expected, actual)
+
+	##########################################
+	# HTMLGenerator._getHead
+	##########################################
+
+	def test_get_head_001(self):
+		title = 'X'
+		expected = (
+			'  <head>\n'
+			'    <meta charset="utf-8">\n'
+			'    <title>X</title>\n'
+			'    <link rel="stylesheet" href="css/styles.css">\n'
+			'    <script src="scripts/leader-line.min.js"></script>\n'
+			'  </head>'
+		)
+
+		generator = HTMLGenerator.__new__(HTMLGenerator)
+
+		actual = generator._getHead(title)
+		self.assertEqual(expected, actual)
+
+	def test_get_head_002(self):
+		title = ''
+		expected = (
+			'  <head>\n'
+			'    <meta charset="utf-8">\n'
+			'    <title></title>\n'
+			'    <link rel="stylesheet" href="css/styles.css">\n'
+			'    <script src="scripts/leader-line.min.js"></script>\n'
+			'  </head>'
+		)
+
+		generator = HTMLGenerator.__new__(HTMLGenerator)
+
+		actual = generator._getHead(title)
+		self.assertEqual(expected, actual)
+
+	##########################################
+	# HTMLGenerator._getBody
+	##########################################
+
+	def test_get_body_001(self):
+		body = 'X'
+		expected = (
+			'  <body>\n'
+			'X\n'
+			'  </body>'
+		)
+		generator = HTMLGenerator.__new__(HTMLGenerator)
+		actual = generator._getBody(body)
+		self.assertEqual(expected, actual)
+
+	def test_get_body_002(self):
+		body = ''
+		expected = (
+			'  <body>\n'
+			'\n'
+			'  </body>'
+		)
+		generator = HTMLGenerator.__new__(HTMLGenerator)
+		actual = generator._getBody(body)
+		self.assertEqual(expected, actual)
+
+if __name__ == '__main__':
+	unittest.main()
