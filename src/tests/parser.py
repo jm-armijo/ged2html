@@ -555,7 +555,7 @@ class TestParser(unittest.TestCase):
 		# Setup person
 		person = Mock()
 		person.id = '@I000123@'
-		person.setSex= MagicMock()
+		person.set_sex= MagicMock()
 
 		# Setup line
 		line = Mock()
@@ -571,7 +571,7 @@ class TestParser(unittest.TestCase):
 
 		# Actual test
 		parser.addPersonData()
-		person.setSex.assert_called_with(line.data)
+		person.set_sex.assert_called_with(line.data)
 
 	def test_add_person_data_004(self):
 		# Setup person
@@ -625,7 +625,7 @@ class TestParser(unittest.TestCase):
 		person.id = '@I000123@'
 		person.setName = MagicMock()
 		person.setGivenName = MagicMock()
-		person.setSex= MagicMock()
+		person.set_sex= MagicMock()
 		person.setBirthDate= MagicMock()
 		person.setBirthPlace= MagicMock()
 
@@ -645,7 +645,7 @@ class TestParser(unittest.TestCase):
 		parser.addPersonData()
 		person.setName.assert_not_called()
 		person.setGivenName.assert_not_called()
-		person.setSex= MagicMock()
+		person.set_sex= MagicMock()
 		person.setBirthDate= MagicMock()
 		person.setBirthPlace= MagicMock()
 

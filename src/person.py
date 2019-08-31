@@ -24,7 +24,7 @@ class Person(Node):
 		if self.given_name == '':
 			self.given_name = given_name
 
-	def setSex(self, sex):
+	def set_sex(self, sex):
 		self.sex = sex
 
 	def setBirthDate(self, date):

@@ -137,13 +137,13 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.given_name, old_given_name)
 
 	##########################################
-	# Person.setSex
+	# Person.set_sex
 	##########################################
 
 	def test_set_sex(self):
 		person = Person.__new__(Person)
 		sex = 'M'
-		person.setSex(sex)
+		person.set_sex(sex)
 		self.assertEqual(person.sex, sex)
 
 	##########################################
