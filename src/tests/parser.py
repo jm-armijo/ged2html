@@ -15,7 +15,7 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(parser.state, 'IDLE')
 
 	##########################################
-	# Parser.makeTree
+	# Parser.make_tree
 	##########################################
 
 	@patch("src.tree.Tree.__new__")
@@ -28,15 +28,15 @@ class TestParser(unittest.TestCase):
 
 		# Setup Parser
 		parser = Parser.__new__(Parser)
-		parser._readFile = MagicMock(return_value = lines)
-		parser.parseLines = MagicMock()
+		parser._read_file = MagicMock(return_value = lines)
+		parser._parse_lines = MagicMock()
 		parser.people = dict()
 		parser.unions = list()
 
 		# Actual test
-		returned_tree = parser.makeTree(file_name)
-		parser._readFile.assert_called_once_with(file_name)
-		parser.parseLines.assert_called_once_with(lines)
+		returned_tree = parser.make_tree(file_name)
+		parser._read_file.assert_called_once_with(file_name)
+		parser._parse_lines.assert_called_once_with(lines)
 		self.assertEqual(returned_tree, tree)
 
 	@patch("src.tree.Tree.__new__")
@@ -52,19 +52,19 @@ class TestParser(unittest.TestCase):
 
 		# Setup Parser
 		parser = Parser.__new__(Parser)
-		parser._readFile = MagicMock(return_value = lines)
-		parser.parseLines = MagicMock()
+		parser._read_file = MagicMock(return_value = lines)
+		parser._parse_lines = MagicMock()
 		parser.people = people
 		parser.unions = list()
 
 		# Actual test
-		returned_tree = parser.makeTree(file_name)
-		parser._readFile.assert_called_once_with(file_name)
-		parser.parseLines.assert_called_once_with(lines)
+		returned_tree = parser.make_tree(file_name)
+		parser._read_file.assert_called_once_with(file_name)
+		parser._parse_lines.assert_called_once_with(lines)
 		self.assertEqual(returned_tree, tree)
 
 	##########################################
-	# Parser.parse_lines
+	# Parser._parse_lines
 	##########################################
 
 	def test_parse_lines_001(self):
@@ -74,13 +74,13 @@ class TestParser(unittest.TestCase):
 		parser.people = dict()
 		parser.unions = dict()
 		parser.last_key_per_level = dict()
-		parser.getCurrentState = MagicMock()
-		parser.parseCurrentLine = MagicMock()
+		parser._get_current_state = MagicMock()
+		parser._parse_current_line = MagicMock()
 
 		# Actual test
-		parser.parseLines(lines)
-		self.assertEqual(parser.getCurrentState.call_count, len(lines))
-		self.assertEqual(parser.parseCurrentLine.call_count, len(lines))
+		parser._parse_lines(lines)
+		self.assertEqual(parser._get_current_state.call_count, len(lines))
+		self.assertEqual(parser._parse_current_line.call_count, len(lines))
 
 	##########################################
 	# Parser.get_current_state
@@ -98,7 +98,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.data = 'INDI'
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'INDI')
 
 	# From any state goes to FAM when level = 0
@@ -113,7 +113,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.data = 'FAM'
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'FAM')
 
 	# Stays on IDLE if level > 0
@@ -127,7 +127,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 1
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'IDLE')
 
 	# From FAM goes to IDLE if no more data
@@ -142,7 +142,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.data = 'Any value but FAM or INDI'
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'IDLE')
 
 	# From INDI goes to IDLE if no more data
@@ -157,7 +157,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.data = 'Any value but FAM or INDI'
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'IDLE')
 
 	# From INDI goes to INDI_DATA (level 1)
@@ -171,7 +171,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 1
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'INDI_DATA')
 
 	# From INDI goes to INDI_DATA (level 9999)
@@ -185,7 +185,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 9999
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'INDI_DATA')
 
 	# From INDI_DATA goes to INDI_DATA (level 1)
@@ -197,7 +197,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 1
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'INDI_DATA')
 
 	# From INDI_DATA goes to INDI_DATA (level 9999)
@@ -209,7 +209,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 9999
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'INDI_DATA')
 
 	# From FAM goes to FAM_DATA (level 1)
@@ -223,7 +223,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 1
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'FAM_DATA')
 
 	# From FAM goes to FAM_DATA (level 9999)
@@ -237,7 +237,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 9999
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'FAM_DATA')
 
 	# From FAM_DATA goes to FAM_DATA (level 1)
@@ -249,7 +249,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 1
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'FAM_DATA')
 
 	# From FAM_DATA goes to FAM_DATA (level 9999)
@@ -261,7 +261,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.level = 9999
 
 		# Actual test
-		new_state = parser.getCurrentState()
+		new_state = parser._get_current_state()
 		self.assertEqual(new_state, 'FAM_DATA')
 
 	##########################################
@@ -273,88 +273,88 @@ class TestParser(unittest.TestCase):
 		parser.state = 'INDI'
 
 		# Mock parser functions
-		parser.createPerson = MagicMock()
-		parser.addPersonData = MagicMock()
-		parser.createUnion = MagicMock()
-		parser.addUnionData = MagicMock()
+		parser._create_person = MagicMock()
+		parser._add_person_data = MagicMock()
+		parser._create_union = MagicMock()
+		parser._add_union_data = MagicMock()
 
 		# Actual test
-		parser.parseCurrentLine()
-		parser.createPerson.assert_called()
-		parser.addPersonData.assert_not_called()
-		parser.createUnion.assert_not_called()
-		parser.addUnionData.assert_not_called()
+		parser._parse_current_line()
+		parser._create_person.assert_called()
+		parser._add_person_data.assert_not_called()
+		parser._create_union.assert_not_called()
+		parser._add_union_data.assert_not_called()
 
 	def test_parse_current_line_002(self):
 		parser = Parser.__new__(Parser)
 		parser.state = 'INDI_DATA'
 
 		# Mock parser functions
-		parser.createPerson = MagicMock()
-		parser.addPersonData = MagicMock()
-		parser.createUnion = MagicMock()
-		parser.addUnionData = MagicMock()
+		parser._create_person = MagicMock()
+		parser._add_person_data = MagicMock()
+		parser._create_union = MagicMock()
+		parser._add_union_data = MagicMock()
 
 		# Actual test
-		parser.parseCurrentLine()
-		parser.createPerson.assert_not_called()
-		parser.addPersonData.assert_called()
-		parser.createUnion.assert_not_called()
-		parser.addUnionData.assert_not_called()
+		parser._parse_current_line()
+		parser._create_person.assert_not_called()
+		parser._add_person_data.assert_called()
+		parser._create_union.assert_not_called()
+		parser._add_union_data.assert_not_called()
 
 	def test_parse_current_line_003(self):
 		parser = Parser.__new__(Parser)
 		parser.state = 'FAM'
 
 		# Mock parser functions
-		parser.createPerson = MagicMock()
-		parser.addPersonData = MagicMock()
-		parser.createUnion = MagicMock()
-		parser.addUnionData = MagicMock()
+		parser._create_person = MagicMock()
+		parser._add_person_data = MagicMock()
+		parser._create_union = MagicMock()
+		parser._add_union_data = MagicMock()
 
 		# Actual test
-		parser.parseCurrentLine()
-		parser.createPerson.assert_not_called()
-		parser.addPersonData.assert_not_called()
-		parser.createUnion.assert_called()
-		parser.addUnionData.assert_not_called()
+		parser._parse_current_line()
+		parser._create_person.assert_not_called()
+		parser._add_person_data.assert_not_called()
+		parser._create_union.assert_called()
+		parser._add_union_data.assert_not_called()
 
 	def test_parse_current_line_004(self):
 		parser = Parser.__new__(Parser)
 		parser.state = 'FAM_DATA'
 
 		# Mock parser functions
-		parser.createPerson = MagicMock()
-		parser.addPersonData = MagicMock()
-		parser.createUnion = MagicMock()
-		parser.addUnionData = MagicMock()
+		parser._create_person = MagicMock()
+		parser._add_person_data = MagicMock()
+		parser._create_union = MagicMock()
+		parser._add_union_data = MagicMock()
 
 		# Actual test
-		parser.parseCurrentLine()
-		parser.createPerson.assert_not_called()
-		parser.addPersonData.assert_not_called()
-		parser.createUnion.assert_not_called()
-		parser.addUnionData.assert_called()
+		parser._parse_current_line()
+		parser._create_person.assert_not_called()
+		parser._add_person_data.assert_not_called()
+		parser._create_union.assert_not_called()
+		parser._add_union_data.assert_called()
 
 	def test_parse_current_line_005(self):
 		parser = Parser.__new__(Parser)
 		parser.state = 'IDLE'
 
 		# Mock parser functions
-		parser.createPerson = MagicMock()
-		parser.addPersonData = MagicMock()
-		parser.createUnion = MagicMock()
-		parser.addUnionData = MagicMock()
+		parser._create_person = MagicMock()
+		parser._add_person_data = MagicMock()
+		parser._create_union = MagicMock()
+		parser._add_union_data = MagicMock()
 
 		# Actual test
-		parser.parseCurrentLine()
-		parser.createPerson.assert_not_called()
-		parser.addPersonData.assert_not_called()
-		parser.createUnion.assert_not_called()
-		parser.addUnionData.assert_not_called()
+		parser._parse_current_line()
+		parser._create_person.assert_not_called()
+		parser._add_person_data.assert_not_called()
+		parser._create_union.assert_not_called()
+		parser._add_union_data.assert_not_called()
 
 	##########################################
-	# Parser.createPerson
+	# Parser._create_person
 	##########################################
 
 	@patch("src.person.Person.__new__")
@@ -378,7 +378,7 @@ class TestParser(unittest.TestCase):
 		parser.people = dict()
 
 		# Test that Person constructor is called with right arguments
-		parser.createPerson()
+		parser._create_person()
 		self.assertEqual(mock.call_count, 1)
 		args = mock.call_args[0]
 		self.assertEqual(args[1], line.attribute)
@@ -418,19 +418,19 @@ class TestParser(unittest.TestCase):
 		line = Mock()
 		line.attribute = person1_id
 		parser.current_line = line
-		parser.createPerson()
+		parser._create_person()
 
 		# Create Person 2
 		line = Mock()
 		line.attribute = person2_id
 		parser.current_line = line
-		parser.createPerson()
+		parser._create_person()
 
 		# Create Person 3
 		line = Mock()
 		line.attribute = person3_id
 		parser.current_line = line
-		parser.createPerson()
+		parser._create_person()
 
 		# Test that Person constructor is called with right arguments
 		self.assertEqual(mock.call_count, 3)
@@ -473,30 +473,30 @@ class TestParser(unittest.TestCase):
 		parser = Parser.__new__(Parser)
 		parser.last_person = None
 		parser.people = dict()
-		parser.getPersonOrCreate = MagicMock(side_effect = [person1, person2, person3])
+		parser._get_person_or_create = MagicMock(side_effect = [person1, person2, person3])
 
 		# Create Person 1
 		line = Mock()
 		line.attribute = dup_id
 		parser.current_line = line
-		parser.createPerson()
+		parser._create_person()
 
 		# Create Person 2
 		line = Mock()
 		line.attribute = dup_id
 		parser.current_line = line
-		parser.createPerson()
+		parser._create_person()
 
 		# Create Person 3
 		line = Mock()
 		line.attribute = person3_id
 		parser.current_line = line
-		parser.createPerson()
+		parser._create_person()
 
 
 		# Test that Person constructor is called with right arguments
-		self.assertEqual(parser.getPersonOrCreate.call_count,3)
-		self.assertEqual(parser.getPersonOrCreate.mock_calls, [call(dup_id), call(dup_id), call(person3_id)])
+		self.assertEqual(parser._get_person_or_create.call_count,3)
+		self.assertEqual(parser._get_person_or_create.mock_calls, [call(dup_id), call(dup_id), call(person3_id)])
 
 		# Test that the new persons are added to the people dictionary
 		self.assertEqual(len(parser.people), 2)
@@ -504,14 +504,14 @@ class TestParser(unittest.TestCase):
 		self.assertEqual(parser.people[dup_id], person2)
 
 	##########################################
-	# Parser.addPersonData
+	# Parser._add_person_data
 	##########################################
 
 	def test_add_person_data_001(self):
 		# Setup person
 		person = Mock()
 		person.id = '@I000123@'
-		person.setName = MagicMock()
+		person.set_name = MagicMock()
 
 		# Setup line
 		line = Mock()
@@ -526,8 +526,8 @@ class TestParser(unittest.TestCase):
 		parser.last_person = person.id
 
 		# Actual test
-		parser.addPersonData()
-		person.setName.assert_called_with(line.data)
+		parser._add_person_data()
+		person.set_name.assert_called_with(line.data)
 
 	def test_add_person_data_002(self):
 		# Setup person
@@ -548,7 +548,7 @@ class TestParser(unittest.TestCase):
 		parser.last_person = person.id
 
 		# Actual test
-		parser.addPersonData()
+		parser._add_person_data()
 		person.set_given_name.assert_called_with(line.data)
 
 	def test_add_person_data_003(self):
@@ -570,7 +570,7 @@ class TestParser(unittest.TestCase):
 		parser.last_person = person.id
 
 		# Actual test
-		parser.addPersonData()
+		parser._add_person_data()
 		person.set_sex.assert_called_with(line.data)
 
 	def test_add_person_data_004(self):
@@ -593,7 +593,7 @@ class TestParser(unittest.TestCase):
 		parser.last_key_per_level = {1: 'BIRT'}
 
 		# Actual test
-		parser.addPersonData()
+		parser._add_person_data()
 		person.set_birth_date.assert_called_with(line.data)
 
 	def test_add_person_data_005(self):
@@ -616,14 +616,14 @@ class TestParser(unittest.TestCase):
 		parser.last_key_per_level = {1: 'BIRT'}
 
 		# Actual test
-		parser.addPersonData()
+		parser._add_person_data()
 		person.set_birth_place.assert_called_with(line.data)
 
 	def test_add_person_data_006(self):
 		# Setup person
 		person = Mock()
 		person.id = '@I000123@'
-		person.setName = MagicMock()
+		person.set_name = MagicMock()
 		person.setGivenName = MagicMock()
 		person.set_sex= MagicMock()
 		person.set_birth_date= MagicMock()
@@ -642,15 +642,15 @@ class TestParser(unittest.TestCase):
 		parser.last_person = person.id
 
 		# Actual test
-		parser.addPersonData()
-		person.setName.assert_not_called()
+		parser._add_person_data()
+		person.set_name.assert_not_called()
 		person.setGivenName.assert_not_called()
 		person.set_sex.assert_not_called()
 		person.set_birth_date.assert_not_called()
 		person.set_birth_place.assert_not_called()
 
 	##########################################
-	# Parser.createUnion
+	# Parser._create_union
 	##########################################
 
 	@patch("src.union.Union.__new__")
@@ -664,7 +664,7 @@ class TestParser(unittest.TestCase):
 		parser.current_line.attribute = attribute
 		parser.unions = list()
 
-		parser.createUnion()
+		parser._create_union()
 		mock_union.assert_called_with(ANY, attribute)
 		self.assertEqual(parser.unions, [union])
 
@@ -680,12 +680,12 @@ class TestParser(unittest.TestCase):
 		parser.current_line.attribute = attribute
 		parser.unions = [union1]
 
-		parser.createUnion()
+		parser._create_union()
 		mock_union.assert_called_with(ANY, attribute)
 		self.assertEqual(parser.unions, [union1, union2])
 
 	##########################################
-	# Parser.addUnionData
+	# Parser._add_union_data
 	##########################################
 
 	def test_add_union_data_001(self):
@@ -702,25 +702,25 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock(return_value = person)
+		parser._get_person_or_create = MagicMock(return_value = person)
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_called_once_with(value)
-		union1.setSpouse1.assert_called_once_with(person)
-		union1.setSpouse2.assert_not_called()
-		union1.addChild.assert_not_called()
-		union1.setDate.assert_not_called()
-		union1.setPlace.assert_not_called()
+		parser._add_union_data()
+		parser._get_person_or_create.assert_called_once_with(value)
+		union1.set_spouse1.assert_called_once_with(person)
+		union1.set_spouse2.assert_not_called()
+		union1.add_child.assert_not_called()
+		union1.set_date.assert_not_called()
+		union1.set_place.assert_not_called()
 
 	def test_add_union_data_002(self):
 		attribute = 'WIFE'
@@ -736,25 +736,25 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock(return_value = person)
+		parser._get_person_or_create = MagicMock(return_value = person)
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_called_once_with(value)
-		union1.setSpouse1.assert_not_called()
-		union1.setSpouse2.assert_called_once_with(person)
-		union1.addChild.assert_not_called()
-		union1.setDate.assert_not_called()
-		union1.setPlace.assert_not_called()
+		parser._add_union_data()
+		parser._get_person_or_create.assert_called_once_with(value)
+		union1.set_spouse1.assert_not_called()
+		union1.set_spouse2.assert_called_once_with(person)
+		union1.add_child.assert_not_called()
+		union1.set_date.assert_not_called()
+		union1.set_place.assert_not_called()
 
 	def test_add_union_data_003(self):
 		attribute = 'CHIL'
@@ -770,25 +770,25 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock(return_value = person)
+		parser._get_person_or_create = MagicMock(return_value = person)
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_called_once_with(value)
-		union1.setSpouse1.assert_not_called()
-		union1.setSpouse2.assert_not_called()
-		union1.addChild.assert_called_once_with(person)
-		union1.setDate.assert_not_called()
-		union1.setPlace.assert_not_called()
+		parser._add_union_data()
+		parser._get_person_or_create.assert_called_once_with(value)
+		union1.set_spouse1.assert_not_called()
+		union1.set_spouse2.assert_not_called()
+		union1.add_child.assert_called_once_with(person)
+		union1.set_date.assert_not_called()
+		union1.set_place.assert_not_called()
 
 	def test_add_union_data_004(self):
 		attribute = 'DATE'
@@ -803,26 +803,26 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock()
+		parser._get_person_or_create = MagicMock()
 		parser.last_key_per_level = {0: 'MARR'}
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_not_called()
-		union1.setSpouse1.assert_not_called()
-		union1.setSpouse2.assert_not_called()
-		union1.addChild.assert_not_called()
-		union1.setDate.assert_called_once_with(value)
-		union1.setPlace.assert_not_called()
+		parser._add_union_data()
+		parser._get_person_or_create.assert_not_called()
+		union1.set_spouse1.assert_not_called()
+		union1.set_spouse2.assert_not_called()
+		union1.add_child.assert_not_called()
+		union1.set_date.assert_called_once_with(value)
+		union1.set_place.assert_not_called()
 
 	def test_add_union_data_005(self):
 		attribute = 'DATE'
@@ -837,26 +837,26 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock()
+		parser._get_person_or_create = MagicMock()
 		parser.last_key_per_level = {0: 'ANY'}
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_not_called()
-		union1.setSpouse1.assert_not_called()
-		union1.setSpouse2.assert_not_called()
-		union1.addChild.assert_not_called()
-		union1.setDate.assert_not_called()
-		union1.setPlace.assert_not_called()
+		parser._add_union_data()
+		parser._get_person_or_create.assert_not_called()
+		union1.set_spouse1.assert_not_called()
+		union1.set_spouse2.assert_not_called()
+		union1.add_child.assert_not_called()
+		union1.set_date.assert_not_called()
+		union1.set_place.assert_not_called()
 
 	def test_add_union_data_006(self):
 		attribute = 'PLAC'
@@ -871,26 +871,26 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock()
+		parser._get_person_or_create = MagicMock()
 		parser.last_key_per_level = {0: 'MARR'}
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_not_called()
-		union1.setSpouse1.assert_not_called()
-		union1.setSpouse2.assert_not_called()
-		union1.addChild.assert_not_called()
-		union1.setDate.assert_not_called()
-		union1.setPlace.assert_called_once_with(value)
+		parser._add_union_data()
+		parser._get_person_or_create.assert_not_called()
+		union1.set_spouse1.assert_not_called()
+		union1.set_spouse2.assert_not_called()
+		union1.add_child.assert_not_called()
+		union1.set_date.assert_not_called()
+		union1.set_place.assert_called_once_with(value)
 
 	def test_add_union_data_007(self):
 		attribute = 'PLAC'
@@ -905,29 +905,29 @@ class TestParser(unittest.TestCase):
 		# Setup parser
 		parser = Parser.__new__(Parser)
 		parser.current_line = line
-		parser.getPersonOrCreate = MagicMock()
+		parser._get_person_or_create = MagicMock()
 		parser.last_key_per_level = {0: 'ANY'}
 
 		# Setup parser unions
 		union1 = Mock()
-		union1.setSpouse1 = MagicMock()
-		union1.setSpouse2 = MagicMock()
-		union1.addChild = MagicMock()
-		union1.setDate = MagicMock()
-		union1.setPlace = MagicMock()
+		union1.set_spouse1 = MagicMock()
+		union1.set_spouse2 = MagicMock()
+		union1.add_child = MagicMock()
+		union1.set_date = MagicMock()
+		union1.set_place = MagicMock()
 		parser.unions = [union1]
 
 		# Actual test
-		parser.addUnionData()
-		parser.getPersonOrCreate.assert_not_called()
-		union1.setSpouse1.assert_not_called()
-		union1.setSpouse2.assert_not_called()
-		union1.addChild.assert_not_called()
-		union1.setDate.assert_not_called()
-		union1.setPlace.assert_not_called()
+		parser._add_union_data()
+		parser._get_person_or_create.assert_not_called()
+		union1.set_spouse1.assert_not_called()
+		union1.set_spouse2.assert_not_called()
+		union1.add_child.assert_not_called()
+		union1.set_date.assert_not_called()
+		union1.set_place.assert_not_called()
 
 	##########################################
-	# Parser.getPersonOrCreate
+	# Parser._get_person_or_create
 	##########################################
 
 	@patch("src.person.Person.__new__")
@@ -936,7 +936,7 @@ class TestParser(unittest.TestCase):
 		parser = Parser.__new__(Parser)
 		parser.people = dict()
 
-		parser.getPersonOrCreate(id)
+		parser._get_person_or_create(id)
 		mock_person.assert_called_with(ANY, id)
 
 	@patch("src.person.Person.__new__")
@@ -945,7 +945,7 @@ class TestParser(unittest.TestCase):
 		parser = Parser.__new__(Parser)
 		parser.people = {id: Mock()}
 
-		parser.getPersonOrCreate(id)
+		parser._get_person_or_create(id)
 		mock_person.assert_not_called()
 if __name__ == '__main__':
 	unittest.main()

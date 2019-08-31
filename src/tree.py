@@ -17,13 +17,13 @@ class Tree():
 		self.levels = dict()
 		self.opened = list()
 
-		self.nodes = self._createNodes(people)
-		self.edges = self._createEdges(unions)
+		self.nodes = self._ceate_nodes(people)
+		self.edges = self._create_edges(unions)
 
-	def toHTML(self):
-		nodes_html = HTMLGenerator.listToHTML(self.nodes)
-		edges_html = HTMLGenerator.listToHTML(self.edges)
-		edges_script = HTMLGenerator.getOnLoadScript(edges_html)
+	def to_html(self):
+		nodes_html = HTMLGenerator.list_to_html(self.nodes)
+		edges_html = HTMLGenerator.list_to_html(self.edges)
+		edges_script = HTMLGenerator.get_on_load_script(edges_html)
 
 		return (
 			'{}'
@@ -32,85 +32,85 @@ class Tree():
 
 # private:
 
-	def _createNodes(self, people):
+	def _ceate_nodes(self, people):
 		level = 0
-		starting_node = self._getStartingNode(people)
-		self._extendNodeAndAdd(0, starting_node)
-		return self._levelsToNodes()
+		starting_node = self._get_starting_node(people)
+		self._extend_node_and_add(0, starting_node)
+		return self._levels_to_nodes()
 
-	def _extendNodesAndAdd(self, level, nodes):
+	def _extend_nodes_and_add(self, level, nodes):
 		for node in nodes:
-			self._extendNodeAndAdd(level, node)
+			self._extend_node_and_add(level, node)
 
-	def _extendNodeAndAdd(self, level, node):
-		extended = self._extendNode(node)
-		self._addNodes(level, extended)
+	def _extend_node_and_add(self, level, node):
+		extended = self._extend_node(node)
+		self._add_nodes(level, extended)
 
-	def _addNodes(self, level, nodes):
+	def _add_nodes(self, level, nodes):
 		for node in nodes:
-			self._addNode(level, node)
+			self._add_node(level, node)
 
-	def _addNode(self, level, node):
+	def _add_node(self, level, node):
 		if node in self.opened:
 			return
 
-		self._openNode(node)
-		self._addToTree(level, node)
-		self._extendNodesAndAdd(level+1, node.getChildren())
-		self._extendNodesAndAdd(level-1, node.getParents())
+		self._open_node(node)
+		self._add_to_tree(level, node)
+		self._extend_nodes_and_add(level+1, node.get_children())
+		self._extend_nodes_and_add(level-1, node.get_parents())
 
-	def _openNode(self, node):
+	def _open_node(self, node):
 		self.opened.append(node)
 
-	def _extendNodes(self, nodes):
+	def _extend_nodes(self, nodes):
 		extended = list()
 		for node in nodes:
-			extended += self._extendNode(node)
+			extended += self._extend_node(node)
 		return extended
 
-	def _extendNode(self, node):
+	def _extend_node(self, node):
 		if isinstance(node, Person):
-			return self._extendPerson(node)
+			return self._extend_person(node)
 		else:
-			return self._extendUnion(node)
+			return self._extend_union(node)
 
-	def _extendPerson(self, person):
-		if person.isSingle():
+	def _extend_person(self, person):
+		if person.is_single():
 			return [person]
 		else:
-			self._openNode(person)
-			return self._extendNodes(person.getUnions())
+			self._open_node(person)
+			return self._extend_nodes(person.get_unions())
 
-	def _extendUnion(self, union):
+	def _extend_union(self, union):
 		queue = unique_queue([union])
 
-		while (not queue.isEmpty()):
+		while (not queue.is_empty()):
 			union = queue.pop()
-			queue.pushList(union.getUnions())
+			queue.push_list(union.get_unions())
 
-		return queue.getAll()
+		return queue.get_all()
 
-	def _createEdges(self, unions):
+	def _create_edges(self, unions):
 		edges = list()
 		for union in unions:
-			edges += self._createEdgesFromNode(union)
+			edges += self._create_edges_from_node(union)
 		return edges
 
-	def _createEdgesFromNode(self, start):
+	def _create_edges_from_node(self, start):
 		edges = list()
 		if start not in self.opened:
 			print("Element {} not processed. Check your ged file for inconsistent data.".format(start.id))
 		else:
-			edges = self._createEdgesToNodes(start, start.getChildren())
+			edges = self._create_edges_to_nodes(start, start.get_children())
 		return edges
 
-	def _createEdgesToNodes(self, start, end_nodes):
+	def _create_edges_to_nodes(self, start, end_nodes):
 		edges = list()
 		for end in end_nodes:
-			edges += self._createEdgeToNode(start, end)
+			edges += self._create_edge_to_node(start, end)
 		return edges
 
-	def _createEdgeToNode(self, start, end):
+	def _create_edge_to_node(self, start, end):
 		edges = list()
 		if end not in self.opened:
 			print("Element {} not processed. Check your ged file for inconsistent data.".format(end.id))
@@ -122,7 +122,7 @@ class Tree():
 	Gets a Person object to start building the tree.
 	It can be any person, so the one with the lowest id is picked
 	'''
-	def _getStartingNode(self, people):
+	def _get_starting_node(self, people):
 		node = None
 		people_ids = list(people.keys())
 
@@ -133,12 +133,12 @@ class Tree():
 
 		return node
 
-	def _addToTree(self, level, node):
+	def _add_to_tree(self, level, node):
 		if level not in self.levels:
 			self.levels[level] = TreeLevel()
 		self.levels[level].append(node)
 
-	def _levelsToNodes(self):
+	def _levels_to_nodes(self):
 		keys = sorted(self.levels.keys(), reverse=True)
 		nodes = []
 		for key in keys:

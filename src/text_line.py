@@ -1,9 +1,9 @@
 class TextLine():
 	def __init__(self, line):
 		self.line = line
-		self.parseLine(line)
+		self.parse_line(line)
 	
-	def parseLine(self, line):
+	def parse_line(self, line):
 		parts = line.split()
 		self.level = int(parts[0])
 		self.attribute = parts[1]

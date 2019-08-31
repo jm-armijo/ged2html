@@ -27,79 +27,79 @@ class TestUnion(unittest.TestCase):
 		self.assertEqual(union.place, '')
 
 	##########################################
-	# Union.setSpouse1
+	# Union.set_spouse1
 	##########################################
 
 	def test_set_spouse1(self):
 		spouse = Mock()
-		spouse.addUnion = MagicMock()
+		spouse.add_union = MagicMock()
 
 		union = Union.__new__(Union)
-		union.setSpouse1(spouse)
+		union.set_spouse1(spouse)
 		self.assertEqual(union.spouse1, spouse)
-		spouse.addUnion.assert_called_with(union)
+		spouse.add_union.assert_called_with(union)
 
 	##########################################
-	# Union.setSpouse2
+	# Union.set_spouse2
 	##########################################
 
 	def test_set_spouse2(self):
 		spouse = Mock()
-		spouse.addUnion = MagicMock()
+		spouse.add_union = MagicMock()
 
 		union = Union.__new__(Union)
-		union.setSpouse2(spouse)
+		union.set_spouse2(spouse)
 		self.assertEqual(union.spouse2, spouse)
-		spouse.addUnion.assert_called_with(union)
+		spouse.add_union.assert_called_with(union)
 
 	##########################################
-	# Union.addChild
+	# Union.add_child
 	##########################################
 
 	def test_add_child_001(self):
 		child = Mock()
-		child.setParents = MagicMock()
+		child.set_parents = MagicMock()
 
 		union = Union.__new__(Union)
 		union.children = list()
-		union.addChild(child)
+		union.add_child(child)
 		self.assertEqual(union.children, [child])
-		child.setParents.assert_called_with(union)
+		child.set_parents.assert_called_with(union)
 
 	def test_add_child_002(self):
 		child1 = Mock()
 		child2 = Mock()
 		child3 = Mock()
-		child3.setParents = MagicMock()
+		child3.set_parents = MagicMock()
 
 		union = Union.__new__(Union)
 		union.children = [child1, child2]
-		union.addChild(child3)
+		union.add_child(child3)
 		self.assertEqual(union.children, [child1, child2, child3])
-		child3.setParents.assert_called_with(union)
+		child3.set_parents.assert_called_with(union)
 
 	##########################################
-	# Union.setDate
+	# Union.set_date
 	##########################################
 
 	def test_set_date(self):
 		union = Union.__new__(Union)
 		date = '28 FEB 1800'
-		union.setDate(date)
+		union.set_date(date)
 		self.assertEqual(union.date, date)
 
 	##########################################
-	# Union.setPlace
+	# Union.set_place
 	##########################################
 
 	def test_set_place(self):
 		union = Union.__new__(Union)
 		place = 'Somewhere'
-		union.setPlace(place)
+		union.set_place(place)
 		self.assertEqual(union.place, place)
 
 	##########################################
-	# Union.getChildren
+	# Union.get_children
 	##########################################
 
 	def test_get_children_001(self):
@@ -107,7 +107,7 @@ class TestUnion(unittest.TestCase):
 		union = Union.__new__(Union)
 		union.children = children
 
-		returned_children = union.getChildren()
+		returned_children = union.get_children()
 		self.assertEqual(returned_children, children)
 
 	def test_get_children_002(self):
@@ -115,7 +115,7 @@ class TestUnion(unittest.TestCase):
 		union.spouse1 = None
 		union.spouse2 = None
 
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, [])
 
 	def test_get_children_003(self):
@@ -125,10 +125,10 @@ class TestUnion(unittest.TestCase):
 
 		# Setup spouses
 		spouse1 = Mock()
-		spouse1.getParents = MagicMock(return_value = parents1)
+		spouse1.get_parents = MagicMock(return_value = parents1)
 
 		spouse2 = Mock()
-		spouse2.getParents = MagicMock(return_value = parents2)
+		spouse2.get_parents = MagicMock(return_value = parents2)
 
 		# Setup union of spouses
 		union = Union.__new__(Union)
@@ -136,7 +136,7 @@ class TestUnion(unittest.TestCase):
 		union.spouse2 = spouse2
 
 		# Test
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents1)
 
 	def test_get_children_003(self):
@@ -146,10 +146,10 @@ class TestUnion(unittest.TestCase):
 
 		# Setup spouses
 		spouse1 = Mock()
-		spouse1.getParents = MagicMock(return_value = parents1)
+		spouse1.get_parents = MagicMock(return_value = parents1)
 
 		spouse2 = Mock()
-		spouse2.getParents = MagicMock(return_value = parents2)
+		spouse2.get_parents = MagicMock(return_value = parents2)
 
 		# Setup union of spouses
 		union = Union.__new__(Union)
@@ -157,7 +157,7 @@ class TestUnion(unittest.TestCase):
 		union.spouse2 = spouse2
 
 		# Test
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents2)
 
 	def test_get_children_004(self):
@@ -167,10 +167,10 @@ class TestUnion(unittest.TestCase):
 
 		# Setup spouses
 		spouse1 = Mock()
-		spouse1.getParents = MagicMock(return_value = parents1)
+		spouse1.get_parents = MagicMock(return_value = parents1)
 
 		spouse2 = Mock()
-		spouse2.getParents = MagicMock(return_value = parents2)
+		spouse2.get_parents = MagicMock(return_value = parents2)
 
 		# Setup union of spouses
 		union = Union.__new__(Union)
@@ -178,11 +178,11 @@ class TestUnion(unittest.TestCase):
 		union.spouse2 = spouse2
 
 		# Test
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents1 + parents2)
 
 	##########################################
-	# Union.getParents
+	# Union.get_parents
 	##########################################
 
 	def test_get_parents_001(self):
@@ -191,7 +191,7 @@ class TestUnion(unittest.TestCase):
 		union.spouse1 = None
 		union.spouse2 = None
 
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents)
 
 	def test_get_parents_002(self):
@@ -200,9 +200,9 @@ class TestUnion(unittest.TestCase):
 		union = Union.__new__(Union)
 		union.spouse1 = None
 		union.spouse2 = Mock()
-		union.spouse2.getParents = MagicMock(return_value = parents_spouse2)
+		union.spouse2.get_parents = MagicMock(return_value = parents_spouse2)
 
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents_spouse2)
 
 	def test_get_parents_003(self):
@@ -210,10 +210,10 @@ class TestUnion(unittest.TestCase):
 
 		union = Union.__new__(Union)
 		union.spouse1 = Mock()
-		union.spouse1.getParents = MagicMock(return_value = parents_spouse1)
+		union.spouse1.get_parents = MagicMock(return_value = parents_spouse1)
 		union.spouse2 = None
 
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents_spouse1)
 
 	def test_get_parents_004(self):
@@ -222,15 +222,15 @@ class TestUnion(unittest.TestCase):
 
 		union = Union.__new__(Union)
 		union.spouse1 = Mock()
-		union.spouse1.getParents = MagicMock(return_value = parents_spouse1)
+		union.spouse1.get_parents = MagicMock(return_value = parents_spouse1)
 		union.spouse2 = Mock()
-		union.spouse2.getParents = MagicMock(return_value = parents_spouse2)
+		union.spouse2.get_parents = MagicMock(return_value = parents_spouse2)
 
-		returned_parents = union.getParents()
+		returned_parents = union.get_parents()
 		self.assertEqual(returned_parents, parents_spouse1 + parents_spouse2)
 
 	##########################################
-	# Union.getUnions
+	# Union.get_unions
 	##########################################
 
 	def test_get_unions_001(self):
@@ -239,7 +239,7 @@ class TestUnion(unittest.TestCase):
 		union.spouse1 = None
 		union.spouse2 = None
 
-		returned_unions = union.getUnions()
+		returned_unions = union.get_unions()
 		self.assertEqual(returned_unions, unions)
 
 	def test_get_unions_002(self):
@@ -248,9 +248,9 @@ class TestUnion(unittest.TestCase):
 		union = Union.__new__(Union)
 		union.spouse1 = None
 		union.spouse2 = Mock()
-		union.spouse2.getUnions = MagicMock(return_value = unions_spouse2)
+		union.spouse2.get_unions = MagicMock(return_value = unions_spouse2)
 
-		returned_unions = union.getUnions()
+		returned_unions = union.get_unions()
 		self.assertEqual(returned_unions, unions_spouse2)
 
 	def test_get_unions_003(self):
@@ -258,10 +258,10 @@ class TestUnion(unittest.TestCase):
 
 		union = Union.__new__(Union)
 		union.spouse1 = Mock()
-		union.spouse1.getUnions = MagicMock(return_value = unions_spouse1)
+		union.spouse1.get_unions = MagicMock(return_value = unions_spouse1)
 		union.spouse2 = None
 
-		returned_unions = union.getUnions()
+		returned_unions = union.get_unions()
 		self.assertEqual(returned_unions, unions_spouse1)
 
 	def test_get_unions_004(self):
@@ -270,15 +270,15 @@ class TestUnion(unittest.TestCase):
 
 		union = Union.__new__(Union)
 		union.spouse1 = Mock()
-		union.spouse1.getUnions = MagicMock(return_value = unions_spouse1)
+		union.spouse1.get_unions = MagicMock(return_value = unions_spouse1)
 		union.spouse2 = Mock()
-		union.spouse2.getUnions = MagicMock(return_value = unions_spouse2)
+		union.spouse2.get_unions = MagicMock(return_value = unions_spouse2)
 
-		returned_unions = union.getUnions()
+		returned_unions = union.get_unions()
 		self.assertEqual(returned_unions, unions_spouse1 + unions_spouse2)
 
 	##########################################
-	# Union.toHTML()
+	# Union.to_html()
 	##########################################
 
 	def test_to_html_001(self):
@@ -291,8 +291,8 @@ class TestUnion(unittest.TestCase):
 		spouse1_html = "<div>Spouse1</div>"
 		spouse2_html = "<div>Spouse2</div>"
 
-		union.spouse1.toHTML = MagicMock(return_value = spouse1_html)
-		union.spouse2.toHTML = MagicMock(return_value = spouse2_html)
+		union.spouse1.to_html = MagicMock(return_value = spouse1_html)
+		union.spouse2.to_html = MagicMock(return_value = spouse2_html)
 
 		value = (
 			'  {}\n'
@@ -303,7 +303,7 @@ class TestUnion(unittest.TestCase):
 		wrapped = "<div>"+value+"</div>"
 		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
 
-		html = union.toHTML()
+		html = union.to_html()
 		HTMLGenerator.wrap.assert_called_once_with(union, value)
 		self.assertEqual(wrapped, html)
 
@@ -317,8 +317,8 @@ class TestUnion(unittest.TestCase):
 		spouse1_html = "<div>Spouse1</div>"
 		spouse2_html = ""
 
-		union.spouse1.toHTML = MagicMock(return_value = spouse1_html)
-		union.spouse2.toHTML = MagicMock(return_value = spouse2_html)
+		union.spouse1.to_html = MagicMock(return_value = spouse1_html)
+		union.spouse2.to_html = MagicMock(return_value = spouse2_html)
 
 		value = (
 			'  {}\n'
@@ -329,7 +329,7 @@ class TestUnion(unittest.TestCase):
 		wrapped = "<div>"+value+"</div>"
 		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
 
-		html = union.toHTML()
+		html = union.to_html()
 		HTMLGenerator.wrap.assert_called_once_with(union, value)
 		self.assertEqual(wrapped, html)
 

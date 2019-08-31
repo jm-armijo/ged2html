@@ -28,7 +28,7 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(queue.to_open, deque([union]))
 
 	##########################################
-	# unique_queue.pushList
+	# unique_queue.push_list
 	##########################################
 
 	def test_push_list_001(self):
@@ -39,7 +39,7 @@ class TestPerson(unittest.TestCase):
 		queue = unique_queue.__new__(unique_queue)
 		queue.push = MagicMock()
 
-		queue.pushList(elements)
+		queue.push_list(elements)
 		self.assertEqual(queue.push.mock_calls, [call(element1), call(element2)])
 
 	def test_push_list_001(self):
@@ -48,7 +48,7 @@ class TestPerson(unittest.TestCase):
 		queue = unique_queue.__new__(unique_queue)
 		queue.push = MagicMock()
 
-		queue.pushList(elements)
+		queue.push_list(elements)
 		queue.push.assert_not_called()
 
 	##########################################
@@ -129,28 +129,28 @@ class TestPerson(unittest.TestCase):
 		self.assertTrue(element in queue.opened)
 
 	##########################################
-	# unique_queue.isEmpty
+	# unique_queue.is_empty
 	##########################################
 
 	def test_is_empty_001(self):
 		queue = unique_queue.__new__(unique_queue)
 		queue.to_open = deque()
-		self.assertTrue(queue.isEmpty())
+		self.assertTrue(queue.is_empty())
 
 	def test_is_empty_002(self):
 		queue = unique_queue.__new__(unique_queue)
 		queue.to_open = deque([Mock()])
-		self.assertFalse(queue.isEmpty())
+		self.assertFalse(queue.is_empty())
 
 	##########################################
-	# unique_queue.getAll
+	# unique_queue.get_all
 	##########################################
 
 	def test_get_all_001(self):
 		opened = Mock()
 		queue = unique_queue.__new__(unique_queue)
 		queue.opened = opened
-		self.assertEqual(queue.getAll(), opened)
+		self.assertEqual(queue.get_all(), opened)
 
 if __name__ == '__main__':
 	unittest.main()

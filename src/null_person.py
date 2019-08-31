@@ -1,9 +1,9 @@
 from src.node import Node
 
 class NullPerson(Node):
-	def toHTML(self):
+	def to_html(self):
 		return '<div class="person"></div>'
 	
-	def getUnions(self):
+	def get_unions(self):
 		return list()
 

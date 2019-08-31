@@ -45,22 +45,22 @@ class TestTreeLevel(unittest.TestCase):
 		self.assertEqual(tree_level.nodes, [tree_node1, tree_node2])
 
 	##########################################
-	# TreeLevel.toHTML
+	# TreeLevel.to_html
 	##########################################
 
 	def test_to_html_001(self):
 		html_list = "<div><div>X</div><div>Y</div></div>"
 		html_level = "<div>"+html_list+"</div>"
 
-		HTMLGenerator.listToHTML = MagicMock(return_value = html_list)
+		HTMLGenerator.list_to_html = MagicMock(return_value = html_list)
 		HTMLGenerator.wrap = MagicMock(return_value = html_level)
 
 		nodes = Mock()
 		tree_level = TreeLevel.__new__(TreeLevel)
 		tree_level.nodes = nodes
 
-		return_value = tree_level.toHTML()
-		HTMLGenerator.listToHTML.assert_called_once_with(nodes)
+		return_value = tree_level.to_html()
+		HTMLGenerator.list_to_html.assert_called_once_with(nodes)
 		HTMLGenerator.wrap.assert_called_once_with(tree_level, html_list)
 		self.assertEqual(return_value, html_level)
 

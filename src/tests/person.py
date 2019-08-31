@@ -23,7 +23,7 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.unions, list())
 
 	##########################################
-	# Person.setName
+	# Person.set_name
 	##########################################
 
 	def test_set_name_001(self):
@@ -35,12 +35,12 @@ class TestPerson(unittest.TestCase):
 		# Mock person
 		person = Person.__new__(Person)
 		person.given_name = ''
-		person._splitName = MagicMock(return_value=[given_name, last_name])
+		person._split_name = MagicMock(return_value=[given_name, last_name])
 		person.set_given_name = MagicMock()
 
 		# Actual test
-		person.setName(full_name)
-		person._splitName.assert_called_with(full_name)
+		person.set_name(full_name)
+		person._split_name.assert_called_with(full_name)
 		person.set_given_name.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
@@ -53,12 +53,12 @@ class TestPerson(unittest.TestCase):
 		# Mock person
 		person = Person.__new__(Person)
 		person.given_name = 'A name'
-		person._splitName = MagicMock(return_value=[given_name, last_name])
+		person._split_name = MagicMock(return_value=[given_name, last_name])
 		person.set_given_name = MagicMock()
 
 		# Actual test
-		person.setName(full_name)
-		person._splitName.assert_called_with(full_name)
+		person.set_name(full_name)
+		person._split_name.assert_called_with(full_name)
 		person.set_given_name.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
@@ -71,12 +71,12 @@ class TestPerson(unittest.TestCase):
 		# Mock person
 		person = Person.__new__(Person)
 		person.given_name = ''
-		person._splitName = MagicMock(return_value=[given_name, last_name])
+		person._split_name = MagicMock(return_value=[given_name, last_name])
 		person.set_given_name = MagicMock()
 
 		# Actual test
-		person.setName(full_name)
-		person._splitName.assert_called_with(full_name)
+		person.set_name(full_name)
+		person._split_name.assert_called_with(full_name)
 		person.set_given_name.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
@@ -187,54 +187,54 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.death_place, place)
 
 	##########################################
-	# Person.setParents
+	# Person.set_parents
 	##########################################
 
 	def test_set_parent_union_001(self):
 		person = Person.__new__(Person)
 		person.parents = None
 		parents = Mock()
-		person.setParents(parents)
+		person.set_parents(parents)
 		self.assertEqual(person.parents, parents)
 
 	##########################################
-	# Person.addUnion
+	# Person.add_union
 	##########################################
 
 	def test_add_union_001(self):
 		person = Person.__new__(Person)
 		person.unions = list()
 		union = Mock()
-		person.addUnion(union)
+		person.add_union(union)
 		self.assertEqual(person.unions[0], union)
 
 	def test_add_union_002(self):
 		person = Person.__new__(Person)
 		person.unions = [Mock()]
 		union = Mock()
-		person.addUnion(union)
+		person.add_union(union)
 		self.assertEqual(person.unions[1], union)
 
 	##########################################
-	# Person.getChildren
+	# Person.get_children
 	##########################################
 
 	def test_get_children_001(self):
 		person = Person.__new__(Person)
 		person.unions = list()
 
-		returned_children = person.getChildren()
+		returned_children = person.get_children()
 		self.assertEqual(returned_children, list())
 
 	def test_get_children_002(self):
 		children = [Mock(), Mock()]
 		union = Mock()
-		union.getChildren = MagicMock(return_value = children)
+		union.get_children = MagicMock(return_value = children)
 
 		person = Person.__new__(Person)
 		person.unions = [union]
 
-		returned_children = person.getChildren()
+		returned_children = person.get_children()
 		self.assertEqual(returned_children, children)
 
 	def test_get_children_003(self):
@@ -242,24 +242,24 @@ class TestPerson(unittest.TestCase):
 		children2 = [Mock(), Mock()]
 		union1 = Mock()
 		union2 = Mock()
-		union1.getChildren = MagicMock(return_value = children1)
-		union2.getChildren = MagicMock(return_value = children2)
+		union1.get_children = MagicMock(return_value = children1)
+		union2.get_children = MagicMock(return_value = children2)
 
 		person = Person.__new__(Person)
 		person.unions = [union1, union2]
 
-		returned_children = person.getChildren()
+		returned_children = person.get_children()
 		self.assertEqual(returned_children, children1 + children2)
 
 	##########################################
-	# Person.getParents
+	# Person.get_parents
 	##########################################
 
 	def test_get_parents_001(self):
 		person = Person.__new__(Person)
 		person.parents = None
 
-		returned_parents = person.getParents()
+		returned_parents = person.get_parents()
 		self.assertEqual(returned_parents, list())
 
 	def test_get_parents_002(self):
@@ -267,11 +267,11 @@ class TestPerson(unittest.TestCase):
 		person = Person.__new__(Person)
 		person.parents = parents
 
-		returned_parents = person.getParents()
+		returned_parents = person.get_parents()
 		self.assertEqual(returned_parents, [parents])
 
 	##########################################
-	# Person.getUnions
+	# Person.get_unions
 	##########################################
 
 	def test_get_unions_001(self):
@@ -279,7 +279,7 @@ class TestPerson(unittest.TestCase):
 		person = Person.__new__(Person)
 		person.unions = unions
 
-		returned_unions = person.getUnions()
+		returned_unions = person.get_unions()
 		self.assertEqual(returned_unions, unions)
 
 	def test_get_unions_002(self):
@@ -287,22 +287,22 @@ class TestPerson(unittest.TestCase):
 		person = Person.__new__(Person)
 		person.unions = unions
 
-		returned_unions = person.getUnions()
+		returned_unions = person.get_unions()
 		self.assertEqual(returned_unions, unions)
 
 	##########################################
-	# Person.isSingle()
+	# Person.is_single()
 	##########################################
 
 	def test_is_single_001(self):
 		person = Person.__new__(Person)
 		person.unions = list()
 
-		single = person.isSingle()
+		single = person.is_single()
 		self.assertTrue(single)
 
 	##########################################
-	# Person.toHTML()
+	# Person.to_html()
 	##########################################
 
 	def test_to_html_001(self):
@@ -323,7 +323,7 @@ class TestPerson(unittest.TestCase):
 		wrapped = "<div>"+value+"</div>"
 		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
 
-		html = person.toHTML()
+		html = person.to_html()
 		HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
 		self.assertEqual(wrapped, html)
 
@@ -345,7 +345,7 @@ class TestPerson(unittest.TestCase):
 		wrapped = "<div>"+value+"</div>"
 		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
 
-		html = person.toHTML()
+		html = person.to_html()
 		HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
 		self.assertEqual(wrapped, html)
 
@@ -367,47 +367,47 @@ class TestPerson(unittest.TestCase):
 		wrapped = "<div>"+value+"</div>"
 		HTMLGenerator.wrap = MagicMock(return_value = wrapped)
 
-		html = person.toHTML()
+		html = person.to_html()
 		HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
 		self.assertEqual(wrapped, html)
 
 	##########################################
-	# Person._splitName
+	# Person._split_name
 	##########################################
 
 	def test_split_name_001(self):
 		person = Person.__new__(Person)
 		full_name = 'First Name /Last Name/'
 
-		split_name = person._splitName(full_name)
+		split_name = person._split_name(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	def test_split_name_002(self):
 		person = Person.__new__(Person)
 		full_name = '     First Name    /    Last Name   /   '
 
-		split_name = person._splitName(full_name)
+		split_name = person._split_name(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	def test_split_name_003(self):
 		person = Person.__new__(Person)
 		full_name = '/Last Name/'
 
-		split_name = person._splitName(full_name)
+		split_name = person._split_name(full_name)
 		self.assertEqual(split_name, ('', 'Last Name'))
 
 	def test_split_name_004(self):
 		person = Person.__new__(Person)
 		full_name = 'First Name //'
 
-		split_name = person._splitName(full_name)
+		split_name = person._split_name(full_name)
 		self.assertEqual(split_name, ('First Name', ''))
 
 	def test_split_name_005(self):
 		person = Person.__new__(Person)
 		full_name = 'First Name /Last Name'
 
-		split_name = person._splitName(full_name)
+		split_name = person._split_name(full_name)
 		self.assertEqual(split_name, ('First Name', 'Last Name'))
 
 	##########################################

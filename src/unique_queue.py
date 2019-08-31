@@ -5,7 +5,7 @@ class unique_queue():
 		self.opened = list()
 		self.to_open = deque(to_open)
 
-	def pushList(self, elements):
+	def push_list(self, elements):
 		for element in elements:
 			self.push(element)
 
@@ -25,8 +25,8 @@ class unique_queue():
 			self.opened.append(element)
 			return element
 
-	def isEmpty(self):
+	def is_empty(self):
 		return len(self.to_open) == 0
 
-	def getAll(self):
+	def get_all(self):
 		return self.opened

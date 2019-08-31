@@ -16,7 +16,7 @@ class TestEdge(unittest.TestCase):
 		self.assertEqual(edge.end, end)
 
 	##########################################
-	# Edge.toHTML
+	# Edge.to_html
 	##########################################
 
 	def test_init_001(self):
@@ -34,7 +34,7 @@ class TestEdge(unittest.TestCase):
 		edge.start = start
 		edge.end = end
 
-		actual = edge.toHTML()
+		actual = edge.to_html()
 		self.assertEqual(expected, actual)
 
 if __name__ == '__main__':

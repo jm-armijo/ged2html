@@ -15,8 +15,8 @@ class Person(Node):
 		self.parents = None
 		self.unions = list()
 
-	def setName(self, name):
-		name_parts = self._splitName(name)
+	def set_name(self, name):
+		name_parts = self._split_name(name)
 		self.set_given_name(name_parts[0] )
 		self.last_name = name_parts[1]
 
@@ -39,31 +39,31 @@ class Person(Node):
 	def set_death_place(self, place):
 		self.death_place = place
 
-	def setParents(self, parents):
+	def set_parents(self, parents):
 		self.parents = parents
 
-	def addUnion(self, union):
+	def add_union(self, union):
 		self.unions.append(union)
 
-	def getChildren(self):
+	def get_children(self):
 		children = list()
 		for union in self.unions:
-			children += union.getChildren()
+			children += union.get_children()
 		return children
 
-	def getParents(self):
+	def get_parents(self):
 		if self.parents is None:
 			return list()
 		else:
 			return [self.parents]
 
-	def getUnions(self):
+	def get_unions(self):
 		return self.unions
 
-	def isSingle(self):
+	def is_single(self):
 		return len(self.unions) == 0
 
-	def toHTML(self):
+	def to_html(self):
 		value = (
 			'  <div class="given">{}</div>\n'
 			'  <div class="last">{}</div>\n'
@@ -78,7 +78,7 @@ class Person(Node):
 		return HTMLGenerator.wrap(self, value, self.id)
 
 	@classmethod
-	def _splitName(self, name):
+	def _split_name(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
 		if match:
 			return (match.group(1).strip(), match.group(2).strip())

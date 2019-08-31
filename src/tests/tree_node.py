@@ -18,7 +18,7 @@ class TestTreeNode(unittest.TestCase):
 		# Mock node
 		html = '<div>X</div>'
 		node = Mock()
-		node.toHTML = MagicMock(return_value = html)
+		node.to_html = MagicMock(return_value = html)
 
 		# Mock HTML Generator
 		wrapped = "<div>"+html+"</div>"
@@ -29,8 +29,8 @@ class TestTreeNode(unittest.TestCase):
 		tree_node.node = node
 
 		# Actual test
-		return_value = tree_node.toHTML()
-		node.toHTML.assert_called_once_with()
+		return_value = tree_node.to_html()
+		node.to_html.assert_called_once_with()
 		HTMLGenerator.wrap.assert_called_once_with(tree_node, html)
 		self.assertEqual(return_value, wrapped)
 

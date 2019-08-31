@@ -3,7 +3,7 @@ class Edge():
 		self.start = start
 		self.end = end
 	
-	def toHTML(self):
+	def to_html(self):
 		return (
 			'        new LeaderLine(\n'
 			'          document.getElementById("{}"),\n'

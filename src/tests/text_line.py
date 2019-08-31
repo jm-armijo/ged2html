@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from ..text_line import TextLine
 
 class TestTextLine(unittest.TestCase):
-	@patch.object(TextLine, 'parseLine')
+	@patch.object(TextLine, 'parse_line')
 	def test_init_001(self, mock_req):
 		line_str = '0 @IND00032@ INDI'
 		line_obj = TextLine(line_str)
@@ -24,7 +24,7 @@ class TestTextLine(unittest.TestCase):
 		# Creates a raw object of class TextLine
 		line_obj = TextLine.__new__(TextLine)
 
-		line_obj.parseLine(line_str)
+		line_obj.parse_line(line_str)
 		self.assertEqual(line_obj.level, level)
 		self.assertEqual(line_obj.attribute, attribute)
 		self.assertEqual(line_obj.data, data)
@@ -38,7 +38,7 @@ class TestTextLine(unittest.TestCase):
 		# Creates a raw object of class TextLine
 		line_obj = TextLine.__new__(TextLine)
 
-		line_obj.parseLine(line_str)
+		line_obj.parse_line(line_str)
 		self.assertEqual(line_obj.level, level)
 		self.assertEqual(line_obj.attribute, attribute)
 		self.assertEqual(line_obj.data, data)

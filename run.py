@@ -18,8 +18,8 @@ copyfile('src/scripts/leader-line.min.js', 'html/scripts/leader-line.min.js')
 
 file_name = '../tree.ged'
 parser = Parser()
-tree = parser.makeTree(file_name)
-html_tree = tree.toHTML()
+tree = parser.make_tree(file_name)
+html_tree = tree.to_html()
 
 title = "My Genealogy Tree"
 doc = HTMLGenerator('html/index.html')

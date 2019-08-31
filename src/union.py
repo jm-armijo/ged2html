@@ -11,55 +11,55 @@ class Union(Node):
 		self.date = ''
 		self.place = ''
 
-	def setSpouse1(self, spouse):
-		spouse.addUnion(self)
+	def set_spouse1(self, spouse):
+		spouse.add_union(self)
 		self.spouse1 = spouse
 
-	def setSpouse2(self, spouse):
-		spouse.addUnion(self)
+	def set_spouse2(self, spouse):
+		spouse.add_union(self)
 		self.spouse2 = spouse
 
-	def addChild(self, child):
-		child.setParents(self)
+	def add_child(self, child):
+		child.set_parents(self)
 		self.children.append(child)
 
-	def setDate(self, date):
+	def set_date(self, date):
 		self.date = date
 
-	def setPlace(self, place):
+	def set_place(self, place):
 		self.place = place
 
-	def getChildren(self):
+	def get_children(self):
 		return self.children
 
-	def getParents(self):
+	def get_parents(self):
 		parents = list()
 		if self.spouse1 is not None:
-			parents += self.spouse1.getParents()
+			parents += self.spouse1.get_parents()
 		if self.spouse2 is not None:
-			parents += self.spouse2.getParents()
+			parents += self.spouse2.get_parents()
 
 		return parents
 
-	def getUnions(self):
+	def get_unions(self):
 		parents = list()
 		if self.spouse1 is not None:
-			parents += self.spouse1.getUnions()
+			parents += self.spouse1.get_unions()
 		if self.spouse2 is not None:
-			parents += self.spouse2.getUnions()
+			parents += self.spouse2.get_unions()
 
 		return parents
 
-	def toHTML(self):
+	def to_html(self):
 		value = (
 			'  {}\n'
 			'  <div class="date" id="{}">{}</div>\n'
 			'  {}\n'
 		).format(
-			self.spouse1.toHTML(),
+			self.spouse1.to_html(),
 			self.id,
 			self.date,
-			self.spouse2.toHTML()
+			self.spouse2.to_html()
 		)
 
 		return HTMLGenerator.wrap(self, value)
