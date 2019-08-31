@@ -627,7 +627,7 @@ class TestParser(unittest.TestCase):
 		person.setGivenName = MagicMock()
 		person.set_sex= MagicMock()
 		person.set_birth_date= MagicMock()
-		person.setBirthPlace= MagicMock()
+		person.set_birth_place= MagicMock()
 
 		# Setup line
 		line = Mock()
@@ -645,9 +645,9 @@ class TestParser(unittest.TestCase):
 		parser.addPersonData()
 		person.setName.assert_not_called()
 		person.setGivenName.assert_not_called()
-		person.set_sex= MagicMock()
-		person.set_birth_date= MagicMock()
-		person.setBirthPlace= MagicMock()
+		person.set_sex.assert_not_called()
+		person.set_birth_date.assert_not_called()
+		person.set_birth_place.assert_not_called()
 
 	##########################################
 	# Parser.createUnion
