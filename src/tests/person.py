@@ -147,13 +147,13 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.sex, sex)
 
 	##########################################
-	# Person.setBirthDate
+	# Person.set_birth_date
 	##########################################
 
 	def test_set_birth_date(self):
 		person = Person.__new__(Person)
 		date = '19 DEC 1800'
-		person.setBirthDate(date)
+		person.set_birth_date(date)
 		self.assertEqual(person.birth_date, date)
 
 	##########################################

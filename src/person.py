@@ -27,7 +27,7 @@ class Person(Node):
 	def set_sex(self, sex):
 		self.sex = sex
 
-	def setBirthDate(self, date):
+	def set_birth_date(self, date):
 		self.birth_date = date
 
 	def setBirthPlace(self, place):

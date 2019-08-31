@@ -95,7 +95,7 @@ class Parser():
 		elif attribute == 'SEX':
 			person.set_sex(value)
 		elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
-			person.setBirthDate(value)
+			person.set_birth_date(value)
 		elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'BIRT':
 			person.setBirthPlace(value)
 
