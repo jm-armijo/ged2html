@@ -36,7 +36,7 @@ class Person(Node):
 	def set_death_date(self, date):
 		self.death_date = date
 
-	def setDeadthPlace(self, place):
+	def set_death_place(self, place):
 		self.death_place = place
 
 	def setParents(self, parents):

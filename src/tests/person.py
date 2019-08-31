@@ -177,13 +177,13 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.death_date, date)
 
 	##########################################
-	# Person.setDeathPlace
+	# Person.set_death_place
 	##########################################
 
 	def test_set_death_place(self):
 		person = Person.__new__(Person)
 		place = 'Town, City, Country'
-		person.setDeadthPlace(place)
+		person.set_death_place(place)
 		self.assertEqual(person.death_place, place)
 
 	##########################################
