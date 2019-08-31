@@ -36,12 +36,12 @@ class TestPerson(unittest.TestCase):
 		person = Person.__new__(Person)
 		person.given_name = ''
 		person._splitName = MagicMock(return_value=[given_name, last_name])
-		person.setGivenName = MagicMock()
+		person.set_given_name = MagicMock()
 
 		# Actual test
 		person.setName(full_name)
 		person._splitName.assert_called_with(full_name)
-		person.setGivenName.assert_called_with(given_name)
+		person.set_given_name.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
 	def test_set_name_002(self):
@@ -54,12 +54,12 @@ class TestPerson(unittest.TestCase):
 		person = Person.__new__(Person)
 		person.given_name = 'A name'
 		person._splitName = MagicMock(return_value=[given_name, last_name])
-		person.setGivenName = MagicMock()
+		person.set_given_name = MagicMock()
 
 		# Actual test
 		person.setName(full_name)
 		person._splitName.assert_called_with(full_name)
-		person.setGivenName.assert_called_with(given_name)
+		person.set_given_name.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
 	def test_set_name_003(self):
@@ -72,16 +72,16 @@ class TestPerson(unittest.TestCase):
 		person = Person.__new__(Person)
 		person.given_name = ''
 		person._splitName = MagicMock(return_value=[given_name, last_name])
-		person.setGivenName = MagicMock()
+		person.set_given_name = MagicMock()
 
 		# Actual test
 		person.setName(full_name)
 		person._splitName.assert_called_with(full_name)
-		person.setGivenName.assert_called_with(given_name)
+		person.set_given_name.assert_called_with(given_name)
 		self.assertEqual(person.last_name, last_name)
 
 	##########################################
-	# Person.setGivenName
+	# Person.set_given_name
 	##########################################
 
 	def test_set_given_name_001(self):
@@ -94,7 +94,7 @@ class TestPerson(unittest.TestCase):
 		person.given_name = old_given_name
 
 		# Actual test
-		person.setGivenName(new_given_name)
+		person.set_given_name(new_given_name)
 		self.assertEqual(person.given_name, new_given_name)
 
 	def test_set_given_name_002(self):
@@ -107,7 +107,7 @@ class TestPerson(unittest.TestCase):
 		person.given_name = old_given_name
 
 		# Actual test
-		person.setGivenName(new_given_name)
+		person.set_given_name(new_given_name)
 		self.assertEqual(person.given_name, new_given_name)
 
 	def test_set_given_name_003(self):
@@ -120,7 +120,7 @@ class TestPerson(unittest.TestCase):
 		person.given_name = old_given_name
 
 		# Actual test
-		person.setGivenName(new_given_name)
+		person.set_given_name(new_given_name)
 		self.assertEqual(person.given_name, old_given_name)
 
 	def test_set_given_name_004(self):
@@ -133,7 +133,7 @@ class TestPerson(unittest.TestCase):
 		person.given_name = old_given_name
 
 		# Actual test
-		person.setGivenName(new_given_name)
+		person.set_given_name(new_given_name)
 		self.assertEqual(person.given_name, old_given_name)
 
 	##########################################

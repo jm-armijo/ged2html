@@ -91,7 +91,7 @@ class Parser():
 		if attribute == 'NAME':
 			person.setName(value)
 		elif attribute == 'GIVN':
-			person.setGivenName(value)
+			person.set_given_name(value)
 		elif attribute == 'SEX':
 			person.set_sex(value)
 		elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':

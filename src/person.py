@@ -17,10 +17,10 @@ class Person(Node):
 
 	def setName(self, name):
 		name_parts = self._splitName(name)
-		self.setGivenName(name_parts[0] )
+		self.set_given_name(name_parts[0] )
 		self.last_name = name_parts[1]
 
-	def setGivenName(self, given_name):
+	def set_given_name(self, given_name):
 		if self.given_name == '':
 			self.given_name = given_name
 

@@ -533,7 +533,7 @@ class TestParser(unittest.TestCase):
 		# Setup person
 		person = Mock()
 		person.id = '@I000123@'
-		person.setGivenName = MagicMock()
+		person.set_given_name = MagicMock()
 
 		# Setup line
 		line = Mock()
@@ -549,7 +549,7 @@ class TestParser(unittest.TestCase):
 
 		# Actual test
 		parser.addPersonData()
-		person.setGivenName.assert_called_with(line.data)
+		person.set_given_name.assert_called_with(line.data)
 
 	def test_add_person_data_003(self):
 		# Setup person
