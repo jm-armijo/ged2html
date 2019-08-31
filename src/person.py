@@ -1,6 +1,6 @@
+import re
 from src.node import Node
 from src.html import HTMLGenerator
-import re
 
 class Person(Node):
 	def __init__(self, id):
@@ -77,12 +77,14 @@ class Person(Node):
 
 		return HTMLGenerator.wrap(self, value, self.id)
 
+	@classmethod
 	def _splitName(self, name):
 		match = re.search('^(.*?)/(.*?)/?\s*$', name)
 		if match:
 			return (match.group(1).strip(), match.group(2).strip())
 		else:
-			print("raise error!")
+			print("Unable to get first and last name from '{}'".format(name))
+			return ('', '')
 
 	def __str__(self):
 		return "[{} {}]".format(self.given_name, self.last_name)
