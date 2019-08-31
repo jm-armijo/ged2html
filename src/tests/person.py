@@ -157,13 +157,13 @@ class TestPerson(unittest.TestCase):
 		self.assertEqual(person.birth_date, date)
 
 	##########################################
-	# Person.setBirthPlace
+	# Person.set_birth_place
 	##########################################
 
 	def test_set_birth_place(self):
 		person = Person.__new__(Person)
 		place = 'Town, City, Country'
-		person.setBirthPlace(place)
+		person.set_birth_place(place)
 		self.assertEqual(person.birth_place, place)
 
 	##########################################

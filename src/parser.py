@@ -97,7 +97,7 @@ class Parser():
 		elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
 			person.set_birth_date(value)
 		elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'BIRT':
-			person.setBirthPlace(value)
+			person.set_birth_place(value)
 
 	def createUnion(self):
 		union = Union(self.current_line.attribute)

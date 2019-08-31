@@ -30,7 +30,7 @@ class Person(Node):
 	def set_birth_date(self, date):
 		self.birth_date = date
 
-	def setBirthPlace(self, place):
+	def set_birth_place(self, place):
 		self.birth_place = place
 
 	def setDeadthDate(self, date):
