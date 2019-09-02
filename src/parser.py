@@ -45,8 +45,12 @@ class Parser():
     # Reads the file into a list of lines
     # pylint: disable=no-self-use
     def _read_file(self, file_name):
-        with open(file_name, mode='r') as tree_file:
-            return map(TextLine, tree_file.readlines())
+        try:
+            with open(file_name, mode='r') as tree_file:
+                return map(TextLine, tree_file.readlines())
+        except:
+            print("Unable to open file '{}'".format(file_name))
+            return list()
 
     def _parse_lines(self, lines):
         for self.current_line in lines:
