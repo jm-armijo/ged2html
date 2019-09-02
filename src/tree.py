@@ -1,18 +1,15 @@
-from collections import deque
 from src.edge import Edge
 from src.html import HTMLGenerator
 from src.person import Person
 from src.tree_level import TreeLevel
-from src.unique_queue import unique_queue
+from src.unique_queue import UniqueQueue
 
+
+# pylint: disable=too-few-public-methods
 class Tree():
 
 # public:
 
-    '''
-    Creates a new Tree object.
-    At least 1 valid Person object must be passed in the 'people' argument
-    '''
     def __init__(self, people, unions):
         self.levels = dict()
         self.opened = list()
@@ -35,7 +32,7 @@ class Tree():
     def _ceate_nodes(self, people):
         level = 0
         starting_node = self._get_starting_node(people)
-        self._extend_node_and_add(0, starting_node)
+        self._extend_node_and_add(level, starting_node)
         return self._levels_to_nodes()
 
     def _extend_nodes_and_add(self, level, nodes):
@@ -81,10 +78,11 @@ class Tree():
             self._open_node(person)
             return self._extend_nodes(person.get_unions())
 
+    # pylint: disable=no-self-use
     def _extend_union(self, union):
-        queue = unique_queue([union])
+        queue = UniqueQueue([union])
 
-        while (not queue.is_empty()):
+        while not queue.is_empty():
             union = queue.pop()
             queue.push_list(union.get_unions())
 
@@ -99,7 +97,7 @@ class Tree():
     def _create_edges_from_node(self, start):
         edges = list()
         if start not in self.opened:
-            print("Element {} not processed. Check your ged file for inconsistent data.".format(start.id))
+            self._notify_element_not_found(start.id)
         else:
             edges = self._create_edges_to_nodes(start, start.get_children())
         return edges
@@ -113,20 +111,25 @@ class Tree():
     def _create_edge_to_node(self, start, end):
         edges = list()
         if end not in self.opened:
-            print("Element {} not processed. Check your ged file for inconsistent data.".format(end.id))
+            self._notify_element_not_found(end.id)
         else:
             edges.append(Edge(start.id, end.id))
         return edges
 
-    '''
-    Gets a Person object to start building the tree.
-    It can be any person, so the one with the lowest id is picked
-    '''
+    # pylint: disable=no-self-use
+    def _notify_element_not_found(self, element):
+        message = (
+            "Element {} not processed. "
+            "Check your ged file for inconsistent data."
+        ).format(element)
+        print(message)
+
+    # pylint: disable=no-self-use
     def _get_starting_node(self, people):
         node = None
         people_ids = list(people.keys())
 
-        if len(people_ids) > 0:
+        if people_ids:
             people_ids.sort()
             person_id = people_ids[0]
             node = people[person_id]

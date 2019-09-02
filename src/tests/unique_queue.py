@@ -1,34 +1,34 @@
 import unittest
 from unittest.mock import MagicMock, Mock, call
-from ..unique_queue import unique_queue
+from ..unique_queue import UniqueQueue
 from collections import deque
 
 class TestPerson(unittest.TestCase):
 
     ##########################################
-    # unique_queue.__init__
+    # UniqueQueue.__init__
     ##########################################
 
     def test_init_001(self):
-        queue = unique_queue()
+        queue = UniqueQueue()
         self.assertEqual(queue.opened, list())
         self.assertEqual(queue.to_open, deque())
 
     def test_init_002(self):
         unions = []
-        queue = unique_queue(unions)
+        queue = UniqueQueue(unions)
         self.assertEqual(queue.opened, list())
         self.assertEqual(queue.to_open, deque())
 
     def test_init_002(self):
         union = Mock()
         unions = [union]
-        queue = unique_queue(unions)
+        queue = UniqueQueue(unions)
         self.assertEqual(queue.opened, list())
         self.assertEqual(queue.to_open, deque([union]))
 
     ##########################################
-    # unique_queue.push_list
+    # UniqueQueue.push_list
     ##########################################
 
     def test_push_list_001(self):
@@ -36,7 +36,7 @@ class TestPerson(unittest.TestCase):
         element2 = Mock()
         elements = [element1, element2]
 
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.push = MagicMock()
 
         queue.push_list(elements)
@@ -45,19 +45,19 @@ class TestPerson(unittest.TestCase):
     def test_push_list_001(self):
         elements = []
 
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.push = MagicMock()
 
         queue.push_list(elements)
         queue.push.assert_not_called()
 
     ##########################################
-    # unique_queue.push
+    # UniqueQueue.push
     ##########################################
 
     def test_push_001(self):
         element = Mock()
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = list()
         queue.to_open = deque()
 
@@ -67,7 +67,7 @@ class TestPerson(unittest.TestCase):
 
     def test_push_002(self):
         element = Mock()
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = [element]
         queue.to_open = deque()
 
@@ -77,7 +77,7 @@ class TestPerson(unittest.TestCase):
 
     def test_push_003(self):
         element = Mock()
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = []
         queue.to_open = deque([element])
 
@@ -87,11 +87,11 @@ class TestPerson(unittest.TestCase):
         self.assertFalse(element in queue.opened)
 
     ##########################################
-    # unique_queue.pop
+    # UniqueQueue.pop
     ##########################################
 
     def test_pop_001(self):
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = list()
         queue.to_open = deque()
 
@@ -99,7 +99,7 @@ class TestPerson(unittest.TestCase):
         self.assertEqual(element, None)
 
     def test_pop_002(self):
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = [Mock()]
         queue.to_open = deque()
 
@@ -108,7 +108,7 @@ class TestPerson(unittest.TestCase):
 
     def test_pop_003(self):
         element = Mock()
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = [Mock()]
         queue.to_open = deque([element])
 
@@ -119,7 +119,7 @@ class TestPerson(unittest.TestCase):
 
     def test_pop_004(self):
         element = Mock()
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = [Mock()]
         queue.to_open = deque([element, Mock(), Mock()])
 
@@ -129,26 +129,26 @@ class TestPerson(unittest.TestCase):
         self.assertTrue(element in queue.opened)
 
     ##########################################
-    # unique_queue.is_empty
+    # UniqueQueue.is_empty
     ##########################################
 
     def test_is_empty_001(self):
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.to_open = deque()
         self.assertTrue(queue.is_empty())
 
     def test_is_empty_002(self):
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.to_open = deque([Mock()])
         self.assertFalse(queue.is_empty())
 
     ##########################################
-    # unique_queue.get_all
+    # UniqueQueue.get_all
     ##########################################
 
     def test_get_all_001(self):
         opened = Mock()
-        queue = unique_queue.__new__(unique_queue)
+        queue = UniqueQueue.__new__(UniqueQueue)
         queue.opened = opened
         self.assertEqual(queue.get_all(), opened)
 

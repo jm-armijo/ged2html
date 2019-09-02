@@ -329,7 +329,7 @@ class TestTree(unittest.TestCase):
     '''
     Test when there is nothing to dequeu
     '''
-    @patch("src.unique_queue.unique_queue.__new__")
+    @patch("src.unique_queue.UniqueQueue.__new__")
     def test_extend_union_001(self, class_queue):
         all = []
 
@@ -358,7 +358,7 @@ class TestTree(unittest.TestCase):
     '''
     Test when the queue has elements
     '''
-    @patch("src.unique_queue.unique_queue.__new__")
+    @patch("src.unique_queue.UniqueQueue.__new__")
     def test_extend_union_002(self, class_queue):
         unions = []
 
@@ -419,22 +419,21 @@ class TestTree(unittest.TestCase):
     # Tree._create_edges_from_node
     ##########################################
 
-    @patch("src.tree.print", create=True)
-    def test_create_edges_from_node_001(self, mock_print):
+    def test_create_edges_from_node_001(self):
         node = Mock()
         node.id = '@F0002@'
 
         tree = Tree.__new__(Tree)
         tree._create_edges_to_nodes = MagicMock()
+        tree._notify_element_not_found = MagicMock()
         tree.opened = list()
 
         return_value = tree._create_edges_from_node(node)
-        mock_print.assert_called_with('Element @F0002@ not processed. Check your ged file for inconsistent data.')
+        tree._notify_element_not_found.assert_called_with(node.id)
         tree._create_edges_to_nodes.assert_not_called()
         self.assertEqual(return_value, list())
 
-    @patch("src.tree.print", create=True)
-    def test_create_edges_from_node_002(self, mock_print):
+    def test_create_edges_from_node_002(self):
         children = Mock()
         node = Mock()
         node.id = '@F0002@'
@@ -443,10 +442,11 @@ class TestTree(unittest.TestCase):
         edges = Mock()
         tree = Tree.__new__(Tree)
         tree._create_edges_to_nodes = MagicMock(return_value = edges)
+        tree._notify_element_not_found = MagicMock()
         tree.opened = [node]
 
         return_value = tree._create_edges_from_node(node)
-        mock_print.assert_not_called()
+        tree._notify_element_not_found.assert_not_called()
         tree._create_edges_to_nodes.assert_called_once_with(node, children)
         self.assertEqual(return_value, edges)
 
@@ -519,6 +519,19 @@ class TestTree(unittest.TestCase):
         mock_print.assert_not_called()
         mock_edge.assert_called_once_with(ANY, start.id, node.id)
         self.assertEqual(return_value, [edge])
+
+    ##########################################
+    # Tree._notify_element_not_found
+    ##########################################
+
+    @patch("src.tree.print", create=True)
+    def test_notify_element_not_found_001(self, mock_print):
+        value = 'X'
+        expected = 'Element X not processed. Check your ged file for inconsistent data.'
+
+        tree = Tree.__new__(Tree)
+        tree._notify_element_not_found(value)
+        mock_print.assert_called_with(expected)
 
     ##########################################
     # Tree._get_starting_node

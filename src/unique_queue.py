@@ -1,7 +1,9 @@
 from collections import deque
 
-class unique_queue():
-    def __init__(self, to_open = list()):
+class UniqueQueue():
+    def __init__(self, to_open=None):
+        if to_open is None:
+            to_open = list()
         self.opened = list()
         self.to_open = deque(to_open)
 
@@ -18,12 +20,12 @@ class unique_queue():
             self.to_open.append(element)
 
     def pop(self):
-        if len(self.to_open) == 0:
-            return None
-        else:
+        if self.to_open:
             element = self.to_open.popleft()
             self.opened.append(element)
             return element
+        else:
+            return None
 
     def is_empty(self):
         return len(self.to_open) == 0

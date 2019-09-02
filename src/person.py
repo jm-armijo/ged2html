@@ -2,9 +2,10 @@ import re
 from src.node import Node
 from src.html import HTMLGenerator
 
+# pylint: disable=too-many-instance-attributes
 class Person(Node):
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, person_id):
+        self.id = person_id
         self.given_name = ''
         self.last_name = ''
         self.sex = ''
@@ -17,7 +18,7 @@ class Person(Node):
 
     def set_name(self, name):
         name_parts = self._split_name(name)
-        self.set_given_name(name_parts[0] )
+        self.set_given_name(name_parts[0])
         self.last_name = name_parts[1]
 
     def set_given_name(self, given_name):
@@ -77,9 +78,9 @@ class Person(Node):
 
         return HTMLGenerator.wrap(self, value, self.id)
 
-    @classmethod
+    # pylint: disable=no-self-use
     def _split_name(self, name):
-        match = re.search('^(.*?)/(.*?)/?\s*$', name)
+        match = re.search(r'^(.*?)/(.*?)/?\s*$', name)
         if match:
             return (match.group(1).strip(), match.group(2).strip())
         else:

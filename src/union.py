@@ -3,8 +3,8 @@ from src.null_person import NullPerson
 from src.html import HTMLGenerator
 
 class Union(Node):
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, union_id):
+        self.id = union_id
         self.spouse1 = NullPerson()
         self.spouse2 = NullPerson()
         self.children = list()

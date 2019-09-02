@@ -3,7 +3,29 @@ from src.person import Person
 from src.tree import Tree
 from src.union import Union
 
+# pylint: disable=too-few-public-methods
 class Parser():
+
+    r"""
+    The parser implements the state machine below
+
+    ############################################
+    #                                          #
+    #                    *         +-----+     #
+    #                    |         |     |     #
+    #                    V         |     V     #
+    #             +--->(INDI) -> (INDI_DATA)   #
+    #             |                            #
+    #   * ---> (IDLE)                          #
+    #             |                            #
+    #             +--->(FAM)  -> (FAM_DATA)    #
+    #                    /\        |     /\    #
+    #                    |         |     |     #
+    #                    *         +-----+     #
+    #                                          #
+    ############################################
+    """
+
     def __init__(self):
         self.people = dict()
         self.unions = list()
@@ -21,8 +43,9 @@ class Parser():
         return Tree(self.people, self.unions)
 
     # Reads the file into a list of lines
+    # pylint: disable=no-self-use
     def _read_file(self, file_name):
-        with open(file_name,mode='r') as tree_file:
+        with open(file_name, mode='r') as tree_file:
             return map(TextLine, tree_file.readlines())
 
     def _parse_lines(self, lines):
@@ -30,28 +53,6 @@ class Parser():
             self.last_key_per_level[self.current_line.level] = self.current_line.attribute
             self.state = self._get_current_state()
             self._parse_current_line()
-
-    '''
-    _get_current_state: implements the state machine below
-    in: current state
-    returns: new state
-
-    ############################################
-    #                                          #
-    #                    *         +-----+     #
-    #                    |         |     |     #
-    #                    V         |     V     #
-    #             +--->(INDI) -> (INDI_DATA)   #
-    #             |                            #
-    #   * ---> (IDLE)                          #
-    #             |                            #
-    #             +--->(FAM)  -> (FAM_DATA)    #
-    #                    /\        |     /\    #
-    #                    |         |     |     #
-    #                    *         +-----+     #
-    #                                          #
-    ############################################
-    '''
 
     def _get_current_state(self):
         new_state = 'IDLE'
@@ -84,7 +85,7 @@ class Parser():
     def _add_person_data(self):
         level = self.current_line.level
         attribute = self.current_line.attribute
-        value  = self.current_line.data
+        value = self.current_line.data
 
         person = self.people[self.last_person]
 
@@ -106,7 +107,7 @@ class Parser():
     def _add_union_data(self):
         level = self.current_line.level
         attribute = self.current_line.attribute
-        value  = self.current_line.data
+        value = self.current_line.data
 
         union = self.unions[-1]
 
@@ -121,9 +122,8 @@ class Parser():
         elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'MARR':
             union.set_place(value)
 
-    def _get_person_or_create(self, id):
-        if id not in self.people:
-            self.people[id] = Person(id)
+    def _get_person_or_create(self, person_id):
+        if person_id not in self.people:
+            self.people[person_id] = Person(person_id)
 
-        return self.people[id]
-
+        return self.people[person_id]
