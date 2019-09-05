@@ -27,6 +27,7 @@ class TestEdge(unittest.TestCase):
             '        new LeaderLine(\n'
             '          document.getElementById("X"),\n'
             '          document.getElementById("Y"),\n'
+            '          {startSocket: "top", endSocket: "bottom", path: "magnet"}\n'
             '        );\n'
         )
 

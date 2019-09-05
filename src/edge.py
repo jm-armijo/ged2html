@@ -8,5 +8,6 @@ class Edge():
             '        new LeaderLine(\n'
             '          document.getElementById("{}"),\n'
             '          document.getElementById("{}"),\n'
+            '          {{startSocket: "top", endSocket: "bottom", path: "magnet"}}\n'
             '        );\n'
         ).format(self.start, self.end)
