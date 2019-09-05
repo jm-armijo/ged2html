@@ -1,8 +1,11 @@
 div.treelevel {
     display: block;
     border: 1px solid blue;
-    padding-top: 30px;
-    padding-bottom: 30px;
+    overflow:auto;
+    white-space:nowrap;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    text-align: center;
 }
 
 div.treenode {
