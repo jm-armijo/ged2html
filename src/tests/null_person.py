@@ -4,7 +4,7 @@ from ..null_person import NullPerson
 class TestNullPerson(unittest.TestCase):
 
     ##########################################
-    # TreeNullPerson.to_html
+    # NullPerson.to_html
     ##########################################
 
     def test_to_html_001(self):
@@ -15,7 +15,7 @@ class TestNullPerson(unittest.TestCase):
         self.assertEqual(return_value, html)
 
     ##########################################
-    # TreeNullPerson.get_unions
+    # NullPerson.get_unions
     ##########################################
 
     def test_get_unions_001(self):

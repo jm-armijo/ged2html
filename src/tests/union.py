@@ -99,6 +99,22 @@ class TestUnion(unittest.TestCase):
         self.assertEqual(union.place, place)
 
     ##########################################
+    # Union.get_spouses
+    ##########################################
+
+    def test_get_spouses_001(self):
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        union = Union.__new__(Union)
+        union.spouse1 = spouse1
+        union.spouse2 = spouse2
+
+        expected = [spouse1, spouse2]
+        actual = union.get_spouses()
+        self.assertEqual(expected, expected)
+
+    ##########################################
     # Union.get_children
     ##########################################
 

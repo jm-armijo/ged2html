@@ -216,6 +216,17 @@ class TestPerson(unittest.TestCase):
         self.assertEqual(person.unions[1], union)
 
     ##########################################
+    # Person.get_spouses
+    ##########################################
+
+    def test_get_spouses_001(self):
+        person = Person.__new__(Person)
+
+        expected = [person]
+        actual = person.get_spouses()
+        self.assertEqual(expected, actual)
+
+    ##########################################
     # Person.get_children
     ##########################################
 

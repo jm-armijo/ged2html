@@ -1,38 +1,25 @@
 from src.node import Node
-import pdb
+from src.unique_queue import UniqueQueue
 
 class UnionExtended(Node):
-    def __init__(self):
+    def __init__(self, unions):
         self.unions = list()
-        self.nodes = list()
-
-    def add_union(self, union):
-        spouse1 = union.get_spouse1()
-        spouse2 = union.get_spouse2()
-
-        self.unions.append(union)
-        # [spouse3, spouse2]
-
-        spouse1_pos = self.nodes.index(spouse1) if spouse1 in self.nodes else None
-        spouse2_pos = self.nodes.index(spouse2) if spouse2 in self.nodes else None
-
-        if spouse1_pos is None and spouse2_pos is not None:
-            if spouse2_pos == 0:
-                self.nodes.insert(0,spouse1)
-            else:
-                self.nodes.insert(spouse2_pos+1,spouse1)
-        elif spouse2_pos is None and spouse1_pos is not None:
-            if spouse1_pos == 0:
-                self.nodes.insert(0,spouse2)
-            else:
-                self.nodes.insert(spouse1_pos+1,spouse2)
-        else:
-            self.nodes.append(spouse1)
-            self.nodes.append(spouse2)
-
+        self._extend_nodes(unions)
 
     def get_unions(self):
         return self.unions
+
+    def get_spouses(self):
+        people = list()
+        for union in self.unions:
+            people += union.get_spouses()
+        return people
+
+    def get_parents(self):
+        parents = []
+        for union in self.unions:
+            parents += union.get_parents()
+        return parents
 
     def get_children(self):
         children = []
@@ -41,4 +28,26 @@ class UnionExtended(Node):
         return children
 
     def to_html(self):
-        pass
+        html = ''
+        for union in self.unions:
+            html += union.to_html()
+        return html
+
+    def _extend_nodes(self, nodes):
+        for node in nodes:
+            self._extend_node(node)
+
+    # pylint: disable=no-self-use
+    def _extend_node(self, node):
+        unions = self._extract_all_unions(node)
+        for queue_node in unions:
+            if queue_node not in self.unions:
+                self.unions.append(queue_node)
+
+    def _extract_all_unions(self, node):
+        queue = UniqueQueue([node])
+        while not queue.is_empty():
+            node = queue.pop()
+            queue.push_list(node.get_unions())
+
+        return queue.get_all()

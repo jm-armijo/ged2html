@@ -1,6 +1,6 @@
 import re
-from src.node import Node
 from src.html import HTMLGenerator
+from src.node import Node
 
 # pylint: disable=too-many-instance-attributes
 class Person(Node):
@@ -45,6 +45,9 @@ class Person(Node):
 
     def add_union(self, union):
         self.unions.append(union)
+
+    def get_spouses(self):
+        return [self]
 
     def get_children(self):
         children = list()

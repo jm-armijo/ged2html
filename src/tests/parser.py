@@ -83,7 +83,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parser._parse_current_line.call_count, len(lines))
 
     ##########################################
-    # Parser.get_current_state
+    # Parser._get_current_state
     ##########################################
 
     # From any state goes to INDI when level = 0
@@ -265,7 +265,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(new_state, 'FAM_DATA')
 
     ##########################################
-    # Parser.parse_current_line
+    # Parser._parse_current_line
     ##########################################
 
     def test_parse_current_line_001(self):

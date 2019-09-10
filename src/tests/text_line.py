@@ -5,6 +5,11 @@ from unittest.mock import Mock
 from ..text_line import TextLine
 
 class TestTextLine(unittest.TestCase):
+
+    ##########################################
+    # TextLine.init
+    ##########################################
+
     @patch.object(TextLine, 'parse_line')
     def test_init_001(self, mock_req):
         line_str = '0 @IND00032@ INDI'
@@ -14,6 +19,10 @@ class TestTextLine(unittest.TestCase):
         self.assertFalse(hasattr(line_obj, 'level'))
         self.assertFalse(hasattr(line_obj, 'attribute'))
         self.assertFalse(hasattr(line_obj, 'data'))
+
+    ##########################################
+    # TextLine.parse_line
+    ##########################################
 
     def test_parse_line_001(self):
         level = 0

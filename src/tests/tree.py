@@ -12,7 +12,7 @@ class TestTree(unittest.TestCase):
     # Tree.init
     ##########################################
 
-    @patch("src.tree.Tree._ceate_nodes")
+    @patch("src.tree.Tree._create_nodes")
     @patch("src.tree.Tree._create_edges")
     def test_init_001(self, mock_edges, mock_nodes):
         nodes = Mock()
@@ -62,7 +62,7 @@ class TestTree(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     ##########################################
-    # Tree._ceate_nodes
+    # Tree._create_nodes
     ##########################################
 
     def test_create_nodes_001(self):
@@ -72,81 +72,37 @@ class TestTree(unittest.TestCase):
 
         tree = Tree.__new__(Tree)
         tree._get_starting_node = MagicMock(return_value = person)
-        tree._extend_node_and_add = MagicMock()
+        tree._add_node_to_level = MagicMock()
         tree._levels_to_nodes = MagicMock(return_value = nodes)
 
-        return_value = tree._ceate_nodes(people)
+        return_value = tree._create_nodes(people)
         tree._get_starting_node.assert_called_once_with(people)
-        tree._extend_node_and_add.assert_called_once_with(0, person)
+        tree._add_node_to_level.assert_called_once_with(person, 0)
         tree._levels_to_nodes.assert_called_once_with()
         self.assertEqual(return_value, nodes)
 
     ##########################################
-    # Tree._extend_nodes_and_add
-    ##########################################
-
-    def test_extend_nodes_and_add_001(self):
-        level = 4
-        node1 = Mock()
-        node2 = Mock()
-        node3 = Mock()
-        nodes = [node1, node2, node3]
-
-        tree = Tree.__new__(Tree)
-        tree._extend_node_and_add = MagicMock()
-
-        tree._extend_nodes_and_add(level, nodes)
-        self.assertEqual(tree._extend_node_and_add.mock_calls, [call(level, node1), call(level, node2), call(level, node3)])
-
-    def test_extend_nodes_and_add_002(self):
-        level = 4
-        nodes = list()
-
-        tree = Tree.__new__(Tree)
-        tree._extend_node_and_add = MagicMock()
-
-        tree._extend_nodes_and_add(level, nodes)
-        tree._extend_node_and_add.assert_not_called()
-
-    ##########################################
-    # Tree._extend_node_and_add
-    ##########################################
-
-    def test_extend_node_and_add_001(self):
-        level = -3
-        node = Mock()
-        extended = Mock()
-
-        tree = Tree.__new__(Tree)
-        tree._extend_node = MagicMock(return_value = extended)
-        tree._add_nodes = MagicMock()
-
-        tree._extend_node_and_add(level, node)
-        tree._extend_node.assert_called_once_with(node)
-        tree._add_nodes.assert_called_once_with(level, extended)
-
-    ##########################################
-    # Tree._add_nodes
+    # Tree._add_nodes_to_level
     ##########################################
 
     def test_add_nodes_001(self):
         level = -3
         nodes = list()
         tree = Tree.__new__(Tree)
-        tree._add_node = MagicMock()
+        tree._add_node_to_level = MagicMock()
 
-        tree._add_nodes(level, nodes)
-        tree._add_node.assert_not_called()
+        tree._add_nodes_to_level(nodes, level)
+        tree._add_node_to_level.assert_not_called()
 
     def test_add_nodes_002(self):
         level = -3
         node1 = Mock()
         nodes = [node1]
         tree = Tree.__new__(Tree)
-        tree._add_node = MagicMock()
+        tree._add_node_to_level = MagicMock()
 
-        tree._add_nodes(level, nodes)
-        tree._add_node.assert_called_once_with(level, node1)
+        tree._add_nodes_to_level(nodes, level)
+        tree._add_node_to_level.assert_called_once_with(node1, level)
 
     def test_add_nodes_003(self):
         level = -3
@@ -154,236 +110,179 @@ class TestTree(unittest.TestCase):
         node2 = Mock()
         nodes = [node1, node2]
         tree = Tree.__new__(Tree)
-        tree._add_node = MagicMock()
+        tree._add_node_to_level = MagicMock()
 
-        tree._add_nodes(level, nodes)
-        self.assertEqual(tree._add_node.mock_calls, [call(level, node1), call(level, node2)])
+        tree._add_nodes_to_level(nodes, level)
+        self.assertEqual(tree._add_node_to_level.mock_calls, [call(node1, level), call(node2, level)])
 
     ##########################################
-    # Tree._add_node
+    # Tree._add_node_to_level
     ##########################################
 
-    def test_add_node_001(self):
-        level = 5
+    @patch("src.tree_node.TreeNode.__new__")
+    def test_add_node_to_level_001(self, class_tree_node):
         children = Mock()
         parents = Mock()
+
+        tree_node = Mock()
+        tree_node.get_children = MagicMock(return_value = children)
+        tree_node.get_parents = MagicMock(return_value = parents)
+        class_tree_node.return_value = tree_node
+
+        tree = Tree.__new__(Tree)
+        tree._is_opened = MagicMock(return_value = False)
+        tree._open_node = MagicMock()
+        tree._add_to_tree = MagicMock()
+        tree._add_nodes_to_level = MagicMock()
+
+        level = 5
         node = Mock()
-        node.id = '@I001@'
-        node.get_children = MagicMock(return_value = children)
-        node.get_parents = MagicMock(return_value = parents)
+        tree._add_node_to_level(node, level)
+
+        class_tree_node.assert_called_once_with(ANY, node)
+        tree._is_opened.assert_called_once_with(tree_node)
+        tree._open_node.assert_called_once_with(tree_node)
+        tree._add_to_tree.assert_called_once_with(level, tree_node)
+        self.assertEqual(tree._add_nodes_to_level.mock_calls, [call(children, level+1), call(parents, level-1)])
+
+    @patch("src.tree_node.TreeNode.__new__")
+    def test_add_node_to_level_002(self, class_tree_node):
+        children = Mock()
+        parents = Mock()
+
+        tree_node = Mock()
+        tree_node.get_children = MagicMock(return_value = children)
+        tree_node.get_parents = MagicMock(return_value = parents)
+        class_tree_node.return_value = tree_node
+
+        tree = Tree.__new__(Tree)
+        tree._is_opened = MagicMock(return_value = True)
+        tree._open_node = MagicMock()
+        tree._add_to_tree = MagicMock()
+        tree._add_nodes_to_level = MagicMock()
+
+        level = 5
+        node = Mock()
+        tree._add_node_to_level(node, level)
+
+        class_tree_node.assert_called_once_with(ANY, node)
+        tree._is_opened.assert_called_once_with(tree_node)
+        tree._open_node.assert_not_called()
+        tree._add_to_tree.assert_not_called()
+        tree._add_nodes_to_level.assert_not_called()
+
+    ##########################################
+    # Tree._is_opened
+    ##########################################
+
+    def test_is_opened_001(self):
+        union = Mock()
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse1, spouse2])
 
         tree = Tree.__new__(Tree)
         tree.opened = list()
-        tree._open_node = MagicMock()
-        tree._add_to_tree = MagicMock()
-        tree._extend_nodes_and_add = MagicMock()
 
-        tree._add_node(level, node)
-        tree._open_node.assert_called_once_with(node)
-        tree._add_to_tree.assert_called_once_with(level, node)
-        self.assertEqual(tree._extend_nodes_and_add.mock_calls, [call(level+1, children), call(level-1, parents)])
+        actual = tree._is_opened(tree_node)
+        self.assertEqual(actual, False)
 
-    def test_add_node_002(self):
-        level = 5
-        node = Mock()
-        node.id = '@I001@'
-        node.get_children = MagicMock()
-        node.get_parents = MagicMock()
+    def test_is_opened_002(self):
+        union = Mock()
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse1, spouse2])
 
         tree = Tree.__new__(Tree)
-        tree.opened = [node]
-        tree._open_node = MagicMock()
-        tree._add_to_tree = MagicMock()
-        tree._extend_nodes_and_add = MagicMock()
+        tree.opened = [union]
 
-        tree._add_node(level, node)
-        tree._open_node.assert_not_called()
-        tree._add_to_tree.assert_not_called()
-        tree._extend_nodes_and_add.assert_not_called()
-        node.get_children.assert_not_called()
-        node.get_parents.assert_not_called()
+        actual = tree._is_opened(tree_node)
+        self.assertEqual(actual, True)
+
+    def test_is_opened_003(self):
+        union = Mock()
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse1, spouse2])
+
+        tree = Tree.__new__(Tree)
+        tree.opened = [spouse2]
+
+        actual = tree._is_opened(tree_node)
+        self.assertEqual(actual, True)
+
+    def test_is_opened_004(self):
+        union = Mock()
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse1, spouse2])
+
+        tree = Tree.__new__(Tree)
+        tree.opened = [union, spouse1, spouse2]
+
+        actual = tree._is_opened(tree_node)
+        self.assertEqual(actual, True)
 
     ##########################################
     # Tree._open_node
     ##########################################
 
     def test_open_node_001(self):
-        node = Mock()
+        union = Mock()
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse1, spouse2])
+
         tree = Tree.__new__(Tree)
         tree.opened = list()
 
-        tree._open_node(node)
-        self.assertEqual(tree.opened, [node])
+        tree._open_node(tree_node)
+        self.assertEqual(tree.opened, [union, spouse1, spouse2])
 
     def test_open_node_002(self):
-        node1 = Mock()
-        node2 = Mock()
-        tree = Tree.__new__(Tree)
-        tree.opened = [node1]
-
-        tree._open_node(node2)
-        self.assertEqual(tree.opened, [node1, node2])
-
-    ##########################################
-    # Tree._extend_nodes
-    ##########################################
-
-    def test_extend_nodes_001(self):
-        nodes = list()
-        tree = Tree.__new__(Tree)
-
-        extended = tree._extend_nodes(nodes)
-        self.assertEqual(extended, list())
-
-    def test_extend_nodes_002(self):
-        nodes = [Mock()]
-        extended = [Mock(), Mock()]
-
-        tree = Tree.__new__(Tree)
-        tree._extend_node = MagicMock(return_value = extended)
-
-        returned_extended = tree._extend_nodes(nodes)
-        self.assertEqual(returned_extended, extended)
-
-    def test_extend_nodes_003(self):
-        nodes = [Mock(), Mock()]
-        extended1 = [Mock(), Mock()]
-        extended2 = [Mock(), Mock(), Mock()]
-
-        tree = Tree.__new__(Tree)
-        tree._extend_node = MagicMock(side_effect = [extended1, extended2])
-
-        returned_extended = tree._extend_nodes(nodes)
-        self.assertEqual(returned_extended, extended1 + extended2)
-
-    ##########################################
-    # Tree._extend_node
-    ##########################################
-    def test_extend_node_001(self):
-        extended = [Mock(), Mock()]
-        node = Mock(spec = Union)
-
-        tree = Tree.__new__(Tree)
-        tree._extend_person = MagicMock()
-        tree._extend_union = MagicMock(return_value = extended)
-
-        returned_value = tree._extend_node(node)
-        tree._extend_person.assert_not_called()
-        tree._extend_union.assert_called_once_with(node)
-        self.assertEqual(returned_value, extended)
-
-    def test_extend_node_002(self):
-        extended = [Mock(), Mock()]
-        node = Mock(spec = Person)
-
-        tree = Tree.__new__(Tree)
-        tree._extend_person = MagicMock(return_value = extended)
-        tree._extend_union = MagicMock()
-
-        returned_value = tree._extend_node(node)
-        tree._extend_person.assert_called_once_with(node)
-        tree._extend_union.assert_not_called()
-        self.assertEqual(returned_value, extended)
-
-    ##########################################
-    # Tree._extend_person
-    ##########################################
-    def test_extend_peson_001(self):
-        person = Mock()
-        person.is_single = MagicMock(return_value = True)
-        person.get_unions = MagicMock()
-
-        tree = Tree.__new__(Tree)
-        tree._open_node = MagicMock()
-        tree._extend_nodes = MagicMock()
-
-        extended = tree._extend_person(person)
-        person.is_single.assert_called_once_with()
-        person.get_unions.assert_not_called()
-        tree._open_node.assert_not_called()
-        tree._extend_nodes.assert_not_called()
-        self.assertEqual(extended, [person])
-
-    def test_extend_peson_002(self):
-        unions = Mock()
-        person = Mock()
-        person.is_single = MagicMock(return_value = False)
-        person.get_unions = MagicMock(return_value = unions)
-
-        extended = Mock()
-        tree = Tree.__new__(Tree)
-        tree._open_node = MagicMock()
-        tree._extend_nodes = MagicMock(return_value = extended)
-
-        returned_extended = tree._extend_person(person)
-        person.is_single.assert_called_once_with()
-        person.get_unions.assert_called_once_with()
-        tree._open_node.assert_called_once_with(person)
-        tree._extend_nodes.assert_called_once_with(unions)
-        self.assertEqual(returned_extended, extended)
-
-    ##########################################
-    # Tree._extend_union
-    ##########################################
-
-    '''
-    Test when there is nothing to dequeu
-    '''
-    @patch("src.unique_queue.UniqueQueue.__new__")
-    def test_extend_union_001(self, class_queue):
-        all = []
-
+        dummy = Mock()
         union = Mock()
-        union.get_unions = MagicMock()
+        spouse1 = Mock()
+        spouse2 = Mock()
 
-        queue = Mock()
-        queue.is_empty = MagicMock(return_value = True)
-        queue.pop = MagicMock()
-        queue.push_list = MagicMock()
-        queue.get_all = MagicMock(return_value = all)
-
-        class_queue.return_value = queue
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse1, spouse2])
 
         tree = Tree.__new__(Tree)
+        tree.opened = [dummy]
 
-        # Checks
-        returned_value = tree._extend_union(union)
-        queue.is_empty.assert_called_once_with()
-        queue.pop.assert_not_called()
-        union.get_unions.assert_not_called()
-        queue.push_list.assert_not_called()
-        queue.get_all.assert_called_once_with()
-        self.assertEqual(returned_value, all)
+        tree._open_node(tree_node)
+        self.assertEqual(tree.opened, [dummy, union, spouse1, spouse2])
 
-    '''
-    Test when the queue has elements
-    '''
-    @patch("src.unique_queue.UniqueQueue.__new__")
-    def test_extend_union_002(self, class_queue):
-        unions = []
-
+    def test_open_node_003(self):
         union = Mock()
-        union.get_unions = MagicMock(return_value = unions)
-        all = Mock()
+        spouse2 = Mock()
 
-        queue = Mock()
-        queue.is_empty = MagicMock(side_effect = [False, True])
-        queue.pop = MagicMock(return_value = union)
-        queue.push_list = MagicMock()
-        queue.get_all = MagicMock(return_value = all)
-
-        class_queue.return_value = queue
+        tree_node = Mock()
+        tree_node.get_unions = MagicMock(return_value = [union])
+        tree_node.get_spouses = MagicMock(return_value = [spouse2])
 
         tree = Tree.__new__(Tree)
+        tree.opened = list()
 
-        # Checks
-        returned_value = tree._extend_union(union)
-        self.assertEqual(queue.is_empty.mock_calls, [call(), call()])
-        queue.pop.assert_called_once_with()
-        union.get_unions.assert_called_once_with()
-        queue.push_list.assert_called_once_with(unions)
-        queue.get_all.assert_called_once_with()
-        self.assertEqual(returned_value, all)
+        tree._open_node(tree_node)
+        self.assertEqual(tree.opened, [union, spouse2])
 
     ##########################################
     # Tree._create_edges

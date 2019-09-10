@@ -17,31 +17,24 @@ class TestTreeLevel(unittest.TestCase):
     # TreeLevel.append
     ##########################################
 
-    @patch("src.tree_node.TreeNode.__new__")
-    def test_append_001(self, class_treenode):
-        node = Mock()
+    def test_append_001(self):
         tree_node = Mock()
-        class_treenode.return_value = tree_node
 
         tree_level = TreeLevel.__new__(TreeLevel)
         tree_level.nodes = list()
 
-        tree_level.append(node)
-        class_treenode.assert_called_once_with(ANY, node)
+        tree_level.append(tree_node)
         self.assertEqual(tree_level.nodes, [tree_node])
 
-    @patch("src.tree_node.TreeNode.__new__")
-    def test_append_002(self, class_treenode):
+    def test_append_002(self):
         node = Mock()
         tree_node1 = Mock()
         tree_node2 = Mock()
-        class_treenode.return_value = tree_node2
 
         tree_level = TreeLevel.__new__(TreeLevel)
         tree_level.nodes = [tree_node1]
 
-        tree_level.append(node)
-        class_treenode.assert_called_once_with(ANY, node)
+        tree_level.append(tree_node2)
         self.assertEqual(tree_level.nodes, [tree_node1, tree_node2])
 
     ##########################################

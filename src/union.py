@@ -29,6 +29,12 @@ class Union(Node):
     def set_place(self, place):
         self.place = place
 
+    def get_spouses(self):
+        people = list()
+        people.append(self.spouse1)
+        people.append(self.spouse2)
+        return people
+
     def get_children(self):
         return self.children
 

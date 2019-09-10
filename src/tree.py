@@ -1,9 +1,7 @@
 from src.edge import Edge
 from src.html import HTMLGenerator
-from src.person import Person
 from src.tree_level import TreeLevel
-from src.unique_queue import UniqueQueue
-
+from src.tree_node import TreeNode
 
 # pylint: disable=too-few-public-methods
 class Tree():
@@ -14,7 +12,7 @@ class Tree():
         self.levels = dict()
         self.opened = list()
 
-        self.nodes = self._ceate_nodes(people)
+        self.nodes = self._create_nodes(people)
         self.edges = self._create_edges(unions)
 
     def to_html(self):
@@ -29,64 +27,41 @@ class Tree():
 
 # private:
 
-    def _ceate_nodes(self, people):
+    def _create_nodes(self, people):
         level = 0
         starting_node = self._get_starting_node(people)
-        self._extend_node_and_add(level, starting_node)
+        self._add_node_to_level(starting_node, level)
         return self._levels_to_nodes()
 
-    def _extend_nodes_and_add(self, level, nodes):
+    def _add_nodes_to_level(self, nodes, level):
         for node in nodes:
-            self._extend_node_and_add(level, node)
+            self._add_node_to_level(node, level)
 
-    def _extend_node_and_add(self, level, node):
-        extended = self._extend_node(node)
-        self._add_nodes(level, extended)
-
-    def _add_nodes(self, level, nodes):
-        for node in nodes:
-            self._add_node(level, node)
-
-    def _add_node(self, level, node):
-        if node in self.opened:
+    def _add_node_to_level(self, node, level):
+        tree_node = TreeNode(node)
+        if self._is_opened(tree_node):
             return
 
-        self._open_node(node)
-        self._add_to_tree(level, node)
-        self._extend_nodes_and_add(level+1, node.get_children())
-        self._extend_nodes_and_add(level-1, node.get_parents())
+        self._open_node(tree_node)
+        self._add_to_tree(level, tree_node)
 
-    def _open_node(self, node):
-        self.opened.append(node)
+        self._add_nodes_to_level(tree_node.get_children(), level+1)
+        self._add_nodes_to_level(tree_node.get_parents(), level-1)
 
-    def _extend_nodes(self, nodes):
-        extended = list()
+    def _is_opened(self, tree_node):
+        nodes = tree_node.get_unions() + tree_node.get_spouses()
+
         for node in nodes:
-            extended += self._extend_node(node)
-        return extended
+            if node in self.opened:
+                return True
 
-    def _extend_node(self, node):
-        if isinstance(node, Person):
-            return self._extend_person(node)
-        else:
-            return self._extend_union(node)
+        return False
 
-    def _extend_person(self, person):
-        if person.is_single():
-            return [person]
-        else:
-            self._open_node(person)
-            return self._extend_nodes(person.get_unions())
+    def _open_node(self, tree_node):
+        nodes = tree_node.get_unions() + tree_node.get_spouses()
 
-    # pylint: disable=no-self-use
-    def _extend_union(self, union):
-        queue = UniqueQueue([union])
-
-        while not queue.is_empty():
-            union = queue.pop()
-            queue.push_list(union.get_unions())
-
-        return queue.get_all()
+        for node in nodes:
+            self.opened.append(node)
 
     def _create_edges(self, unions):
         edges = list()
