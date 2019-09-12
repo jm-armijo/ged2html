@@ -326,6 +326,7 @@ class TestPerson(unittest.TestCase):
         person.death_date = '31-12-1999'
 
         value = (
+            '  <img class="photo" src="images/face.png">\n'
             '  <div class="given">Given</div>\n'
             '  <div class="last">Last</div>\n'
             '  <div class="dates">01-01-1900 - 31-12-1999</div>\n'
@@ -348,6 +349,7 @@ class TestPerson(unittest.TestCase):
         person.death_date = ''
 
         value = (
+            '  <img class="photo" src="images/face.png">\n'
             '  <div class="given">Given</div>\n'
             '  <div class="last">Last</div>\n'
             '  <div class="dates">01-01-1900 - </div>\n'
@@ -370,6 +372,7 @@ class TestPerson(unittest.TestCase):
         person.death_date = ''
 
         value = (
+            '  <img class="photo" src="images/face.png">\n'
             '  <div class="given"></div>\n'
             '  <div class="last">Last</div>\n'
             '  <div class="dates">01-01-1900 - </div>\n'

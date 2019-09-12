@@ -69,6 +69,7 @@ class Person(Node):
 
     def to_html(self):
         value = (
+            '  <img class="photo" src="images/face.png">\n'
             '  <div class="given">{}</div>\n'
             '  <div class="last">{}</div>\n'
             '  <div class="dates">{} - {}</div>\n'
