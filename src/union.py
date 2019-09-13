@@ -59,7 +59,10 @@ class Union(Node):
     def to_html(self):
         value = (
             '  {}\n'
-            '  <div class="date" id="{}">{}</div>\n'
+            '  <div class="joint" id="{}">'
+            '    <img class="join-image" src="images/rings.png">\n'
+            '    <div class="date">{}</div>\n'
+            '  </div>'
             '  {}\n'
         ).format(
             self.spouse1.to_html(),
