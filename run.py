@@ -28,7 +28,7 @@ def create_output_directory():
     copyfile('src/css/styles.css', 'html/css/styles.css')
     copyfile('src/scripts/leader-line.min.js', 'html/scripts/leader-line.min.js')
     copyfile('src/images/face.png', 'html/images/face.png')
-    copyfile('src/images/rings.png', 'html/images/rings.png')
+    copyfile('src/images/unionlink.png', 'html/images/unionlink.png')
     copyfile('src/images/bg.jpg', 'html/images/bg.jpg')
 
 def are_args_valid():

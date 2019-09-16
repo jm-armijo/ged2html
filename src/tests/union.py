@@ -12,19 +12,22 @@ class TestUnion(unittest.TestCase):
     ##########################################
 
     @patch("src.null_person.NullPerson.__new__")
-    def test_init_001(self, class_null_person):
+    @patch("src.union_link.UnionLink.__new__")
+    def test_init_001(self, class_union_link, class_null_person):
         id = "@F1234567@"
         null_person1 = Mock()
         null_person2 = Mock()
         class_null_person.side_effect = [null_person1, null_person2]
+
+        union_link = Mock()
+        class_union_link.return_value = union_link
 
         union = Union(id)
         self.assertEqual(union.id, id)
         self.assertEqual(union.spouse1, null_person1)
         self.assertEqual(union.spouse2, null_person2)
         self.assertEqual(union.children, list())
-        self.assertEqual(union.date, '')
-        self.assertEqual(union.place, '')
+        self.assertEqual(union.link, union_link)
 
     ##########################################
     # Union.set_spouse1
@@ -82,21 +85,25 @@ class TestUnion(unittest.TestCase):
     # Union.set_date
     ##########################################
 
-    def test_set_date(self):
+    def test_set_date_001(self):
         union = Union.__new__(Union)
+        union.link = Mock()
+
         date = '28 FEB 1800'
         union.set_date(date)
-        self.assertEqual(union.date, date)
+        self.assertEqual(union.link.date, date)
 
     ##########################################
     # Union.set_place
     ##########################################
 
-    def test_set_place(self):
+    def test_set_place_001(self):
         union = Union.__new__(Union)
+        union.link = Mock()
+
         place = 'Somewhere'
         union.set_place(place)
-        self.assertEqual(union.place, place)
+        self.assertEqual(union.link.place, place)
 
     ##########################################
     # Union.get_spouses
@@ -303,18 +310,21 @@ class TestUnion(unittest.TestCase):
         union.date = '20-02-2002'
         union.spouse1 = Mock()
         union.spouse2 = Mock()
+        union.link = Mock()
 
         spouse1_html = "<div>Spouse1</div>"
         spouse2_html = "<div>Spouse2</div>"
+        link_html = "<div>link</div>"
 
         union.spouse1.to_html = MagicMock(return_value = spouse1_html)
         union.spouse2.to_html = MagicMock(return_value = spouse2_html)
+        union.link.to_html = MagicMock(return_value = link_html)
 
         value = (
             '  {}\n'
-            '  <div class="date" id="@F00003@">20-02-2002</div>\n'
             '  {}\n'
-        ).format(spouse1_html, spouse2_html)
+            '  {}\n'
+        ).format(spouse1_html, link_html, spouse2_html)
 
         wrapped = "<div>"+value+"</div>"
         HTMLGenerator.wrap = MagicMock(return_value = wrapped)
@@ -329,18 +339,21 @@ class TestUnion(unittest.TestCase):
         union.date = ''
         union.spouse1 = Mock()
         union.spouse2 = Mock()
+        union.link = Mock()
 
         spouse1_html = "<div>Spouse1</div>"
         spouse2_html = ""
+        link_html = "<div>link</div>"
 
         union.spouse1.to_html = MagicMock(return_value = spouse1_html)
         union.spouse2.to_html = MagicMock(return_value = spouse2_html)
+        union.link.to_html = MagicMock(return_value = link_html)
 
         value = (
             '  {}\n'
-            '  <div class="date" id="@F00003@"></div>\n'
             '  {}\n'
-        ).format(spouse1_html, spouse2_html)
+            '  {}\n'
+        ).format(spouse1_html, link_html, spouse2_html)
 
         wrapped = "<div>"+value+"</div>"
         HTMLGenerator.wrap = MagicMock(return_value = wrapped)

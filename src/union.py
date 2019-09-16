@@ -1,6 +1,8 @@
 from src.node import Node
 from src.null_person import NullPerson
 from src.html import HTMLGenerator
+from src.date import Date
+from src.union_link import UnionLink
 
 class Union(Node):
     def __init__(self, union_id):
@@ -8,8 +10,7 @@ class Union(Node):
         self.spouse1 = NullPerson()
         self.spouse2 = NullPerson()
         self.children = list()
-        self.date = ''
-        self.place = ''
+        self.link = UnionLink(union_id)
 
     def set_spouse1(self, spouse):
         spouse.add_union(self)
@@ -24,10 +25,10 @@ class Union(Node):
         self.children.append(child)
 
     def set_date(self, date):
-        self.date = date
+        self.link.date = date
 
     def set_place(self, place):
-        self.place = place
+        self.link.place = place
 
     def get_spouses(self):
         people = list()
@@ -59,15 +60,11 @@ class Union(Node):
     def to_html(self):
         value = (
             '  {}\n'
-            '  <div class="joint" id="{}">'
-            '    <img class="join-image" src="images/rings.png">\n'
-            '    <div class="date">{}</div>\n'
-            '  </div>'
+            '  {}\n'
             '  {}\n'
         ).format(
             self.spouse1.to_html(),
-            self.id,
-            self.date,
+            self.link.to_html(),
             self.spouse2.to_html()
         )
 

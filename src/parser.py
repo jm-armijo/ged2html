@@ -1,4 +1,7 @@
 from src.text_line import TextLine
+import re
+
+from src.date import Date
 from src.person import Person
 from src.tree import Tree
 from src.union import Union
@@ -122,7 +125,8 @@ class Parser():
         elif attribute == 'CHIL':
             union.add_child(self._get_person_or_create(value))
         elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'MARR':
-            union.set_date(value)
+            date = self._create_date(value)
+            union.set_date(date)
         elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'MARR':
             union.set_place(value)
 
@@ -131,3 +135,21 @@ class Parser():
             self.people[person_id] = Person(person_id)
 
         return self.people[person_id]
+
+    def _create_date(self, raw_date):
+        date = Date()
+
+        pattern = re.compile("(ABT|AFT|BEF|EST)?\s?(\d{1,2})?\s?(\w{3})?\s?(\d{4})")
+        if pattern.match(raw_date):
+            match = pattern.search(raw_date)
+            if match.group(1):
+                date.type = match.group(1)
+            if match.group(2):
+                date.day = match.group(2)
+            if match.group(3):
+                date.month = match.group(3)
+            date.year = match.group(4)
+        else:
+            print("Unable to parse date {}".format(raw_date))
+
+        return date

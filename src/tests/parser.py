@@ -792,7 +792,8 @@ class TestParser(unittest.TestCase):
 
     def test_add_union_data_004(self):
         attribute = 'DATE'
-        value = '01-02-1900'
+        value = '1 FEB 1900'
+        date = Mock()
 
         # Setup line
         line = Mock()
@@ -805,6 +806,7 @@ class TestParser(unittest.TestCase):
         parser.current_line = line
         parser._get_person_or_create = MagicMock()
         parser.last_key_per_level = {0: 'MARR'}
+        parser._create_date = MagicMock(return_value = date)
 
         # Setup parser unions
         union1 = Mock()
@@ -821,12 +823,13 @@ class TestParser(unittest.TestCase):
         union1.set_spouse1.assert_not_called()
         union1.set_spouse2.assert_not_called()
         union1.add_child.assert_not_called()
-        union1.set_date.assert_called_once_with(value)
+        parser._create_date.assert_called_once_with(value)
+        union1.set_date.assert_called_once_with(date)
         union1.set_place.assert_not_called()
 
     def test_add_union_data_005(self):
         attribute = 'DATE'
-        value = '01-02-1900'
+        value = '1 FEB 1900'
 
         # Setup line
         line = Mock()
@@ -947,5 +950,124 @@ class TestParser(unittest.TestCase):
 
         parser._get_person_or_create(id)
         mock_person.assert_not_called()
+
+    ##########################################
+    # Parser._create_date
+    ##########################################
+
+    @patch("src.date.Date.__new__")
+    def test_create_date_001(self, class_date):
+        raw_date = 'EST 1 FEB 1900'
+
+        date = Mock()
+        date.type = ''
+        date.day = ''
+        date.month = ''
+        date.year = ''
+        class_date.return_value = date
+
+        parser = Parser.__new__(Parser)
+
+        current = parser._create_date(raw_date)
+        self.assertEqual(current.type, 'EST')
+        self.assertEqual(current.day, '1')
+        self.assertEqual(current.month, 'FEB')
+        self.assertEqual(current.year, '1900')
+
+    @patch("src.date.Date.__new__")
+    def test_create_date_002(self, class_date):
+        raw_date = '1 FEB 1900'
+
+        date = Mock()
+        date.type = ''
+        date.day = ''
+        date.month = ''
+        date.year = ''
+        class_date.return_value = date
+
+        parser = Parser.__new__(Parser)
+
+        current = parser._create_date(raw_date)
+        self.assertEqual(current.type, '')
+        self.assertEqual(current.day, '1')
+        self.assertEqual(current.month, 'FEB')
+        self.assertEqual(current.year, '1900')
+
+    @patch("src.date.Date.__new__")
+    def test_create_date_003(self, class_date):
+        raw_date = 'FEB 1900'
+
+        date = Mock()
+        date.type = ''
+        date.day = ''
+        date.month = ''
+        date.year = ''
+        class_date.return_value = date
+
+        parser = Parser.__new__(Parser)
+
+        current = parser._create_date(raw_date)
+        self.assertEqual(current.type, '')
+        self.assertEqual(current.day, '')
+        self.assertEqual(current.month, 'FEB')
+        self.assertEqual(current.year, '1900')
+
+    @patch("src.date.Date.__new__")
+    def test_create_date_004(self, class_date):
+        raw_date = 'AFT FEB 1900'
+
+        date = Mock()
+        date.type = ''
+        date.day = ''
+        date.month = ''
+        date.year = ''
+        class_date.return_value = date
+
+        parser = Parser.__new__(Parser)
+
+        current = parser._create_date(raw_date)
+        self.assertEqual(current.type, 'AFT')
+        self.assertEqual(current.day, '')
+        self.assertEqual(current.month, 'FEB')
+        self.assertEqual(current.year, '1900')
+
+    @patch("src.date.Date.__new__")
+    def test_create_date_005(self, class_date):
+        raw_date = '1900'
+
+        date = Mock()
+        date.type = ''
+        date.day = ''
+        date.month = ''
+        date.year = ''
+        class_date.return_value = date
+
+        parser = Parser.__new__(Parser)
+
+        current = parser._create_date(raw_date)
+        self.assertEqual(current.type, '')
+        self.assertEqual(current.day, '')
+        self.assertEqual(current.month, '')
+        self.assertEqual(current.year, '1900')
+
+    @patch("src.date.Date.__new__")
+    def test_create_date_006(self, class_date):
+        raw_date = 'BEF 1900'
+
+        date = Mock()
+        date.type = ''
+        date.day = ''
+        date.month = ''
+        date.year = ''
+        class_date.return_value = date
+
+        parser = Parser.__new__(Parser)
+
+        current = parser._create_date(raw_date)
+        self.assertEqual(current.type, 'BEF')
+        self.assertEqual(current.day, '')
+        self.assertEqual(current.month, '')
+        self.assertEqual(current.year, '1900')
+
 if __name__ == '__main__':
     unittest.main()

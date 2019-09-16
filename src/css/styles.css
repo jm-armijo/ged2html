@@ -26,7 +26,15 @@ div.union {
     border: 2px solid green;
 }
 
-img.join-image {
+div.unionlink {
+    padding: 15px;
+    vertical-align: top;
+    padding-top: 70px;
+    display: inline-block;
+    border: 2px solid red;
+}
+
+img.unionlink-image {
     margin-left: auto;
     margin-right: auto;
     padding: 15px;
@@ -35,13 +43,6 @@ img.join-image {
     display: block;
 }
 
-div.joint {
-    padding: 15px;
-    vertical-align: top;
-    padding-top: 70px;
-    display: inline-block;
-    border: 2px solid red;
-}
 
 div.person {
     display: inline-block;
