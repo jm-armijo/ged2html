@@ -6,7 +6,6 @@ body {
 div.treelevel {
     display: block;
     border: 1px solid blue;
-    overflow:auto;
     white-space:nowrap;
     padding-top: 60px;
     padding-bottom: 60px;
