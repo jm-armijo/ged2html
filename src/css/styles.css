@@ -15,18 +15,16 @@ div.treelevel {
 div.treenode {
     display: inline-block;
     border: 2px solid pink;
-    padding-left: 5px;
-    padding-right: 5px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 div.union {
-    padding: 15px;
     display: inline-block;
     border: 2px solid green;
 }
 
 div.unionlink {
-    padding: 15px;
     vertical-align: top;
     padding-top: 70px;
     display: inline-block;
@@ -36,7 +34,6 @@ div.unionlink {
 img.unionlink-image {
     margin-left: auto;
     margin-right: auto;
-    padding: 15px;
     vertical-align: middle;
     border: 2px solid black;
     display: block;
@@ -56,4 +53,15 @@ img.photo {
 div.date {
     display: inline-block;
     border: 2px solid red;
+}
+
+div.given {
+    text-transform: capitalize;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div.last {
+    text-transform: capitalize;
 }

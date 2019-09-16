@@ -42,7 +42,7 @@ class TestPerson(unittest.TestCase):
         person.set_name(full_name)
         person._split_name.assert_called_with(full_name)
         person.set_given_name.assert_called_with(given_name)
-        self.assertEqual(person.last_name, last_name)
+        self.assertEqual(person.last_name, last_name.lower())
 
     def test_set_name_002(self):
         # Setup name
@@ -60,7 +60,7 @@ class TestPerson(unittest.TestCase):
         person.set_name(full_name)
         person._split_name.assert_called_with(full_name)
         person.set_given_name.assert_called_with(given_name)
-        self.assertEqual(person.last_name, last_name)
+        self.assertEqual(person.last_name, last_name.lower())
 
     def test_set_name_003(self):
         # Setup name
@@ -107,8 +107,9 @@ class TestPerson(unittest.TestCase):
         person.given_name = old_given_name
 
         # Actual test
+        expected = new_given_name.lower()
         person.set_given_name(new_given_name)
-        self.assertEqual(person.given_name, new_given_name)
+        self.assertEqual(person.given_name, expected)
 
     def test_set_given_name_003(self):
         # Setup name
@@ -120,8 +121,9 @@ class TestPerson(unittest.TestCase):
         person.given_name = old_given_name
 
         # Actual test
+        expected = old_given_name
         person.set_given_name(new_given_name)
-        self.assertEqual(person.given_name, old_given_name)
+        self.assertEqual(person.given_name, expected)
 
     def test_set_given_name_004(self):
         # Setup name

@@ -19,11 +19,11 @@ class Person(Node):
     def set_name(self, name):
         name_parts = self._split_name(name)
         self.set_given_name(name_parts[0])
-        self.last_name = name_parts[1]
+        self.last_name = name_parts[1].lower()
 
     def set_given_name(self, given_name):
         if self.given_name == '':
-            self.given_name = given_name
+            self.given_name = given_name.lower()
 
     def set_sex(self, sex):
         self.sex = sex
