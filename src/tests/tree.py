@@ -436,19 +436,19 @@ class TestTree(unittest.TestCase):
     # Tree._get_starting_node
     ##########################################
 
-    def test_get_starting_person_001(self):
+    def test_get_starting_node_001(self):
         # Setup people
-        person1 = None
         people = dict()
 
         # Setup Tree
         tree = Tree.__new__(Tree)
 
         # Actual test
-        returned_person = tree._get_starting_node(people)
-        self.assertEqual(returned_person, person1)
+        expected = None
+        actual = tree._get_starting_node(people)
+        self.assertEqual(expected, actual)
 
-    def test_get_starting_person_002(self):
+    def test_get_starting_node_002(self):
         # Setup people
         id1 = '@I0001234@'
         person1 = Mock()
@@ -458,10 +458,11 @@ class TestTree(unittest.TestCase):
         tree = Tree.__new__(Tree)
 
         # Actual test
-        returned_person = tree._get_starting_node(people)
-        self.assertEqual(returned_person, person1)
+        expected = person1
+        actual = tree._get_starting_node(people)
+        self.assertEqual(expected, actual)
 
-    def test_get_starting_person_003(self):
+    def test_get_starting_node_003(self):
         # Setup people
         id1 = '@I0001234@'
         id2 = '@I0001233@'
@@ -473,8 +474,9 @@ class TestTree(unittest.TestCase):
         tree = Tree.__new__(Tree)
 
         # Actual test
-        returned_person = tree._get_starting_node(people)
-        self.assertEqual(returned_person, person2)
+        expected = person2
+        actual = tree._get_starting_node(people)
+        self.assertEqual(expected, actual)
 
     ##########################################
     # Tree._add_to_tree

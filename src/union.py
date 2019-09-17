@@ -1,15 +1,15 @@
 from src.node import Node
-from src.null_person import NullPerson
+from src.person import Person
 from src.html import HTMLGenerator
-from src.date import Date
 from src.union_link import UnionLink
 
 class Union(Node):
     def __init__(self, union_id):
+        super().__init__()
+
         self.id = union_id
-        self.spouse1 = NullPerson()
-        self.spouse2 = NullPerson()
-        self.children = list()
+        self.spouse1 = Person()
+        self.spouse2 = Person()
         self.link = UnionLink(union_id)
 
     def set_spouse1(self, spouse):

@@ -1,6 +1,7 @@
 from src.date import Date
 from src.html import HTMLGenerator
 
+# pylint: disable=too-few-public-methods
 class UnionLink():
     def __init__(self, union_id):
         self.id = union_id

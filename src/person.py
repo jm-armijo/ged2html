@@ -4,7 +4,9 @@ from src.node import Node
 
 # pylint: disable=too-many-instance-attributes
 class Person(Node):
-    def __init__(self, person_id):
+    def __init__(self, person_id=''):
+        super().__init__()
+
         self.id = person_id
         self.given_name = ''
         self.last_name = ''
@@ -13,7 +15,6 @@ class Person(Node):
         self.birth_place = ''
         self.death_date = ''
         self.death_place = ''
-        self.parents = None
         self.unions = list()
 
     def set_name(self, name):
@@ -41,25 +42,20 @@ class Person(Node):
         self.death_place = place
 
     def set_parents(self, parents):
-        self.parents = parents
+        self.parents.append(parents)
 
     def add_union(self, union):
         self.unions.append(union)
+        self.children += union.get_children()
 
     def get_spouses(self):
         return [self]
 
     def get_children(self):
-        children = list()
-        for union in self.unions:
-            children += union.get_children()
-        return children
+        return self.children
 
     def get_parents(self):
-        if self.parents is None:
-            return list()
-        else:
-            return [self.parents]
+        return self.parents
 
     def get_unions(self):
         return self.unions

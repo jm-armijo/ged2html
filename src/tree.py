@@ -30,7 +30,8 @@ class Tree():
     def _create_nodes(self, people):
         level = 0
         starting_node = self._get_starting_node(people)
-        self._add_node_to_level(starting_node, level)
+        if starting_node is not None:
+            self._add_node_to_level(starting_node, level)
         return self._levels_to_nodes()
 
     def _add_nodes_to_level(self, nodes, level):

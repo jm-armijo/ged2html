@@ -3,6 +3,8 @@ from src.unique_queue import UniqueQueue
 
 class UnionExtended(Node):
     def __init__(self, unions):
+        super().__init__()
+
         self.unions = list()
         self._extend_nodes(unions)
 

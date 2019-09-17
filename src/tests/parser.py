@@ -960,7 +960,7 @@ class TestParser(unittest.TestCase):
         raw_date = 'EST 1 FEB 1900'
 
         date = Mock()
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
@@ -969,7 +969,7 @@ class TestParser(unittest.TestCase):
         parser = Parser.__new__(Parser)
 
         current = parser._create_date(raw_date)
-        self.assertEqual(current.type, 'EST')
+        self.assertEqual(current.precision, 'EST')
         self.assertEqual(current.day, '1')
         self.assertEqual(current.month, 'FEB')
         self.assertEqual(current.year, '1900')
@@ -979,7 +979,7 @@ class TestParser(unittest.TestCase):
         raw_date = '1 FEB 1900'
 
         date = Mock()
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
@@ -988,7 +988,7 @@ class TestParser(unittest.TestCase):
         parser = Parser.__new__(Parser)
 
         current = parser._create_date(raw_date)
-        self.assertEqual(current.type, '')
+        self.assertEqual(current.precision, '')
         self.assertEqual(current.day, '1')
         self.assertEqual(current.month, 'FEB')
         self.assertEqual(current.year, '1900')
@@ -998,7 +998,7 @@ class TestParser(unittest.TestCase):
         raw_date = 'FEB 1900'
 
         date = Mock()
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
@@ -1007,7 +1007,7 @@ class TestParser(unittest.TestCase):
         parser = Parser.__new__(Parser)
 
         current = parser._create_date(raw_date)
-        self.assertEqual(current.type, '')
+        self.assertEqual(current.precision, '')
         self.assertEqual(current.day, '')
         self.assertEqual(current.month, 'FEB')
         self.assertEqual(current.year, '1900')
@@ -1017,7 +1017,7 @@ class TestParser(unittest.TestCase):
         raw_date = 'AFT FEB 1900'
 
         date = Mock()
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
@@ -1026,7 +1026,7 @@ class TestParser(unittest.TestCase):
         parser = Parser.__new__(Parser)
 
         current = parser._create_date(raw_date)
-        self.assertEqual(current.type, 'AFT')
+        self.assertEqual(current.precision, 'AFT')
         self.assertEqual(current.day, '')
         self.assertEqual(current.month, 'FEB')
         self.assertEqual(current.year, '1900')
@@ -1036,7 +1036,7 @@ class TestParser(unittest.TestCase):
         raw_date = '1900'
 
         date = Mock()
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
@@ -1045,7 +1045,7 @@ class TestParser(unittest.TestCase):
         parser = Parser.__new__(Parser)
 
         current = parser._create_date(raw_date)
-        self.assertEqual(current.type, '')
+        self.assertEqual(current.precision, '')
         self.assertEqual(current.day, '')
         self.assertEqual(current.month, '')
         self.assertEqual(current.year, '1900')
@@ -1055,7 +1055,7 @@ class TestParser(unittest.TestCase):
         raw_date = 'BEF 1900'
 
         date = Mock()
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
@@ -1064,7 +1064,7 @@ class TestParser(unittest.TestCase):
         parser = Parser.__new__(Parser)
 
         current = parser._create_date(raw_date)
-        self.assertEqual(current.type, 'BEF')
+        self.assertEqual(current.precision, 'BEF')
         self.assertEqual(current.day, '')
         self.assertEqual(current.month, '')
         self.assertEqual(current.year, '1900')

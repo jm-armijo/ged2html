@@ -1,15 +1,13 @@
-import datetime
-
 class Date():
 
     def __init__(self):
-        self.type = ''
+        self.precision = ''
         self.day = ''
         self.month = ''
         self.year = ''
 
-    def set_type(self, type):
-        self.type = type
+    def set_precision(self, precision):
+        self.precision = precision
 
     def set_day(self, day):
         self.day = day
@@ -22,9 +20,9 @@ class Date():
 
     def get_full(self):
         date = self.year
-        if (self.month != ''):
+        if self.month != '':
             date = self.month + " " + date
-            if (self.day != ''):
+            if self.day != '':
                 date = self.day + " " + date
 
         return date

@@ -1,8 +1,8 @@
-from src.text_line import TextLine
 import re
 
 from src.date import Date
 from src.person import Person
+from src.text_line import TextLine
 from src.tree import Tree
 from src.union import Union
 
@@ -48,12 +48,16 @@ class Parser():
     # Reads the file into a list of lines
     # pylint: disable=no-self-use
     def _read_file(self, file_name):
+        lines = list()
         try:
             with open(file_name, mode='r') as tree_file:
-                return map(TextLine, tree_file.readlines())
-        except:
-            print("Unable to open file '{}'".format(file_name))
-            return list()
+                lines = map(TextLine, tree_file.readlines())
+        except FileNotFoundError as error:
+            print("Cannot open file '{}': file not found. {}".format(file_name, error))
+        except PermissionError as error:
+            print("Cannot open file '{}': not enough permissions. {}".format(file_name, error))
+
+        return lines
 
     def _parse_lines(self, lines):
         for self.current_line in lines:
@@ -139,11 +143,11 @@ class Parser():
     def _create_date(self, raw_date):
         date = Date()
 
-        pattern = re.compile("(ABT|AFT|BEF|EST)?\s?(\d{1,2})?\s?(\w{3})?\s?(\d{4})")
+        pattern = re.compile(r"(ABT|AFT|BEF|EST)?\s?(\d{1,2})?\s?(\w{3})?\s?(\d{4})")
         if pattern.match(raw_date):
             match = pattern.search(raw_date)
             if match.group(1):
-                date.type = match.group(1)
+                date.precision = match.group(1)
             if match.group(2):
                 date.day = match.group(2)
             if match.group(3):

@@ -9,11 +9,11 @@ python3 -m unittest src.tests.node
 printf "\n\nRunning Union tests...\n"
 python3 -m unittest src.tests.union
 
+printf "\n\nRunning UnionLink tests...\n"
+python3 -m unittest src.tests.union_link
+
 printf "\n\nRunning Person tests...\n"
 python3 -m unittest src.tests.person
-
-printf "\n\nRunning NUllPerson tests...\n"
-python3 -m unittest src.tests.null_person
 
 printf "\n\nRunning Parser tests...\n"
 python3 -m unittest src.tests.parser
@@ -35,3 +35,6 @@ python3 -m unittest src.tests.edge
 
 printf "\n\nRunning HTMLGenerator tests...\n"
 python3 -m unittest src.tests.html
+
+printf "\n\nRunning Date tests...\n"
+python3 -m unittest src.tests.date

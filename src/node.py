@@ -1,6 +1,10 @@
 class Node():
+    def __init__(self):
+        self.children = list()
+        self.parents = list()
+
     def get_children(self):
-        return list()
+        return self.children
 
     def get_parents(self):
-        return list()
+        return self.parents

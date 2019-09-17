@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, Mock, patch
 from ..html import HTMLGenerator
-from ..null_person import NullPerson
+from ..person import Person
 from ..union import Union
 
 
@@ -11,21 +11,21 @@ class TestUnion(unittest.TestCase):
     # Union.__init__
     ##########################################
 
-    @patch("src.null_person.NullPerson.__new__")
+    @patch("src.person.Person.__new__")
     @patch("src.union_link.UnionLink.__new__")
     def test_init_001(self, class_union_link, class_null_person):
         id = "@F1234567@"
-        null_person1 = Mock()
-        null_person2 = Mock()
-        class_null_person.side_effect = [null_person1, null_person2]
+        person1 = Mock()
+        person2 = Mock()
+        class_null_person.side_effect = [person1, person2]
 
         union_link = Mock()
         class_union_link.return_value = union_link
 
         union = Union(id)
         self.assertEqual(union.id, id)
-        self.assertEqual(union.spouse1, null_person1)
-        self.assertEqual(union.spouse2, null_person2)
+        self.assertEqual(union.spouse1, person1)
+        self.assertEqual(union.spouse2, person2)
         self.assertEqual(union.children, list())
         self.assertEqual(union.link, union_link)
 

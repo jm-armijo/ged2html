@@ -11,25 +11,25 @@ class TestDate(unittest.TestCase):
     def test_init_001(self):
         date = Date()
 
-        self.assertEqual(date.type, '')
+        self.assertEqual(date.precision, '')
         self.assertEqual(date.day, '')
         self.assertEqual(date.month, '')
         self.assertEqual(date.year, '')
 
     ##########################################
-    # Date.set_type
+    # Date.set_precision
     ##########################################
 
-    def test_set_type_001(self):
+    def test_set_precision_001(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
 
-        type = 'ABT'
-        date.set_type(type)
-        self.assertEqual(date.type, type)
+        precision = 'ABT'
+        date.set_precision(precision)
+        self.assertEqual(date.precision, precision)
         self.assertEqual(date.day, '')
         self.assertEqual(date.month, '')
         self.assertEqual(date.year, '')
@@ -40,14 +40,14 @@ class TestDate(unittest.TestCase):
 
     def test_set_day_001(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
 
         day = '9'
         date.set_day(day)
-        self.assertEqual(date.type, '')
+        self.assertEqual(date.precision, '')
         self.assertEqual(date.day, day)
         self.assertEqual(date.month, '')
         self.assertEqual(date.year, '')
@@ -58,14 +58,14 @@ class TestDate(unittest.TestCase):
 
     def test_set_month_001(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
 
         month = 'AUG'
         date.set_month(month)
-        self.assertEqual(date.type, '')
+        self.assertEqual(date.precision, '')
         self.assertEqual(date.day, '')
         self.assertEqual(date.month, month)
         self.assertEqual(date.year, '')
@@ -76,14 +76,14 @@ class TestDate(unittest.TestCase):
 
     def test_set_year_001(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = ''
 
         year = '1865'
         date.set_year(year)
-        self.assertEqual(date.type, '')
+        self.assertEqual(date.precision, '')
         self.assertEqual(date.day, '')
         self.assertEqual(date.month, '')
         self.assertEqual(date.year, year)
@@ -94,7 +94,7 @@ class TestDate(unittest.TestCase):
 
     def test_get_full_001(self):
         date = Date.__new__(Date)
-        date.type = 'EST'
+        date.precision = 'EST'
         date.day = '14'
         date.month = 'APR'
         date.year = '1899'
@@ -104,7 +104,7 @@ class TestDate(unittest.TestCase):
 
     def test_get_full_002(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = '14'
         date.month = 'APR'
         date.year = '1899'
@@ -114,7 +114,7 @@ class TestDate(unittest.TestCase):
 
     def test_get_full_003(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = 'APR'
         date.year = '1899'
@@ -124,7 +124,7 @@ class TestDate(unittest.TestCase):
 
     def test_get_full_004(self):
         date = Date.__new__(Date)
-        date.type = ''
+        date.precision = ''
         date.day = ''
         date.month = ''
         date.year = '1899'

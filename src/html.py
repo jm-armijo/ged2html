@@ -12,9 +12,9 @@ class HTMLGenerator():
         file_handler.close()
 
     @staticmethod
-    def wrap(instance, value, id=''):
+    def wrap(instance, value, node_id=''):
         class_name = type(instance).__name__.lower()
-        attributes = HTMLGenerator._get_attributes(class_name, id)
+        attributes = HTMLGenerator._get_attributes(class_name, node_id)
 
         return (
             '<div {}>\n'
@@ -44,10 +44,11 @@ class HTMLGenerator():
         ).format(script)
 
     @staticmethod
-    def _get_attributes(class_name, id):
+    def _get_attributes(class_name, node_id):
         tag = list()
         tag.append('class="{}"'.format(class_name))
-        tag.append('id="{}"'.format(id)) if id != '' else ''
+        if node_id != '':
+            tag.append('id="{}"'.format(node_id))
         return " ".join(tag)
 
     def _get_html(self, head, body):
@@ -68,10 +69,10 @@ class HTMLGenerator():
             '    <script src="scripts/leader-line.min.js"></script>\n'
             '  </head>'
         ).format(title)
-    
+
     def _get_body(self, body):
         return (
             '  <body>\n'
             '{}\n'
             '  </body>'
-        ).format(body, '')
+        ).format(body)
