@@ -10,7 +10,7 @@ class Person(Node):
         self.id = person_id
         self.given_name = ''
         self.last_name = ''
-        self.sex = ''
+        self.sex = 'U'
         self.birth_date = ''
         self.birth_place = ''
         self.death_date = ''
@@ -65,18 +65,35 @@ class Person(Node):
 
     def to_html(self):
         value = (
-            '  <div class="photo"><img class="photo" src="images/face.png"></div>\n'
-            '  <div class="given">{}</div>\n'
-            '  <div class="last">{}</div>\n'
-            '  <div class="dates">{} - {}</div>\n'
+            '  {}'
+            '  {}'
+            '  {}'
+            '  {}'
+            '  {}'
         ).format(
-            self.given_name,
-            self.last_name,
-            self.birth_date,
-            self.death_date
+            self._image_to_html(),
+            self._give_name_to_html(),
+            self._last_name_to_html(),
+            self._birth_death_dates_to_html(),
+            self._sex_to_html()
         )
 
         return HTMLGenerator.wrap(self, value, self.id)
+
+    def _image_to_html(self):
+        return '  <div class="photo"><img class="photo" src="images/face.png"></div>\n'
+
+    def _give_name_to_html(self):
+        return '  <div class="given">{}</div>\n'.format(self.given_name)
+
+    def _last_name_to_html(self):
+        return '  <div class="last">{}</div>\n'.format(self.last_name)
+
+    def _birth_death_dates_to_html(self):
+        return '  <div class="dates">{} - {}</div>\n'.format(self.birth_date, self.death_date)
+
+    def _sex_to_html(self):
+        return '  <img class="sex" src="images/sex-{}.png" alt={}>'.format(self.sex, self.sex)
 
     # pylint: disable=no-self-use
     def _split_name(self, name):
