@@ -36,6 +36,14 @@ class Union(Node):
         people.append(self.spouse2)
         return people
 
+    def get_other_spouse(self, spouse):
+        if spouse == self.spouse1:
+            return self.spouse2
+        elif spouse == self.spouse2:
+            return self.spouse1
+        else:
+            return None
+
     def get_children(self):
         return self.children
 

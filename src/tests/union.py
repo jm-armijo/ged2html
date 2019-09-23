@@ -122,6 +122,34 @@ class TestUnion(unittest.TestCase):
         self.assertEqual(expected, expected)
 
     ##########################################
+    # Union.get_other_spouse
+    ##########################################
+
+    def test_get_other_spouse_001(self):
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        union = Union.__new__(Union)
+        union.spouse1 = spouse1
+        union.spouse2 = spouse2
+
+        expected = spouse2
+        actual = union.get_other_spouse(spouse1)
+        self.assertEqual(expected, actual)
+
+    def test_get_other_spouse_002(self):
+        spouse1 = Mock()
+        spouse2 = Mock()
+
+        union = Union.__new__(Union)
+        union.spouse1 = spouse1
+        union.spouse2 = spouse2
+
+        expected = spouse1
+        actual = union.get_other_spouse(spouse2)
+        self.assertEqual(expected, actual)
+
+    ##########################################
     # Union.get_children
     ##########################################
 
