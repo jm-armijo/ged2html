@@ -76,7 +76,7 @@ class Union(Node):
             self.spouse2.to_html()
         )
 
-        return HTMLGenerator.wrap(self, value)
+        return HTMLGenerator.wrap_instance(self, value)
 
     def __str__(self):
         to_str = "{{ {} & {} }}".format(self.spouse1, self.spouse2)

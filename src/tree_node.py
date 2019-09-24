@@ -27,4 +27,4 @@ class TreeNode():
 
     def to_html(self):
         value = self.node.to_html()
-        return HTMLGenerator.wrap(self, value)
+        return HTMLGenerator.wrap_instance(self, value)

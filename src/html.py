@@ -12,9 +12,13 @@ class HTMLGenerator():
         file_handler.close()
 
     @staticmethod
-    def wrap(instance, value, node_id=''):
+    def wrap_instance(instance, value, attribute_id=''):
         class_name = type(instance).__name__.lower()
-        attributes = HTMLGenerator._get_attributes(class_name, node_id)
+        return HTMLGenerator.wrap(class_name, value, attribute_id)
+
+    @staticmethod
+    def wrap(class_name, value, attribute_id=''):
+        attributes = HTMLGenerator._get_attributes(class_name, attribute_id)
 
         return (
             '<div {}>\n'

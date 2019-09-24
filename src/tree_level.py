@@ -9,4 +9,4 @@ class TreeLevel():
 
     def to_html(self):
         value = HTMLGenerator.list_to_html(self.nodes)
-        return HTMLGenerator.wrap(self, value)
+        return HTMLGenerator.wrap_instance(self, value)

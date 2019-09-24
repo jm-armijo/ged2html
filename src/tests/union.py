@@ -355,10 +355,10 @@ class TestUnion(unittest.TestCase):
         ).format(spouse1_html, link_html, spouse2_html)
 
         wrapped = "<div>"+value+"</div>"
-        HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+        HTMLGenerator.wrap_instance = MagicMock(return_value = wrapped)
 
         html = union.to_html()
-        HTMLGenerator.wrap.assert_called_once_with(union, value)
+        HTMLGenerator.wrap_instance.assert_called_once_with(union, value)
         self.assertEqual(wrapped, html)
 
     def test_to_html_002(self):
@@ -384,10 +384,10 @@ class TestUnion(unittest.TestCase):
         ).format(spouse1_html, link_html, spouse2_html)
 
         wrapped = "<div>"+value+"</div>"
-        HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+        HTMLGenerator.wrap_instance = MagicMock(return_value = wrapped)
 
         html = union.to_html()
-        HTMLGenerator.wrap.assert_called_once_with(union, value)
+        HTMLGenerator.wrap_instance.assert_called_once_with(union, value)
         self.assertEqual(wrapped, html)
 
     ##########################################

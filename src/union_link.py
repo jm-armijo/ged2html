@@ -13,7 +13,7 @@ class UnionLink():
             '    <img class="unionlink-image" src="images/unionlink.png">\n'
             '    {}\n'
         ).format(
-            HTMLGenerator.wrap(self.date, self.date.year)
+            HTMLGenerator.wrap_instance(self.date, self.date.year)
         )
 
-        return HTMLGenerator.wrap(self, value, self.id)
+        return HTMLGenerator.wrap_instance(self, value, self.id)

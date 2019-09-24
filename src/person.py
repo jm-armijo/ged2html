@@ -67,18 +67,25 @@ class Person(Node):
         value = (
             '  {}'
             '  {}'
+        ).format(
+            self._image_to_html(),
+            self._info_to_html()
+        )
+        return HTMLGenerator.wrap_instance(self, value, self.id)
+
+    def _info_to_html(self):
+        value = (
+            '  {}'
             '  {}'
             '  {}'
             '  {}'
         ).format(
-            self._image_to_html(),
             self._give_name_to_html(),
             self._last_name_to_html(),
             self._birth_death_dates_to_html(),
             self._sex_to_html()
         )
-
-        return HTMLGenerator.wrap(self, value, self.id)
+        return HTMLGenerator.wrap("person-info", value)
 
     def _image_to_html(self):
         return '  <div class="photo"><img class="photo" src="images/face.png"></div>\n'

@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock, patch, ANY
 from ..html import HTMLGenerator
 
 class TestHTMLGenerator(unittest.TestCase):
@@ -53,34 +53,100 @@ class TestHTMLGenerator(unittest.TestCase):
         file_handler.close.assert_called_once_with()
 
     ##########################################
+    # HTMLGenerator.wrap_instance
+    ##########################################
+
+    def test_wrap_intance_001(self):
+        class_name = 'AClassType'
+        wrapped_instance = Mock()
+        instance = Mock(spec='AClassType')
+        value = Mock()
+        attribute_id = ''
+        HTMLGenerator.wrap = MagicMock(return_value = wrapped_instance)
+
+        expected = wrapped_instance
+        actual = HTMLGenerator.wrap_instance(instance, value)
+        self.assertEqual(expected, actual)
+
+        #HTMLGenerator.wrap.assert_called_once_with(class_name.lower(), value, attribute_id)
+
+    def test_wrap_intance_002(self):
+        class_name = 'Mock'
+        wrapped_instance = Mock()
+        instance = Mock()
+        value = Mock()
+        attribute_id = Mock()
+        HTMLGenerator.wrap = MagicMock(return_value = wrapped_instance)
+
+        expected = wrapped_instance
+        actual = HTMLGenerator.wrap_instance(instance, value, attribute_id)
+        self.assertEqual(expected, actual)
+
+        HTMLGenerator.wrap.assert_called_once_with(class_name.lower(), value, attribute_id)
+
+    ##########################################
     # HTMLGenerator.wrap
     ##########################################
 
-    def test_wrap_001(self):
-        attributes = 'Y'
-        HTMLGenerator._get_attributes = MagicMock(return_value = attributes)
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_wrap_001(self, html_element_class):
+        class_name = Mock()
+        value = Mock()
 
-        instance = Mock()
-        value = 'X'
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.set_value = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
 
-        expected = '<div Y>\nX\n</div>\n'
-        actual = HTMLGenerator.wrap(instance, value)
-
-        HTMLGenerator._get_attributes.assert_called_once_with('mock', '')
+        expected = html_element_to_str
+        actual = HTMLGenerator.wrap(class_name, value)
         self.assertEqual(actual, expected)
 
-    def test_wrap_002(self):
-        attributes = 'Y'
-        HTMLGenerator._get_attributes = MagicMock(return_value = attributes)
+        html_element_class.assert_called_once_with(ANY, 'div')
+        html_element.add_attribute.assert_called_once_with('class', class_name)
+        html_element.set_value.assert_called_once_with(value)
 
-        instance_id = '12345'
-        instance = Mock()
-        value = 'X'
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_wrap_002(self, html_element_class):
+        class_name = Mock()
+        value = Mock()
+        attribute_id = ''
 
-        expected = '<div Y>\nX\n</div>\n'
-        actual = HTMLGenerator.wrap(instance, value, instance_id)
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.set_value = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
 
-        HTMLGenerator._get_attributes.assert_called_once_with('mock', instance_id)
+        expected = html_element_to_str
+        actual = HTMLGenerator.wrap(class_name, value)
+        self.assertEqual(actual, expected, attribute_id)
+
+        html_element_class.assert_called_once_with(ANY, 'div')
+        html_element.add_attribute.assert_called_once_with('class', class_name)
+        html_element.set_value.assert_called_once_with(value)
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_wrap_003(self, html_element_class):
+        class_name = Mock()
+        value = Mock()
+        attribute_id = Mock()
+
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.set_value = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
+
+        expected = html_element_to_str
+        actual = HTMLGenerator.wrap(class_name, value, attribute_id)
         self.assertEqual(actual, expected)
 
     ##########################################
