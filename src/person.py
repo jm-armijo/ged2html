@@ -1,7 +1,8 @@
 import re
 from src.html import HTMLGenerator
 from src.node import Node
-from src.date import Date
+from src.date_range import DateRange
+from src.html_element import HTMLElement
 
 # pylint: disable=too-many-instance-attributes
 class Person(Node):
@@ -12,9 +13,8 @@ class Person(Node):
         self.given_name = ''
         self.last_name = ''
         self.sex = 'U'
-        self.birth_date = Date()
+        self.life_period = DateRange()
         self.birth_place = ''
-        self.death_date = Date()
         self.death_place = ''
         self.unions = list()
 
@@ -31,13 +31,13 @@ class Person(Node):
         self.sex = sex
 
     def set_birth_date(self, date):
-        self.birth_date = date
+        self.life_period.start = date
 
     def set_birth_place(self, place):
         self.birth_place = place
 
     def set_death_date(self, date):
-        self.death_date = date
+        self.life_period.end = date
 
     def set_death_place(self, place):
         self.death_place = place
@@ -83,7 +83,7 @@ class Person(Node):
         ).format(
             self._give_name_to_html(),
             self._last_name_to_html(),
-            self._birth_death_dates_to_html(),
+            self.life_period.to_html(),
             self._sex_to_html()
         )
         return HTMLGenerator.wrap("person-info", value)
@@ -97,25 +97,15 @@ class Person(Node):
     def _last_name_to_html(self):
         return '  <div class="last">{}</div>\n'.format(self.last_name)
 
-    def _birth_death_dates_to_html(self):
-        value = ''
-        if not self.birth_date.is_empty() or not self.death_date.is_empty():
-            value = (
-                '<div class="person-dates">'
-                '<div class="person-date">{}</div>'
-                '<div class="person-date">&ndash;</div>'
-                '<div class="person-date">{}</div>'
-                '</div>'
-            ).format(
-                self.birth_date.year,
-                self.death_date.year
-            )
-        return value
 
     def _sex_to_html(self):
         html = ''
         if self.sex == 'M' or self.sex == 'F':
-            html = '  <img class="sex" src="images/sex-{}.png" alt={}>'.format(self.sex, self.sex)
+            element = HTMLElement('img')
+            element.add_attribute('class', 'sex')
+            element.add_attribute('src', 'images/sex-{}.png'.format(self.sex))
+            element.add_attribute('alt', self.sex)
+            html = str(element)
         return html
 
     # pylint: disable=no-self-use

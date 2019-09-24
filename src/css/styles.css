@@ -84,12 +84,13 @@ div.person-info {
     margin-bottom: 3px;
 }
 
-div.person-dates {
-}
-
 div.person-date {
     display: inline-block;
-    padding-right: 3px;
+}
+
+div.separator {
+    display: inline-block;
+    padding: 0px 3px;
 }
 
 img.sex {

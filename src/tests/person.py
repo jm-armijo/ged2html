@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock, patch, ANY, call
 from ..person import Person
 from ..html import HTMLGenerator
 
@@ -8,11 +8,10 @@ class TestPerson(unittest.TestCase):
     # Person.init
     ##########################################
 
-    @patch("src.date.Date.__new__")
-    def test_init_001(self, class_date):
-        birth_date = Mock()
-        death_date = Mock()
-        class_date.side_effect = [birth_date, death_date]
+    @patch("src.date_range.DateRange.__new__")
+    def test_init_001(self, class_date_range):
+        date_range = Mock()
+        class_date_range.return_value = date_range
 
         id = "@I1234567@"
         person = Person(id)
@@ -20,27 +19,24 @@ class TestPerson(unittest.TestCase):
         self.assertEqual(person.given_name, '')
         self.assertEqual(person.last_name, '')
         self.assertEqual(person.sex, 'U')
-        self.assertEqual(person.birth_date, birth_date)
+        self.assertEqual(person.life_period, date_range)
         self.assertEqual(person.birth_place, '')
-        self.assertEqual(person.death_date, death_date)
         self.assertEqual(person.death_place, '')
         self.assertEqual(person.parents, list())
         self.assertEqual(person.unions, list())
 
-    @patch("src.date.Date.__new__")
-    def test_init_002(self, class_date):
-        birth_date = Mock()
-        death_date = Mock()
-        class_date.side_effect = [birth_date, death_date]
+    @patch("src.date_range.DateRange.__new__")
+    def test_init_002(self, class_date_range):
+        date_range = Mock()
+        class_date_range.return_value = date_range
 
         person = Person()
         self.assertEqual(person.id, '')
         self.assertEqual(person.given_name, '')
         self.assertEqual(person.last_name, '')
         self.assertEqual(person.sex, 'U')
-        self.assertEqual(person.birth_date, birth_date)
+        self.assertEqual(person.life_period, date_range)
         self.assertEqual(person.birth_place, '')
-        self.assertEqual(person.death_date, death_date)
         self.assertEqual(person.death_place, '')
         self.assertEqual(person.parents, list())
         self.assertEqual(person.unions, list())
@@ -177,9 +173,11 @@ class TestPerson(unittest.TestCase):
 
     def test_set_birth_date(self):
         person = Person.__new__(Person)
+        person.life_period = Mock()
+
         date = '19 DEC 1800'
         person.set_birth_date(date)
-        self.assertEqual(person.birth_date, date)
+        self.assertEqual(person.life_period.start, date)
 
     ##########################################
     # Person.set_birth_place
@@ -197,9 +195,11 @@ class TestPerson(unittest.TestCase):
 
     def test_set_death_date(self):
         person = Person.__new__(Person)
+        person.life_period = Mock()
+
         date = '19 DEC 1800'
         person.set_death_date(date)
-        self.assertEqual(person.death_date, date)
+        self.assertEqual(person.life_period.end, date)
 
     ##########################################
     # Person.set_death_place
@@ -355,72 +355,240 @@ class TestPerson(unittest.TestCase):
 
     def test_to_html_001(self):
         person = Person.__new__(Person)
-        person.unions = list()
+        person._image_to_html = MagicMock(return_value='<div>image</div>')
+        person._info_to_html = MagicMock(return_value='<div>info</div>')
         person.id = '@I000001@'
-        person.given_name = 'Given'
-        person.last_name = 'Last'
-        person.birth_date = '01-01-1900'
-        person.death_date = '31-12-1999'
 
         value = (
-            '  <img class="photo" src="images/face.png">\n'
-            '  <div class="given">Given</div>\n'
-            '  <div class="last">Last</div>\n'
-            '  <div class="dates">01-01-1900 - 31-12-1999</div>\n'
+            '  <div>image</div>'
+            '  <div>info</div>'
         )
 
-        wrapped = "<div>"+value+"</div>"
-        HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+        expected = "<div>"+value+"</div>"
+        HTMLGenerator.wrap_instance = MagicMock(return_value = expected)
 
-        html = person.to_html()
-        HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
-        self.assertEqual(wrapped, html)
+        actual = person.to_html()
+        HTMLGenerator.wrap_instance.assert_called_once_with(person, value, person.id)
+        self.assertEqual(actual, expected)
 
-    def test_to_html_002(self):
+    ##########################################
+    # Person._info_to_html()
+    ##########################################
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_info_to_html_001(self, html_element_class):
+        # Setup persom
         person = Person.__new__(Person)
-        person.unions = list()
-        person.id = '@I000001@'
-        person.given_name = 'Given'
-        person.last_name = 'Last'
-        person.birth_date = '01-01-1900'
-        person.death_date = ''
+        person.life_period = Mock()
 
-        value = (
-            '  <img class="photo" src="images/face.png">\n'
-            '  <div class="given">Given</div>\n'
-            '  <div class="last">Last</div>\n'
-            '  <div class="dates">01-01-1900 - </div>\n'
-        )
+        # Mock person methods
+        person._give_name_to_html = MagicMock(return_value='first-')
+        person._last_name_to_html = MagicMock(return_value='last-')
+        person.life_period.to_html = MagicMock(return_value='dates-')
+        person._sex_to_html = MagicMock(return_value='sex')
 
-        wrapped = "<div>"+value+"</div>"
-        HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+        value = 'first-last-dates-sex'
 
-        html = person.to_html()
-        HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
-        self.assertEqual(wrapped, html)
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.set_value = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
 
-    def test_to_html_003(self):
+        # Checks
+        expected = html_element_to_str
+        actual = person._info_to_html()
+        self.assertEqual(expected, actual)
+
+        html_element_class.assert_called_once_with(ANY, 'div')
+        html_element.add_attribute.assert_called_once_with('class', 'person-info')
+        html_element.set_value.assert_called_once_with(value)
+
+    ##########################################
+    # Person._image_to_html()
+    ##########################################
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_image_to_html_001(self, html_element_class):
+        # Setup persom
         person = Person.__new__(Person)
-        person.unions = list()
-        person.id = '@I000001@'
-        person.given_name = ''
-        person.last_name = 'Last'
-        person.birth_date = '01-01-1900'
-        person.death_date = ''
+        person.objects = list()
 
-        value = (
-            '  <img class="photo" src="images/face.png">\n'
-            '  <div class="given"></div>\n'
-            '  <div class="last">Last</div>\n'
-            '  <div class="dates">01-01-1900 - </div>\n'
-        )
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
 
-        wrapped = "<div>"+value+"</div>"
-        HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+        # Checks
+        expected = html_element_to_str
+        actual = person._image_to_html()
+        self.assertEqual(expected, actual)
 
-        html = person.to_html()
-        HTMLGenerator.wrap.assert_called_once_with(person, value, person.id)
-        self.assertEqual(wrapped, html)
+        html_element_class.assert_called_once_with(ANY, 'img')
+
+        expected_calls = [call('class', 'photo'), call('src', 'images/face.png')]
+        html_element.add_attribute.mock_calls = expected_calls
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_image_to_html_001(self, html_element_class):
+        # Setup objects
+        object1 = Mock()
+        object2 = Mock()
+        object3 = Mock()
+        object1.file = 'path1'
+        object2.file = 'path2'
+        object3.file = 'path3'
+
+        # Setup persom
+        person = Person.__new__(Person)
+        person.objects = [object1, object2, object3]
+
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
+
+        # Checks
+        expected = html_element_to_str
+        actual = person._image_to_html()
+        self.assertEqual(expected, actual)
+
+        html_element_class.assert_called_once_with(ANY, 'img')
+
+        expected_calls = [call('class', 'photo'), call('src', 'path1')]
+        html_element.add_attribute.mock_calls = expected_calls
+
+    ##########################################
+    # Person._give_name_to_html()
+    ##########################################
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_give_name_to_html_001(self, html_element_class):
+        # Setup persom
+        person = Person.__new__(Person)
+        person.first_name = Mock()
+
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.set_value = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
+
+        # Checks
+        expected = html_element_to_str
+        actual = person._give_name_to_html()
+        self.assertEqual(expected, actual)
+
+        html_element_class.assert_called_once_with(ANY, 'div')
+        html_element.add_attribute.assert_called_once_with('class', 'first-name')
+        html_element.set_value.assert_called_once_with(person.first_name)
+
+    ##########################################
+    # Person._last_name_to_html()
+    ##########################################
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_last_name_to_html_001(self, html_element_class):
+        # Setup persom
+        person = Person.__new__(Person)
+        person.last_name = Mock()
+
+        # Setup html_element
+        html_element_to_str = '<div>element</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.set_value = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
+
+        # Checks
+        expected = html_element_to_str
+        actual = person._last_name_to_html()
+        self.assertEqual(expected, actual)
+
+        html_element_class.assert_called_once_with(ANY, 'div')
+        html_element.add_attribute.assert_called_once_with('class', 'last-name')
+        html_element.set_value.assert_called_once_with(person.last_name)
+
+    ##########################################
+    # Person._sex_to_html()
+    ##########################################
+
+    def test_sex_to_html_001(self):
+        # Setup persom
+        person = Person.__new__(Person)
+        person.sex = ''
+
+        expected = ''
+        actual = person._sex_to_html()
+        self.assertEqual(expected, actual)
+
+    def test_sex_to_html_002(self):
+        # Setup persom
+        person = Person.__new__(Person)
+        person.sex = 'U'
+
+        expected = ''
+        actual = person._sex_to_html()
+        self.assertEqual(expected, actual)
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_sex_to_html_003(self, html_element_class):
+        # Setup persom
+        person = Person.__new__(Person)
+        person.sex = 'M'
+
+        # Setup html_element
+        html_element_to_str = '<div>sex</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
+
+        # Checks
+        expected = html_element_to_str
+        actual = person._sex_to_html()
+        self.assertEqual(expected, actual)
+
+        html_element_class.assert_called_once_with(ANY, 'img')
+        expected_calls = [
+            call('class', 'sex'),
+            call('src', 'images/sex-M.png'),
+            call('alt', 'M')]
+        html_element.add_attribute.mock_calls = expected_calls
+
+    @patch("src.html_element.HTMLElement.__new__")
+    def test_sex_to_html_004(self, html_element_class):
+        # Setup persom
+        person = Person.__new__(Person)
+        person.sex = 'F'
+
+        # Setup html_element
+        html_element_to_str = '<div>sex</div>'
+        html_element = Mock()
+        html_element.add_attribute = MagicMock()
+        html_element.__str__ = MagicMock(return_value=html_element_to_str)
+        html_element_class.return_value = html_element
+
+        # Checks
+        expected = html_element_to_str
+        actual = person._sex_to_html()
+        self.assertEqual(expected, actual)
+
+        html_element_class.assert_called_once_with(ANY, 'img')
+        expected_calls = [
+            call('class', 'sex'),
+            call('src', 'images/sex-F.png'),
+            call('alt', 'F')]
+        html_element.add_attribute.mock_calls = expected_calls
 
     ##########################################
     # Person._split_name

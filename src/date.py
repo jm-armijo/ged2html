@@ -1,3 +1,5 @@
+from src.html_element import HTMLElement
+
 class Date():
 
     def __init__(self):
@@ -21,7 +23,14 @@ class Date():
     def set_year(self, year):
         self.year = year
 
-    def get_full(self):
+    def to_html(self):
+        element = HTMLElement('div')
+        element.add_attribute('class', 'person-date')
+        element.add_attribute('title', self._get_full())
+        element.set_value(self.year)
+        return str(element)
+
+    def _get_full(self):
         date = self.year
         if self.month != '':
             date = self.month + " " + date
