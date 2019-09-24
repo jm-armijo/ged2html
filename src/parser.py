@@ -114,6 +114,8 @@ class Parser():
             person.set_death_date(date)
         elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'BIRT':
             person.set_birth_place(value)
+        elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'DEAT':
+            person.set_death_place(value)
 
     def _create_union(self):
         union = Union(self.current_line.attribute)

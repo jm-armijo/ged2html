@@ -678,6 +678,29 @@ class TestParser(unittest.TestCase):
         parser._create_date.assert_called_once_with(line.data)
         person.set_death_date.assert_called_with(date)
 
+    def test_add_person_data_008(self):
+        # Setup person
+        person = Mock()
+        person.id = '@I000123@'
+        person.set_death_place= MagicMock()
+
+        # Setup line
+        line = Mock()
+        line.attribute = 'PLAC'
+        line.level = 2
+        line.data = 'Town, City, Country'
+
+        # Setup parser
+        parser = Parser.__new__(Parser)
+        parser.current_line = line
+        parser.people = {person.id: person}
+        parser.last_person = person.id
+        parser.last_key_per_level = {1: 'DEAT'}
+
+        # Actual test
+        parser._add_person_data()
+        person.set_death_place.assert_called_with(line.data)
+
     ##########################################
     # Parser._create_union
     ##########################################
