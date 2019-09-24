@@ -1,6 +1,7 @@
 import re
 from src.html import HTMLGenerator
 from src.node import Node
+from src.date import Date
 
 # pylint: disable=too-many-instance-attributes
 class Person(Node):
@@ -11,9 +12,9 @@ class Person(Node):
         self.given_name = ''
         self.last_name = ''
         self.sex = 'U'
-        self.birth_date = ''
+        self.birth_date = Date()
         self.birth_place = ''
-        self.death_date = ''
+        self.death_date = Date()
         self.death_place = ''
         self.unions = list()
 
@@ -97,7 +98,19 @@ class Person(Node):
         return '  <div class="last">{}</div>\n'.format(self.last_name)
 
     def _birth_death_dates_to_html(self):
-        return '  <div class="dates">{} - {}</div>\n'.format(self.birth_date, self.death_date)
+        value = ''
+        if not self.birth_date.is_empty() or not self.death_date.is_empty():
+            value = (
+                '<div class="person-dates">'
+                '<div class="person-date">{}</div>'
+                '<div class="person-date">&ndash;</div>'
+                '<div class="person-date">{}</div>'
+                '</div>'
+            ).format(
+                self.birth_date.year,
+                self.death_date.year
+            )
+        return value
 
     def _sex_to_html(self):
         html = ''

@@ -107,7 +107,11 @@ class Parser():
         elif attribute == 'SEX':
             person.set_sex(value)
         elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
-            person.set_birth_date(value)
+            date = self._create_date(value)
+            person.set_birth_date(date)
+        elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'DEAT':
+            date = self._create_date(value)
+            person.set_death_date(date)
         elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'BIRT':
             person.set_birth_place(value)
 
@@ -153,7 +157,7 @@ class Parser():
             if match.group(3):
                 date.month = match.group(3)
             date.year = match.group(4)
-        else:
-            print("Unable to parse date {}".format(raw_date))
+        elif raw_date != '':
+            print("Unable to parse date '{}'".format(raw_date))
 
         return date

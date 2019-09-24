@@ -89,6 +89,13 @@ div.person-info {
     position: relative;
 }
 
+div.person-dates {
+}
+
+div.person-date {
+    display: inline-block;
+    padding-right: 3px;
+}
 
 img.sex {
     position: absolute;

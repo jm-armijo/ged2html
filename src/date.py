@@ -6,6 +6,9 @@ class Date():
         self.month = ''
         self.year = ''
 
+    def is_empty(self):
+        return self.year == ''
+
     def set_precision(self, precision):
         self.precision = precision
 

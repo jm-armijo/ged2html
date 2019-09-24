@@ -583,7 +583,7 @@ class TestParser(unittest.TestCase):
         line = Mock()
         line.attribute = 'DATE'
         line.level = 2
-        line.data = 'F'
+        line.data = Mock()
 
         # Setup parser
         parser = Parser.__new__(Parser)
@@ -591,10 +591,13 @@ class TestParser(unittest.TestCase):
         parser.people = {person.id: person}
         parser.last_person = person.id
         parser.last_key_per_level = {1: 'BIRT'}
+        date = Mock()
+        parser._create_date = MagicMock(return_value=date)
 
         # Actual test
         parser._add_person_data()
-        person.set_birth_date.assert_called_with(line.data)
+        parser._create_date.assert_called_once_with(line.data)
+        person.set_birth_date.assert_called_with(date)
 
     def test_add_person_data_005(self):
         # Setup person
@@ -648,6 +651,32 @@ class TestParser(unittest.TestCase):
         person.set_sex.assert_not_called()
         person.set_birth_date.assert_not_called()
         person.set_birth_place.assert_not_called()
+
+    def test_add_person_data_007(self):
+        # Setup person
+        person = Mock()
+        person.id = '@I000123@'
+        person.set_death_date = MagicMock()
+
+        # Setup line
+        line = Mock()
+        line.attribute = 'DATE'
+        line.level = 2
+        line.data = Mock()
+
+        # Setup parser
+        parser = Parser.__new__(Parser)
+        parser.current_line = line
+        parser.people = {person.id: person}
+        parser.last_person = person.id
+        parser.last_key_per_level = {1: 'DEAT'}
+        date = Mock()
+        parser._create_date = MagicMock(return_value=date)
+
+        # Actual test
+        parser._add_person_data()
+        parser._create_date.assert_called_once_with(line.data)
+        person.set_death_date.assert_called_with(date)
 
     ##########################################
     # Parser._create_union

@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock, Mock, patch
 from ..person import Person
 from ..html import HTMLGenerator
 
@@ -8,29 +8,39 @@ class TestPerson(unittest.TestCase):
     # Person.init
     ##########################################
 
-    def test_init_001(self):
+    @patch("src.date.Date.__new__")
+    def test_init_001(self, class_date):
+        birth_date = Mock()
+        death_date = Mock()
+        class_date.side_effect = [birth_date, death_date]
+
         id = "@I1234567@"
         person = Person(id)
         self.assertEqual(person.id, id)
         self.assertEqual(person.given_name, '')
         self.assertEqual(person.last_name, '')
         self.assertEqual(person.sex, 'U')
-        self.assertEqual(person.birth_date, '')
+        self.assertEqual(person.birth_date, birth_date)
         self.assertEqual(person.birth_place, '')
-        self.assertEqual(person.death_date, '')
+        self.assertEqual(person.death_date, death_date)
         self.assertEqual(person.death_place, '')
         self.assertEqual(person.parents, list())
         self.assertEqual(person.unions, list())
 
-    def test_init_001(self):
+    @patch("src.date.Date.__new__")
+    def test_init_002(self, class_date):
+        birth_date = Mock()
+        death_date = Mock()
+        class_date.side_effect = [birth_date, death_date]
+
         person = Person()
         self.assertEqual(person.id, '')
         self.assertEqual(person.given_name, '')
         self.assertEqual(person.last_name, '')
         self.assertEqual(person.sex, 'U')
-        self.assertEqual(person.birth_date, '')
+        self.assertEqual(person.birth_date, birth_date)
         self.assertEqual(person.birth_place, '')
-        self.assertEqual(person.death_date, '')
+        self.assertEqual(person.death_date, death_date)
         self.assertEqual(person.death_place, '')
         self.assertEqual(person.parents, list())
         self.assertEqual(person.unions, list())
