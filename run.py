@@ -30,6 +30,8 @@ def create_output_directory():
     copyfile('src/images/face.png', 'html/images/face.png')
     copyfile('src/images/unionlink.png', 'html/images/unionlink.png')
     copyfile('src/images/bg.jpg', 'html/images/bg.jpg')
+    copyfile('src/images/sex-M.png', 'html/images/sex-M.png')
+    copyfile('src/images/sex-F.png', 'html/images/sex-F.png')
 
 def are_args_valid():
     num_args = len(sys.argv)

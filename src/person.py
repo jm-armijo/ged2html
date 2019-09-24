@@ -93,7 +93,10 @@ class Person(Node):
         return '  <div class="dates">{} - {}</div>\n'.format(self.birth_date, self.death_date)
 
     def _sex_to_html(self):
-        return '  <img class="sex" src="images/sex-{}.png" alt={}>'.format(self.sex, self.sex)
+        html = ''
+        if self.sex == 'M' or self.sex == 'F':
+            html = '  <img class="sex" src="images/sex-{}.png" alt={}>'.format(self.sex, self.sex)
+        return html
 
     # pylint: disable=no-self-use
     def _split_name(self, name):
