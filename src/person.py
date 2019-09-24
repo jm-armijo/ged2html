@@ -10,7 +10,7 @@ class Person(Node):
         super().__init__()
 
         self.id = person_id
-        self.given_name = ''
+        self.first_name = ''
         self.last_name = ''
         self.sex = 'U'
         self.life_period = DateRange()
@@ -23,9 +23,9 @@ class Person(Node):
         self.set_given_name(name_parts[0])
         self.last_name = name_parts[1].lower()
 
-    def set_given_name(self, given_name):
-        if self.given_name == '':
-            self.given_name = given_name.lower()
+    def set_given_name(self, first_name):
+        if self.first_name == '':
+            self.first_name = first_name.lower()
 
     def set_sex(self, sex):
         self.sex = sex
@@ -75,27 +75,35 @@ class Person(Node):
         return HTMLGenerator.wrap_instance(self, value, self.id)
 
     def _info_to_html(self):
-        value = (
-            '  {}'
-            '  {}'
-            '  {}'
-            '  {}'
-        ).format(
+        value = '{}{}{}{}'.format(
             self._give_name_to_html(),
             self._last_name_to_html(),
             self.life_period.to_html(),
             self._sex_to_html()
         )
-        return HTMLGenerator.wrap("person-info", value)
+
+        element = HTMLElement('div')
+        element.add_attribute('class', 'person-info')
+        element.set_value(value)
+        return str(element)
 
     def _image_to_html(self):
-        return '  <div class="photo"><img class="photo" src="images/face.png"></div>\n'
+        element = HTMLElement('img')
+        element.add_attribute('class', 'photo')
+        element.add_attribute('src', 'images/face.png')
+        return str(element)
 
     def _give_name_to_html(self):
-        return '  <div class="given">{}</div>\n'.format(self.given_name)
+        element = HTMLElement('div')
+        element.add_attribute('class', 'first-name')
+        element.set_value(self.first_name)
+        return str(element)
 
     def _last_name_to_html(self):
-        return '  <div class="last">{}</div>\n'.format(self.last_name)
+        element = HTMLElement('div')
+        element.add_attribute('class', 'last-name')
+        element.set_value(self.last_name)
+        return str(element)
 
 
     def _sex_to_html(self):
@@ -118,4 +126,4 @@ class Person(Node):
             return ('', '')
 
     def __str__(self):
-        return "[{} {}]".format(self.given_name, self.last_name)
+        return "[{} {}]".format(self.first_name, self.last_name)

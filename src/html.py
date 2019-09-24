@@ -1,3 +1,5 @@
+from src.html_element import HTMLElement
+
 class HTMLGenerator():
     def __init__(self, file_name):
         self.file_name = file_name
@@ -18,13 +20,14 @@ class HTMLGenerator():
 
     @staticmethod
     def wrap(class_name, value, attribute_id=''):
-        attributes = HTMLGenerator._get_attributes(class_name, attribute_id)
+        element = HTMLElement('div')
+        element.add_attribute('class', class_name)
+        element.set_value(value)
 
-        return (
-            '<div {}>\n'
-            '{}\n'
-            '</div>\n'
-        ).format(attributes, value)
+        if attribute_id != '':
+            element.add_attribute('id', attribute_id)
+
+        return str(element)
 
     @staticmethod
     def list_to_html(items):
@@ -46,14 +49,6 @@ class HTMLGenerator():
             '    );\n'
             '  </script>'
         ).format(script)
-
-    @staticmethod
-    def _get_attributes(class_name, node_id):
-        tag = list()
-        tag.append('class="{}"'.format(class_name))
-        if node_id != '':
-            tag.append('id="{}"'.format(node_id))
-        return " ".join(tag)
 
     def _get_html(self, head, body):
         return (

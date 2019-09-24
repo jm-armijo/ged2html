@@ -16,7 +16,7 @@ class TestPerson(unittest.TestCase):
         id = "@I1234567@"
         person = Person(id)
         self.assertEqual(person.id, id)
-        self.assertEqual(person.given_name, '')
+        self.assertEqual(person.first_name, '')
         self.assertEqual(person.last_name, '')
         self.assertEqual(person.sex, 'U')
         self.assertEqual(person.life_period, date_range)
@@ -32,7 +32,7 @@ class TestPerson(unittest.TestCase):
 
         person = Person()
         self.assertEqual(person.id, '')
-        self.assertEqual(person.given_name, '')
+        self.assertEqual(person.first_name, '')
         self.assertEqual(person.last_name, '')
         self.assertEqual(person.sex, 'U')
         self.assertEqual(person.life_period, date_range)
@@ -47,56 +47,56 @@ class TestPerson(unittest.TestCase):
 
     def test_set_name_001(self):
         # Setup name
-        given_name = 'Given Name'
+        first_name = 'Given Name'
         last_name = 'Last Name'
-        full_name = "{} /{}/".format(given_name, last_name)
+        full_name = "{} /{}/".format(first_name, last_name)
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = ''
-        person._split_name = MagicMock(return_value=[given_name, last_name])
+        person.first_name = ''
+        person._split_name = MagicMock(return_value=[first_name, last_name])
         person.set_given_name = MagicMock()
 
         # Actual test
         person.set_name(full_name)
         person._split_name.assert_called_with(full_name)
-        person.set_given_name.assert_called_with(given_name)
+        person.set_given_name.assert_called_with(first_name)
         self.assertEqual(person.last_name, last_name.lower())
 
     def test_set_name_002(self):
         # Setup name
-        given_name = 'Given Name'
+        first_name = 'Given Name'
         last_name = 'Last Name'
-        full_name = "{} /{}/".format(given_name, last_name)
+        full_name = "{} /{}/".format(first_name, last_name)
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = 'A name'
-        person._split_name = MagicMock(return_value=[given_name, last_name])
+        person.first_name = 'A name'
+        person._split_name = MagicMock(return_value=[first_name, last_name])
         person.set_given_name = MagicMock()
 
         # Actual test
         person.set_name(full_name)
         person._split_name.assert_called_with(full_name)
-        person.set_given_name.assert_called_with(given_name)
+        person.set_given_name.assert_called_with(first_name)
         self.assertEqual(person.last_name, last_name.lower())
 
     def test_set_name_003(self):
         # Setup name
-        given_name = ''
+        first_name = ''
         last_name = ''
-        full_name = "{} /{}/".format(given_name, last_name)
+        full_name = "{} /{}/".format(first_name, last_name)
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = ''
-        person._split_name = MagicMock(return_value=[given_name, last_name])
+        person.first_name = ''
+        person._split_name = MagicMock(return_value=[first_name, last_name])
         person.set_given_name = MagicMock()
 
         # Actual test
         person.set_name(full_name)
         person._split_name.assert_called_with(full_name)
-        person.set_given_name.assert_called_with(given_name)
+        person.set_given_name.assert_called_with(first_name)
         self.assertEqual(person.last_name, last_name)
 
     ##########################################
@@ -105,57 +105,57 @@ class TestPerson(unittest.TestCase):
 
     def test_set_given_name_001(self):
         # Setup name
-        old_given_name = ''
-        new_given_name = ''
+        old_first_name = ''
+        new_first_name = ''
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = old_given_name
+        person.first_name = old_first_name
 
         # Actual test
-        person.set_given_name(new_given_name)
-        self.assertEqual(person.given_name, new_given_name)
+        person.set_given_name(new_first_name)
+        self.assertEqual(person.first_name, new_first_name)
 
     def test_set_given_name_002(self):
         # Setup name
-        old_given_name = ''
-        new_given_name = 'New Given Name'
+        old_first_name = ''
+        new_first_name = 'New Given Name'
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = old_given_name
+        person.first_name = old_first_name
 
         # Actual test
-        expected = new_given_name.lower()
-        person.set_given_name(new_given_name)
-        self.assertEqual(person.given_name, expected)
+        expected = new_first_name.lower()
+        person.set_given_name(new_first_name)
+        self.assertEqual(person.first_name, expected)
 
     def test_set_given_name_003(self):
         # Setup name
-        old_given_name = 'Existing Given Name'
-        new_given_name = ''
+        old_first_name = 'Existing Given Name'
+        new_first_name = ''
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = old_given_name
+        person.first_name = old_first_name
 
         # Actual test
-        expected = old_given_name
-        person.set_given_name(new_given_name)
-        self.assertEqual(person.given_name, expected)
+        expected = old_first_name
+        person.set_given_name(new_first_name)
+        self.assertEqual(person.first_name, expected)
 
     def test_set_given_name_004(self):
         # Setup name
-        old_given_name = 'Existing Given Name'
-        new_given_name = 'New Given Name'
+        old_first_name = 'Existing Given Name'
+        new_first_name = 'New Given Name'
 
         # Mock person
         person = Person.__new__(Person)
-        person.given_name = old_given_name
+        person.first_name = old_first_name
 
         # Actual test
-        person.set_given_name(new_given_name)
-        self.assertEqual(person.given_name, old_given_name)
+        person.set_given_name(new_first_name)
+        self.assertEqual(person.first_name, old_first_name)
 
     ##########################################
     # Person.set_sex
@@ -636,7 +636,7 @@ class TestPerson(unittest.TestCase):
     def test_str_001(self):
         person = Person.__new__(Person)
         person.id = "@I1234567@"
-        person.given_name = 'First Name'
+        person.first_name = 'First Name'
         person.last_name = 'Last Name'
         person.sex = ''
         person.birth_date = ''

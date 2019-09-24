@@ -24,6 +24,7 @@ div.union {
 div.unionlink {
     vertical-align: top;
     padding-top: 50px;
+    margin: 0px 3px;
     display: inline-block;
 }
 
@@ -57,19 +58,19 @@ div.date {
     display: inline-block;
 }
 
-div.given:empty:before {
+div.first-name:empty:before {
    content: '?';
 }
 
-div.last:empty:before {
+div.last-name:empty:before {
    content: '?';
 }
 
-div.given {
+div.first-name {
     text-transform: capitalize;
 }
 
-div.last {
+div.last-name {
     text-transform: capitalize;
     font-weight: bold;
 }
