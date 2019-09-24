@@ -10,10 +10,11 @@ class UnionLink():
 
     def to_html(self):
         value = (
-            '    <img class="unionlink-image" src="images/unionlink.png">\n'
+            '    <img class="unionlink-image" src="images/unionlink.png" id={}>\n'
             '    {}\n'
         ).format(
+            self.id,
             HTMLGenerator.wrap_instance(self.date, self.date.year)
         )
 
-        return HTMLGenerator.wrap_instance(self, value, self.id)
+        return HTMLGenerator.wrap_instance(self, value)
