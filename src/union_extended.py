@@ -1,4 +1,5 @@
 from src.node import Node
+from src.person import Person
 from src.unique_queue import UniqueQueue
 
 class UnionExtended(Node):
@@ -65,7 +66,8 @@ class UnionExtended(Node):
             for spouse in union.get_spouses():
                 if len(spouse.get_unions()) == 1:
                     return spouse
-        return None
+        print("Warning: group does not have a person with just one union.")
+        return Person()
 
     def _add_spouse(self, spouse):
         if spouse not in self.nodes:
