@@ -19,7 +19,7 @@ class TestEdge(unittest.TestCase):
     # Edge.to_html
     ##########################################
 
-    def test_init_001(self):
+    def test_to_html_001(self):
         start = 'X'
         end = 'Y'
 
@@ -27,7 +27,14 @@ class TestEdge(unittest.TestCase):
             '        new LeaderLine(\n'
             '          document.getElementById("X"),\n'
             '          document.getElementById("Y"),\n'
-            '          {startSocket: "top", endSocket: "bottom", path: "magnet"}\n'
+            '          {'
+            '            startSocket: "top", '
+            '            endSocket: "bottom", '
+            '            path: "magnet", '
+            '            size: 6, '
+            '            startPlug: "disc", '
+            '            endPlug: "disc"'
+            '          }\n'
             '        );\n'
         )
 
