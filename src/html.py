@@ -64,6 +64,7 @@ class HTMLGenerator():
             '  <head>\n'
             '    <meta charset="utf-8">\n'
             '    <title>{}</title>\n'
+            '    <link href="https://fonts.googleapis.com/css?family=New Rocker" rel="stylesheet">'
             '    <link rel="stylesheet" href="css/styles.css">\n'
             '    <script src="scripts/leader-line.min.js"></script>\n'
             '  </head>'

@@ -1,6 +1,9 @@
 body {
     background-image: url("../images/bg.jpg");
     font-size: small;
+    font-family:'Bookman Old Style';
+    font-variant: small-caps;
+    text-align: center;
 }
 
 h1 {
@@ -38,7 +41,6 @@ div.treelevel {
     white-space:nowrap;
     padding-top: 60px;
     padding-bottom: 60px;
-    text-align: center;
 }
 
 div.treenode {
