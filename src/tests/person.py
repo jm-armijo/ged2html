@@ -256,6 +256,19 @@ class TestPerson(unittest.TestCase):
         self.assertEqual(person.children, children)
 
     ##########################################
+    # Person.add_object
+    ##########################################
+
+    def test_add_object_001(self):
+        person = Person.__new__(Person)
+        person.objects = list()
+
+        object = Mock()
+
+        person.add_object(object)
+        self.assertEqual(person.objects[0], object)
+
+    ##########################################
     # Person.get_spouses
     ##########################################
 

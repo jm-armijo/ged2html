@@ -3,6 +3,7 @@ import re
 from src.date import Date
 from src.person import Person
 from src.text_line import TextLine
+from src.object import Object
 from src.tree import Tree
 from src.union import Union
 
@@ -19,7 +20,9 @@ class Parser():
     #                    V         |     V     #
     #             +--->(INDI) -> (INDI_DATA)   #
     #             |                            #
-    #   * ---> (IDLE)                          #
+    #             |      *        +------+     #
+    #             |      V        |      V     #
+    #   * ---> (IDLE)->(OBJE) -> (OBJE_DATA)   #
     #             |                            #
     #             +--->(FAM)  -> (FAM_DATA)    #
     #                    /\        |     /\    #
@@ -31,12 +34,14 @@ class Parser():
 
     def __init__(self):
         self.people = dict()
+        self.objects = dict()
         self.unions = list()
         self.tree = None
 
         self.state = 'IDLE'
         self.current_line = None
         self.last_person = None
+        self.last_object = None
         self.last_key_per_level = dict()
 
     def make_tree(self, file_name):
@@ -67,7 +72,7 @@ class Parser():
 
     def _get_current_state(self):
         new_state = 'IDLE'
-        if self.current_line.level == 0 and self.current_line.data in ['INDI', 'FAM']:
+        if self.current_line.level == 0 and self.current_line.data in ['INDI', 'FAM', 'OBJE']:
             new_state = self.current_line.data
         elif self.state == 'INDI' or self.state == 'INDI_DATA':
             if self.current_line.level > 0:
@@ -75,6 +80,9 @@ class Parser():
         elif self.state == 'FAM' or self.state == 'FAM_DATA':
             if self.current_line.level > 0:
                 new_state = 'FAM_DATA'
+        elif self.state == 'OBJE' or self.state == 'OBJE_DATA':
+            if self.current_line.level > 0:
+                new_state = 'OBJE_DATA'
 
         return new_state
 
@@ -87,6 +95,10 @@ class Parser():
             self._create_union()
         elif self.state == 'FAM_DATA':
             self._add_union_data()
+        elif self.state == 'OBJE':
+            self._create_object()
+        elif self.state == 'OBJE_DATA':
+            self._add_object_data()
 
     def _create_person(self):
         person = self._get_person_or_create(self.current_line.attribute)
@@ -106,6 +118,9 @@ class Parser():
             person.set_given_name(value)
         elif attribute == 'SEX':
             person.set_sex(value)
+        elif attribute == 'OBJE':
+            object = self._get_object_or_create(value)
+            person.add_object(object)
         elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
             date = self._create_date(value)
             person.set_birth_date(date)
@@ -140,11 +155,34 @@ class Parser():
         elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'MARR':
             union.set_place(value)
 
+    def _create_object(self):
+        object = self._get_object_or_create(self.current_line.attribute)
+        self.objects[object.id] = object
+        self.last_object = object.id
+
+    def _add_object_data(self):
+        level = self.current_line.level
+        attribute = self.current_line.attribute
+        value = self.current_line.data
+
+        object = self.objects[self.last_object]
+
+        if attribute == 'FILE':
+            object.set_file(value)
+        elif attribute == 'FORM':
+            object.set_format(value)
+
     def _get_person_or_create(self, person_id):
         if person_id not in self.people:
             self.people[person_id] = Person(person_id)
 
         return self.people[person_id]
+
+    def _get_object_or_create(self, object_id):
+        if object_id not in self.objects:
+            self.objects[object_id] = Object(object_id)
+
+        return self.objects[object_id]
 
     def _create_date(self, raw_date):
         date = Date()

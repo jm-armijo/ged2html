@@ -17,6 +17,7 @@ class Person(Node):
         self.birth_place = ''
         self.death_place = ''
         self.unions = list()
+        self.objects = list()
 
     def set_name(self, name):
         name_parts = self._split_name(name)
@@ -48,6 +49,9 @@ class Person(Node):
     def add_union(self, union):
         self.unions.append(union)
         self.children += union.get_children()
+
+    def add_object(self, object_id):
+        self.objects.append(object_id)
 
     def get_spouses(self):
         return [self]

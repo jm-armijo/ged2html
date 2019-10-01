@@ -982,6 +982,127 @@ class TestParser(unittest.TestCase):
         union1.set_place.assert_not_called()
 
     ##########################################
+    # Parser._create_object
+    ##########################################
+
+    def test_create_object_001(self):
+        # Setup object
+        object = Mock()
+        object.id = Mock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.objects = dict()
+        parser.current_line = Mock()
+        parser.current_line.attribute = Mock()
+        parser._get_object_or_create = MagicMock(return_value=object)
+
+        parser._create_object()
+        self.assertEqual(parser.objects[object.id], object)
+        self.assertEqual(len(parser.objects), 1)
+        self.assertEqual(parser.last_object, object.id)
+
+    def test_create_object_002(self):
+        # Setup object
+        object = Mock()
+        object.id = Mock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.objects = {object.id: Mock()}
+        parser.current_line = Mock()
+        parser.current_line.attribute = Mock()
+        parser._get_object_or_create = MagicMock(return_value=object)
+
+        parser._create_object()
+        self.assertEqual(parser.objects[object.id], object)
+        self.assertEqual(len(parser.objects), 1)
+        self.assertEqual(parser.last_object, object.id)
+
+    def test_create_object_003(self):
+        # Setup object
+        object = Mock()
+        object.id = Mock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.objects = {Mock(): Mock()}
+        parser.current_line = Mock()
+        parser.current_line.attribute = Mock()
+        parser._get_object_or_create = MagicMock(return_value=object)
+
+        parser._create_object()
+        self.assertEqual(parser.objects[object.id], object)
+        self.assertEqual(len(parser.objects), 2)
+        self.assertEqual(parser.last_object, object.id)
+
+    ##########################################
+    # Parser._add_object_data
+    ##########################################
+
+    def test_add_object_data_001(self):
+        # Setup object
+        object = Mock()
+        object.id = Mock()
+        object.set_file = MagicMock()
+        object.set_format = MagicMock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.current_line = Mock()
+        parser.current_line.level = Mock()
+        parser.current_line.attribute = Mock()
+        parser.current_line.data = Mock()
+        parser.objects = {object.id: object}
+        parser.last_object = object.id
+
+        # Actual checks
+        object.set_file.assert_not_called()
+        object.set_format.assert_not_called()
+
+    def test_add_object_data_002(self):
+        # Setup object
+        object = Mock()
+        object.id = Mock()
+        object.set_file = MagicMock()
+        object.set_format = MagicMock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.current_line = Mock()
+        parser.current_line.level = Mock()
+        parser.current_line.attribute = 'FILE'
+        parser.current_line.data = Mock()
+        parser.objects = {object.id: object}
+        parser.last_object = object.id
+
+        # Actual checks
+        parser._add_object_data()
+        object.set_file.assert_called_once_with(parser.current_line.data)
+        object.set_format.assert_not_called()
+
+    def test_add_object_data_003(self):
+        # Setup object
+        object = Mock()
+        object.id = Mock()
+        object.set_file = MagicMock()
+        object.set_format = MagicMock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.current_line = Mock()
+        parser.current_line.level = Mock()
+        parser.current_line.attribute = 'FORM'
+        parser.current_line.data = Mock()
+        parser.objects = {object.id: object}
+        parser.last_object = object.id
+
+        # Actual checks
+        parser._add_object_data()
+        object.set_file.assert_not_called()
+        object.set_format.assert_called_once_with(parser.current_line.data)
+
+    ##########################################
     # Parser._get_person_or_create
     ##########################################
 
@@ -1002,6 +1123,28 @@ class TestParser(unittest.TestCase):
 
         parser._get_person_or_create(id)
         mock_person.assert_not_called()
+
+    ##########################################
+    # Parser._get_object_or_create
+    ##########################################
+
+    @patch("src.object.Object.__new__")
+    def test_get_object_or_create_001(self, mock_object):
+        id = '@M001234@'
+        parser = Parser.__new__(Parser)
+        parser.objects = dict()
+
+        parser._get_object_or_create(id)
+        mock_object.assert_called_with(ANY, id)
+
+    @patch("src.object.Object.__new__")
+    def test_get_object_or_create_002(self, mock_object):
+        id = '@I001234@'
+        parser = Parser.__new__(Parser)
+        parser.objects = {id: Mock()}
+
+        parser._get_object_or_create(id)
+        mock_object.assert_not_called()
 
     ##########################################
     # Parser._create_date
