@@ -9,12 +9,11 @@ from shutil import copyfile
 from src.html import HTMLGenerator
 from src.parser import Parser
 
-def generate_html_document(file_name):
+def generate_html_document(file_name, title='Family Tree'):
     parser = Parser()
     tree = parser.make_tree(file_name)
     html_tree = tree.to_html()
 
-    title = "My Genealogy Tree"
     doc = HTMLGenerator('html/index.html')
     doc.generate(title, html_tree)
 
@@ -36,14 +35,15 @@ def create_output_directory():
 
 def are_args_valid():
     num_args = len(sys.argv)
-    if num_args != 2:
-        print("Expected 1 argument, received {}".format(num_args -1))
+    if num_args != 3:
+        print("Expected 2 argument, received {}".format(num_args -1))
         return False
     else:
         return True
 
 if are_args_valid():
     file_name = sys.argv[1]
+    title = sys.argv[2]
     create_output_directory()
-    generate_html_document(file_name)
+    generate_html_document(file_name, title)
 
