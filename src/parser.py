@@ -44,11 +44,18 @@ class Parser():
         self.last_object = None
         self.last_key_per_level = dict()
 
-    def make_tree(self, file_name):
+    def parse(self, file_name):
         text_lines = self._read_file(file_name)
         self._parse_lines(text_lines)
 
+    def make_tree(self):
         return Tree(self.people, self.unions)
+
+    def get_media_files(self):
+        files = list()
+        for object in self.objects.values():
+            files.append(object.file)
+        return files
 
     # Reads the file into a list of lines
     # pylint: disable=no-self-use

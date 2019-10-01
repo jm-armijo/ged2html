@@ -92,9 +92,14 @@ class Person(Node):
         return str(element)
 
     def _image_to_html(self):
+        if self.objects:
+            path = self.objects[0].file
+        else:
+            path = 'images/face.png'
+
         element = HTMLElement('img')
         element.add_attribute('class', 'photo')
-        element.add_attribute('src', 'images/face.png')
+        element.add_attribute('src', path)
         return str(element)
 
     def _give_name_to_html(self):

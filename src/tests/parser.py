@@ -15,53 +15,87 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parser.state, 'IDLE')
 
     ##########################################
+    # Parser.parse
+    ##########################################
+
+    def test_parse_001(self):
+        # Setup data
+        file_name = Mock()
+        lines = Mock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser._read_file = MagicMock(return_value = lines)
+        parser._parse_lines = MagicMock()
+
+        # Actual test
+        parser.parse(file_name)
+        parser._read_file.assert_called_once_with(file_name)
+        parser._parse_lines.assert_called_once_with(lines)
+
+    ##########################################
     # Parser.make_tree
     ##########################################
 
     @patch("src.tree.Tree.__new__")
     def test_make_tree_001(self, class_tree):
         # Setup data
-        file_name = 'file.ged'
         tree = Mock()
-        lines = Mock()
         class_tree.return_value = tree
 
         # Setup Parser
         parser = Parser.__new__(Parser)
-        parser._read_file = MagicMock(return_value = lines)
-        parser._parse_lines = MagicMock()
-        parser.people = dict()
-        parser.unions = list()
+        parser.people = Mock()
+        parser.unions = Mock()
 
         # Actual test
-        returned_tree = parser.make_tree(file_name)
-        parser._read_file.assert_called_once_with(file_name)
-        parser._parse_lines.assert_called_once_with(lines)
-        self.assertEqual(returned_tree, tree)
+        expected = tree
+        actual = parser.make_tree()
+        self.assertEqual(expected, actual)
 
-    @patch("src.tree.Tree.__new__")
-    def test_make_tree_002(self, class_tree):
-        # Setup data
-        file_name = 'file.ged'
-        lines = Mock()
-        tree = Mock()
-        class_tree.return_value = tree
+    ##########################################
+    # Parser.get_media_files
+    ##########################################
 
-        # Setup people
-        people = {'@I000123':Mock()}
+    def test_get_media_files_001(self):
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.objects = dict()
+
+        expected = list()
+        actual = parser.get_media_files()
+        self.assertEqual(expected, actual)
+
+    def test_get_media_files_002(self):
+        # Setup objects
+        object1_key = Mock()
+        object1 = Mock()
+        object1.file = Mock()
 
         # Setup Parser
         parser = Parser.__new__(Parser)
-        parser._read_file = MagicMock(return_value = lines)
-        parser._parse_lines = MagicMock()
-        parser.people = people
-        parser.unions = list()
+        parser.objects = {object1_key: object1}
 
-        # Actual test
-        returned_tree = parser.make_tree(file_name)
-        parser._read_file.assert_called_once_with(file_name)
-        parser._parse_lines.assert_called_once_with(lines)
-        self.assertEqual(returned_tree, tree)
+        expected = [object1.file]
+        actual = parser.get_media_files()
+        self.assertEqual(expected, actual)
+
+    def test_get_media_files_003(self):
+        # Setup objects
+        object1_key = Mock()
+        object2_key = Mock()
+        object1 = Mock()
+        object2 = Mock()
+        object1.file = Mock()
+        object2.file = Mock()
+
+        # Setup Parser
+        parser = Parser.__new__(Parser)
+        parser.objects = {object1_key: object1, object2_key: object2}
+
+        expected = [object1.file, object2.file]
+        actual = parser.get_media_files()
+        self.assertEqual(expected, actual)
 
     ##########################################
     # Parser._parse_lines

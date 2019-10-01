@@ -9,13 +9,23 @@ from shutil import copyfile
 from src.html import HTMLGenerator
 from src.parser import Parser
 
+def copy_media_files(base_path, media_files):
+    for file in media_files:
+        origin = os.path.join(base_path,file)
+        copyfile(origin, 'html/' + file )
+
 def generate_html_document(file_name, title='Family Tree'):
     parser = Parser()
-    tree = parser.make_tree(file_name)
+    parser.parse(file_name)
+    media_files = parser.get_media_files()
+    tree = parser.make_tree()
     html_tree = tree.to_html()
 
     doc = HTMLGenerator('html/index.html')
     doc.generate(title, html_tree)
+
+    base_path = os.path.dirname(file_name)
+    copy_media_files(base_path, media_files)
 
 def create_output_directory():
     # Make directories
