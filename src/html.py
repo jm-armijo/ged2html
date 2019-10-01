@@ -6,7 +6,7 @@ class HTMLGenerator():
 
     def generate(self, title, tree):
         head = self._get_head(title)
-        body = self._get_body(tree)
+        body = self._get_body(title, tree)
         html = self._get_html(head, body)
 
         file_handler = open(self.file_name, 'w')
@@ -69,9 +69,11 @@ class HTMLGenerator():
             '  </head>'
         ).format(title)
 
-    def _get_body(self, body):
+    def _get_body(self, title, body):
         return (
-            '  <body>\n'
+            '<body>\n'
+            '<div class="title"><h1>{}</h1>\n'
+            '<h2>Family Tree</h2></div>\n'
             '{}\n'
-            '  </body>'
-        ).format(body)
+            '</body>'
+        ).format(title, body)
