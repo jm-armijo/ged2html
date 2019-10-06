@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, Mock, patch, ANY
+from unittest.mock import MagicMock, Mock, patch, ANY, call
 from ..html import HTMLGenerator
 
 class TestHTMLGenerator(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestHTMLGenerator(unittest.TestCase):
 
         # Actual checks
         generator._get_head.assert_called_once_with(title)
-        generator._get_body.assert_called_once_with(tree)
+        generator._get_body.assert_called_once_with(title, tree)
         generator._get_html.assert_called_once_with(head, body)
 
         mock_open.assert_called_once_with(file_name, permission)
@@ -57,9 +57,9 @@ class TestHTMLGenerator(unittest.TestCase):
     ##########################################
 
     def test_wrap_intance_001(self):
-        class_name = 'AClassType'
+        class_name = 'Mock'
         wrapped_instance = Mock()
-        instance = Mock(spec='AClassType')
+        instance = Mock()
         value = Mock()
         attribute_id = ''
         HTMLGenerator.wrap = MagicMock(return_value = wrapped_instance)
@@ -68,7 +68,7 @@ class TestHTMLGenerator(unittest.TestCase):
         actual = HTMLGenerator.wrap_instance(instance, value)
         self.assertEqual(expected, actual)
 
-        #HTMLGenerator.wrap.assert_called_once_with(class_name.lower(), value, attribute_id)
+        HTMLGenerator.wrap.assert_called_once_with(class_name.lower(), value, attribute_id)
 
     def test_wrap_intance_002(self):
         class_name = 'Mock'
@@ -149,6 +149,14 @@ class TestHTMLGenerator(unittest.TestCase):
         actual = HTMLGenerator.wrap(class_name, value, attribute_id)
         self.assertEqual(actual, expected)
 
+        html_element_class.assert_called_once_with(ANY, 'div')
+        html_element.set_value.assert_called_once_with(value)
+        mock_calls= [
+            call('class', class_name),
+            call('id', attribute_id)
+        ]
+        self.assertEqual(html_element.add_attribute.mock_calls, mock_calls)
+
     ##########################################
     # HTMLGenerator.list_to_html
     ##########################################
@@ -197,34 +205,6 @@ class TestHTMLGenerator(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     ##########################################
-    # HTMLGenerator._get_attributes
-    ##########################################
-
-    def test_get_attributes_001(self):
-        class_name = 'SomeClass'
-        id = 'SomeId'
-
-        expected = 'class="SomeClass" id="SomeId"'
-        actual = HTMLGenerator._get_attributes(class_name, id)
-        self.assertEqual(expected, actual)
-
-    def test_get_attributes_002(self):
-        class_name = 'SomeClass'
-        id = ''
-
-        expected = 'class="SomeClass"'
-        actual = HTMLGenerator._get_attributes(class_name, id)
-        self.assertEqual(expected, actual)
-
-    def test_get_attributes_003(self):
-        class_name = 'SomeClass'
-        id = 1
-
-        expected = 'class="SomeClass" id="1"'
-        actual = HTMLGenerator._get_attributes(class_name, id)
-        self.assertEqual(expected, actual)
-
-    ##########################################
     # HTMLGenerator._get_html
     ##########################################
 
@@ -247,34 +227,34 @@ class TestHTMLGenerator(unittest.TestCase):
     ##########################################
 
     def test_get_head_001(self):
-        title = 'X'
+        title = 'title'
+        generator = HTMLGenerator.__new__(HTMLGenerator)
+
         expected = (
             '  <head>\n'
             '    <meta charset="utf-8">\n'
-            '    <title>X</title>\n'
+            '    <title>title</title>\n'
+            '    <link href="https://fonts.googleapis.com/css?family=New Rocker" rel="stylesheet">'
             '    <link rel="stylesheet" href="css/styles.css">\n'
             '    <script src="scripts/leader-line.min.js"></script>\n'
             '  </head>'
         )
-
-        generator = HTMLGenerator.__new__(HTMLGenerator)
-
         actual = generator._get_head(title)
         self.assertEqual(expected, actual)
 
     def test_get_head_002(self):
         title = ''
+        generator = HTMLGenerator.__new__(HTMLGenerator)
+
         expected = (
             '  <head>\n'
             '    <meta charset="utf-8">\n'
             '    <title></title>\n'
+            '    <link href="https://fonts.googleapis.com/css?family=New Rocker" rel="stylesheet">'
             '    <link rel="stylesheet" href="css/styles.css">\n'
             '    <script src="scripts/leader-line.min.js"></script>\n'
             '  </head>'
         )
-
-        generator = HTMLGenerator.__new__(HTMLGenerator)
-
         actual = generator._get_head(title)
         self.assertEqual(expected, actual)
 
@@ -283,25 +263,35 @@ class TestHTMLGenerator(unittest.TestCase):
     ##########################################
 
     def test_get_body_001(self):
-        body = 'X'
-        expected = (
-            '  <body>\n'
-            'X\n'
-            '  </body>'
-        )
+        title = 'title'
+        body = 'body'
+
         generator = HTMLGenerator.__new__(HTMLGenerator)
-        actual = generator._get_body(body)
+
+        expected = (
+            '<body>\n'
+            '<div class="title"><h1>title</h1>\n'
+            '<h2>Family Tree</h2></div>\n'
+            'body\n'
+            '</body>'
+        )
+        actual = generator._get_body(title, body)
         self.assertEqual(expected, actual)
 
     def test_get_body_002(self):
+        title = ''
         body = ''
-        expected = (
-            '  <body>\n'
-            '\n'
-            '  </body>'
-        )
+
         generator = HTMLGenerator.__new__(HTMLGenerator)
-        actual = generator._get_body(body)
+
+        expected = (
+            '<body>\n'
+            '<div class="title"><h1></h1>\n'
+            '<h2>Family Tree</h2></div>\n'
+            '\n'
+            '</body>'
+        )
+        actual = generator._get_body(title, body)
         self.assertEqual(expected, actual)
 
 if __name__ == '__main__':
