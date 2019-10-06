@@ -117,7 +117,7 @@ class TestTreeNode(unittest.TestCase):
 
         # Mock HTML Generator
         wrapped = "<div>"+html+"</div>"
-        HTMLGenerator.wrap = MagicMock(return_value = wrapped)
+        HTMLGenerator.wrap_instance = MagicMock(return_value = wrapped)
 
         # Mock TreeNode
         tree_node = TreeNode.__new__(TreeNode)
@@ -126,7 +126,7 @@ class TestTreeNode(unittest.TestCase):
         # Actual test
         return_value = tree_node.to_html()
         node.to_html.assert_called_once_with()
-        HTMLGenerator.wrap.assert_called_once_with(tree_node, html)
+        HTMLGenerator.wrap_instance.assert_called_once_with(tree_node, html)
         self.assertEqual(return_value, wrapped)
 
 if __name__ == '__main__':

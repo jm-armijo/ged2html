@@ -46,7 +46,7 @@ class TestTreeLevel(unittest.TestCase):
         html_level = "<div>"+html_list+"</div>"
 
         HTMLGenerator.list_to_html = MagicMock(return_value = html_list)
-        HTMLGenerator.wrap = MagicMock(return_value = html_level)
+        HTMLGenerator.wrap_instance = MagicMock(return_value = html_level)
 
         nodes = Mock()
         tree_level = TreeLevel.__new__(TreeLevel)
@@ -54,7 +54,7 @@ class TestTreeLevel(unittest.TestCase):
 
         return_value = tree_level.to_html()
         HTMLGenerator.list_to_html.assert_called_once_with(nodes)
-        HTMLGenerator.wrap.assert_called_once_with(tree_level, html_list)
+        HTMLGenerator.wrap_instance.assert_called_once_with(tree_level, html_list)
         self.assertEqual(return_value, html_level)
 
 if __name__ == '__main__':
