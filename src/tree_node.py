@@ -5,9 +5,6 @@ from src.union_extended import UnionExtended
 # pylint: disable=too-few-public-methods
 class TreeNode():
     def __init__(self, node):
-        self.unions = list()
-        self.people = list()
-
         if isinstance(node, Person) and node.is_single():
             self.node = node
         else:

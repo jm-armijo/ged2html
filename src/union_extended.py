@@ -8,8 +8,8 @@ class UnionExtended(Node):
 
         self.unions = list()
         self.nodes = list()
-        self._extend_nodes(unions)
-        self._arrange_unions()
+        unions = self._extend_nodes(unions)
+        self._arrange_unions(unions)
 
     def get_unions(self):
         return self.unions
@@ -39,14 +39,10 @@ class UnionExtended(Node):
         return html
 
     def _extend_nodes(self, nodes):
+        unions = set()
         for node in nodes:
-            self._extend_node(node)
-
-    def _extend_node(self, node):
-        unions = self._extract_all_unions(node)
-        for queue_node in unions:
-            if queue_node not in self.unions:
-                self.unions.append(queue_node)
+            unions |= self._extract_all_unions(node)
+        return unions
 
     # pylint: disable=no-self-use
     def _extract_all_unions(self, node):
@@ -55,14 +51,14 @@ class UnionExtended(Node):
             node = queue.pop()
             queue.push_list(node.get_unions())
 
-        return queue.get_all()
+        return set(queue.get_all())
 
-    def _arrange_unions(self):
-        spouse = self._find_spouse_with_one_union()
+    def _arrange_unions(self, unions):
+        spouse = self._find_spouse_with_one_union(unions)
         self._add_spouse(spouse)
 
-    def _find_spouse_with_one_union(self):
-        for union in self.unions:
+    def _find_spouse_with_one_union(self, unions):
+        for union in unions:
             for spouse in union.get_spouses():
                 if len(spouse.get_unions()) == 1:
                     return spouse
@@ -77,6 +73,7 @@ class UnionExtended(Node):
     def _add_union_of_spouse(self, spouse):
         union = self._find_next_union(spouse)
         if union is not None:
+            self.unions.append(union)
             self.nodes.append(union.link)
             self._add_spouse(union.get_other_spouse(spouse))
 
