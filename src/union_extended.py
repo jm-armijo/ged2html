@@ -86,3 +86,12 @@ class UnionExtended(Node):
                 return union
 
         return None
+
+    def __str__(self):
+        return ' oo '.join(map(str, self.nodes))
+
+    def __contains__(self, item):
+        for union in self.unions:
+            if item in union:
+                return True
+        return False

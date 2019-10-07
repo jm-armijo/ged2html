@@ -79,5 +79,12 @@ class Union(Node):
         return HTMLGenerator.wrap_instance(self, value)
 
     def __str__(self):
-        to_str = "{{ {} & {} }}".format(self.spouse1, self.spouse2)
-        return to_str
+        return str(self.spouse1) + ' oo ' + str(self.spouse2)
+
+    def __contains__(self, item):
+        if item in self.spouse1:
+            return True
+        elif item in self.spouse2:
+            return True
+        else:
+            return False
