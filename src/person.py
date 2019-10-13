@@ -131,8 +131,8 @@ class Person(Node):
         if match:
             return (match.group(1).strip(), match.group(2).strip())
         else:
-            print("Unable to get first and last name from '{}'".format(name))
-            return ('', '')
+            match = re.search(r'^(.*?)/?\s*$', name)
+            return ('', match.group(1).strip())
 
     def __str__(self):
         return "[{} {}]".format(self.first_name, self.last_name)
