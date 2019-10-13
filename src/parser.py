@@ -54,7 +54,8 @@ class Parser():
     def get_media_files(self):
         files = list()
         for object in self.objects.values():
-            files.append(object.file)
+            if object.file:
+                files.append(object.file)
         return files
 
     # Reads the file into a list of lines
