@@ -7,13 +7,14 @@ class DateRange():
         self.end = Date()
 
     def to_html(self):
-        html = self.start.to_html()
-        if not self.start.is_empty() or not self.end.is_empty():
+        html = ''
+        if not self.end.is_empty():
             separator = HTMLElement('div')
             separator.add_attribute('class', 'separator')
             separator.set_value('&ndash;')
 
+            html += self.start.to_html()
             html += str(separator)
+            html += self.end.to_html()
 
-        html += self.end.to_html()
         return html

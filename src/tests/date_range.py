@@ -56,13 +56,13 @@ class TestDateRange(unittest.TestCase):
         html_element.__str__ = MagicMock(return_value=html_element_to_str)
         html_element_class.return_value = html_element
 
-        expected = 'start-'
+        expected = ''
         actual = date_range.to_html()
         self.assertEqual(expected, actual)
 
-        html_element_class.assert_called_once_with(ANY, 'div')
-        html_element.add_attribute.assert_called_once_with('class', 'separator')
-        html_element.set_value.assert_called_once_with('&ndash;')
+        html_element_class.assert_not_called()
+        html_element.add_attribute.assert_not_called()
+        html_element.set_value.assert_not_called()
 
     @patch("src.html_element.HTMLElement.__new__")
     def test_to_html_003(self, html_element_class):
