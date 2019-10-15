@@ -41,7 +41,6 @@ def create_output_directory():
     copyfile('src/images/bg.jpg', 'html/images/bg.jpg')
     copyfile('src/images/sex-M.png', 'html/images/sex-M.png')
     copyfile('src/images/sex-F.png', 'html/images/sex-F.png')
-    copyfile('src/images/scroll.png', 'html/images/scroll.png')
 
 def are_args_valid():
     num_args = len(sys.argv)

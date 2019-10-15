@@ -1,52 +1,60 @@
 body {
     background-image: url("../images/bg.jpg");
-    font-size: small;
+    font-size: x-small;
     font-family:'Bookman Old Style';
     font-variant: small-caps;
     text-align: center;
-}
 
-h1 {
-    text-align: center;
-    font-size: 40px;
-    margin-bottom: 5px;
-}
+    padding: 0px;
+    margin: 0px;
 
-h2 {
-    margin-top: 5px;
-    text-align: center;
-    font-size: 20px;
+    position: absolute;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 div.title {
-    width: 600px;
-    height: 140px;
-    text-align: center;
+    background-color: DarkOliveGreen;
+    border-bottom: 10px solid #2b3618;
+
+    color: #ecf2e2;
+    text-shadow: -2px 0 #2b3618, 0 2px #2b3618, 2px 0 #2b3618, 0 -2px #2b3618;
+    text-transform: uppercase;
+
+    width: 100%;
+    height: 200px;
     vertical-align: middle;
-    padding-top: 5px;
 
-    background-image: url("../images/scroll.png");
-    background-position: center;
-    margin: 1px auto;
+    padding: 0px;
+    margin: 0px;
+}
 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: 600px 140px;
-    background-repeat: no-repeat;
+h1 {
+    height: 90px;
+    font-size: 50px;
+
+    padding: 15px 0px 0px 0px;
+    margin: 0px;
+}
+
+h2 {
+    height: 50px;
+    font-size: 20px;
+
+    padding: 0px;
+    margin: 0px;
 }
 
 div.treelevel {
     display: block;
     white-space:nowrap;
-    padding-top: 60px;
-    padding-bottom: 60px;
+    padding: 80px 0px;
 }
 
 div.treenode {
     display: inline-block;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
 div.union {
@@ -56,7 +64,7 @@ div.union {
 div.unionlink {
     vertical-align: top;
     padding-top: 50px;
-    margin: 0px 3px;
+    margin: 0px;
     display: inline-block;
 }
 
@@ -82,8 +90,8 @@ div.photo {
 
 img.photo {
     border-radius: 50%;
-    border: 4px solid black;
-    width: 100px;
+    border: 5px solid DarkOliveGreen;
+    width: 90px;
 }
 
 div.date {
@@ -100,19 +108,23 @@ div.last-name:empty:before {
 
 div.first-name {
     text-transform: capitalize;
+    width: 110px;
+    white-space: normal;
 }
 
 div.last-name {
     text-transform: capitalize;
     font-weight: bold;
+    width: 110px;
+    white-space: normal;
 }
 
 div.person-info {
     text-align: left;
     border-radius: 10px;
     border: 2px solid black;
-    background-color: white;
-    padding: 0px 5px;
+    background-color: #ecf2e2;
+    padding: 5px;
     position: relative;
     margin-bottom: 3px;
 }

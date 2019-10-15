@@ -10,6 +10,7 @@ class Edge():
             '          document.getElementById("{}"),\n'
             '          document.getElementById("{}"),\n'
             '          {{'
+            '            color: "DarkOliveGreen", '
             '            startSocket: "top", '
             '            endSocket: "bottom", '
             '            path: "magnet", '
