@@ -14,7 +14,7 @@ class UnionLink():
             '    {}\n'
         ).format(
             self.id,
-            HTMLGenerator.wrap_instance(self.date, self.date.year)
+            self.date.to_html()
         )
 
         return HTMLGenerator.wrap_instance(self, value)
