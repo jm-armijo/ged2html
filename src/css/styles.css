@@ -1,9 +1,10 @@
 body {
-    background-image: url("../images/bg.jpg");
+    background-color: SteelBlue;
     font-size: x-small;
     font-family:'Bookman Old Style';
     font-variant: small-caps;
     text-align: center;
+    color: Black;
 
     padding: 0px;
     margin: 0px;
@@ -14,24 +15,24 @@ body {
 }
 
 div.title {
-    background-color: DarkOliveGreen;
-    border-bottom: 10px solid #2b3618;
+    background-color: White;
+    border-bottom: 2px solid Black;
+    border-top: 2px solid Black;
 
-    color: #ecf2e2;
-    text-shadow: -2px 0 #2b3618, 0 2px #2b3618, 2px 0 #2b3618, 0 -2px #2b3618;
     text-transform: uppercase;
+    text-align: left;
 
     width: 100%;
-    height: 200px;
+    height: 100px;
     vertical-align: middle;
 
-    padding: 0px;
-    margin: 0px;
+    padding: 0px 0px 0px 100px;
+    margin: 30px 0px 0px 0px;
 }
 
 h1 {
-    height: 90px;
-    font-size: 50px;
+    height: 50px;
+    font-size: 30px;
 
     padding: 15px 0px 0px 0px;
     margin: 0px;
@@ -39,7 +40,7 @@ h1 {
 
 h2 {
     height: 50px;
-    font-size: 20px;
+    font-size: 15px;
 
     padding: 0px;
     margin: 0px;
@@ -89,8 +90,8 @@ div.photo {
 }
 
 img.photo {
-    border-radius: 50%;
-    border: 5px solid DarkOliveGreen;
+    border-radius: 10px;
+    border: 1px solid Black;
     width: 90px;
 }
 
@@ -123,7 +124,7 @@ div.person-info {
     text-align: left;
     border-radius: 10px;
     border: 2px solid black;
-    background-color: #ecf2e2;
+    background-color: White;
     padding: 5px;
     position: relative;
     margin-bottom: 3px;
@@ -139,7 +140,9 @@ div.separator {
 }
 
 img.sex {
-    position: absolute;
-    top: -20px;
-    right: 10px;
+    width: 12px;
+    height: 12px;
+    padding: 0px;
+    margin: 0px;
+    display: block;
 }

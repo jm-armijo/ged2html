@@ -38,7 +38,6 @@ def create_output_directory():
     copyfile('src/scripts/leader-line.min.js', 'html/scripts/leader-line.min.js')
     copyfile('src/images/face.png', 'html/images/face.png')
     copyfile('src/images/unionlink.png', 'html/images/unionlink.png')
-    copyfile('src/images/bg.jpg', 'html/images/bg.jpg')
     copyfile('src/images/sex-M.png', 'html/images/sex-M.png')
     copyfile('src/images/sex-F.png', 'html/images/sex-F.png')
 
