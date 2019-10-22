@@ -1,8 +1,9 @@
+import datetime
 import re
-from src.html import HTMLGenerator
-from src.node import Node
 from src.date_range import DateRange
+from src.date import Date
 from src.html_element import HTMLElement
+from src.node import Node
 
 # pylint: disable=too-many-instance-attributes
 class Person(Node):
@@ -18,6 +19,36 @@ class Person(Node):
         self.death_place = ''
         self.unions = list()
         self.objects = list()
+
+    def get_pronoun(self):
+        if self.sex == 'M':
+            return 'he'
+        elif self.sex == 'F':
+            return 'she'
+        else:
+            return 'they'
+
+    def can_show_dates(self):
+        start = self.life_period.start
+        end = self.life_period.end
+        limit = datetime.datetime.now().year - 100
+
+        if not end.is_empty() or (not start.is_empty() and int(start.year) < limit):
+            return True
+        else:
+            return False
+
+    def get_birth_date(self):
+        if self.can_show_dates():
+            return self.life_period.start
+        else:
+            return Date()
+
+    def get_death_date(self):
+        if self.can_show_dates():
+            return self.life_period.end
+        else:
+            return Date()
 
     def set_name(self, name):
         name_parts = self._split_name(name)
@@ -53,6 +84,15 @@ class Person(Node):
     def add_object(self, object_id):
         self.objects.append(object_id)
 
+    def get_full_name(self):
+        return "{}, {}".format(self.last_name, self.first_name)
+
+    def get_date_range(self):
+        if self.can_show_dates():
+            return str(self.life_period)
+        else:
+            return ''
+
     def get_spouses(self):
         return [self]
 
@@ -73,17 +113,29 @@ class Person(Node):
             '  {}'
             '  {}'
         ).format(
-            self._image_to_html(),
+            self.image_to_html(),
             self._info_to_html()
         )
-        return HTMLGenerator.wrap_instance(self, value, self.id)
+
+        person = HTMLElement('a')
+        person.add_attribute('class', 'person')
+        person.add_attribute('id', self.id)
+        person.add_attribute('href', self.id)
+        person.add_attribute('target', '_blank')
+        person.set_value(value)
+
+        return str(person)
 
     def _info_to_html(self):
+        life_period = ''
+        if self.can_show_dates():
+            life_period = self.life_period.to_html()
+
         value = '{}{}{}{}'.format(
-            self._give_name_to_html(),
-            self._last_name_to_html(),
-            self.life_period.to_html(),
-            self._sex_to_html()
+            self.first_name_to_html(),
+            self.last_name_to_html(),
+            life_period,
+            self.sex_to_html()
         )
 
         element = HTMLElement('div')
@@ -91,31 +143,30 @@ class Person(Node):
         element.set_value(value)
         return str(element)
 
-    def _image_to_html(self):
+    def image_to_html(self, path=''):
         if self.objects:
-            path = self.objects[0].file
+            path += self.objects[0].file
         else:
-            path = 'images/face.png'
+            path += 'images/face.png'
 
         element = HTMLElement('img')
         element.add_attribute('class', 'photo')
         element.add_attribute('src', path)
         return str(element)
 
-    def _give_name_to_html(self):
+    def first_name_to_html(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'first-name')
         element.set_value(self.first_name)
         return str(element)
 
-    def _last_name_to_html(self):
+    def last_name_to_html(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'last-name')
         element.set_value(self.last_name)
         return str(element)
 
-
-    def _sex_to_html(self):
+    def sex_to_html(self):
         html = ''
         if self.sex == 'M' or self.sex == 'F':
             element = HTMLElement('img')
@@ -124,6 +175,24 @@ class Person(Node):
             element.add_attribute('alt', self.sex)
             html = str(element)
         return html
+
+    def date_range_to_html(self):
+        element_date_range = HTMLElement('div')
+        element_date_range.add_attribute('class', 'date-range')
+        element_date_range.set_value(self.life_period.to_html())
+        return str(element_date_range)
+
+    def birth_place_to_html(self):
+        element_birth_place = HTMLElement('div')
+        element_birth_place.add_attribute('class', 'place')
+        element_birth_place.set_value(self.birth_place)
+        return str(element_birth_place)
+
+    def death_place_to_html(self):
+        element_death_place = HTMLElement('div')
+        element_death_place.add_attribute('class', 'place')
+        element_death_place.set_value(self.death_place)
+        return str(element_death_place)
 
     # pylint: disable=no-self-use
     def _split_name(self, name):

@@ -16,6 +16,9 @@ class HTMLElement():
         for key, value in self.attributes.items():
             str += ' {}="{}"'.format(key, value)
 
+        if self.tag == 'script' and self.value is None:
+            self.value = ''
+
         if self.value is not None:
             str += '>'
             str += self.value

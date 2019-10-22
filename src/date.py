@@ -26,11 +26,11 @@ class Date():
     def to_html(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'person-date')
-        element.add_attribute('title', self._get_full())
+        element.add_attribute('title', self.get_full())
         element.set_value(self.year)
         return str(element)
 
-    def _get_full(self):
+    def get_full(self):
         date = self.year
         if self.month != '':
             date = self.month + " " + date

@@ -1,0 +1,67 @@
+div.content {
+    width: 100%;
+    margin: 150px 0px 0px 0px;
+    text-align: left;
+}
+
+div.first-name {
+    height: 50px;
+    display: inline-block;
+}
+
+div.last-name {
+    height: 50px;
+    display: inline-block;
+}
+
+div.separator {
+    height: 50px;
+    font-size: 30px;
+    display: inline-block;
+}
+
+div.photo {
+    display: inline-block;
+    width: 200px;
+    height: 285px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    margin: 0px 0px 0px 30px;
+
+    line-height: 285px;
+
+    text-align: center;
+    vertical-align: middle;
+}
+
+img.photo {
+    border: 1px solid Black;
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+div.person-info {
+    vertical-align: top;
+    display: inline-block;
+    margin: 0px 0px 0px 50px;
+	padding: 10px;
+    border: 1px solid black;
+    background-color: White;
+    border-radius: 10px;
+
+    min-width: 500px;
+    min-height: 265px;
+
+}
+
+div.text {
+    font-size: small;
+    font-variant: normal;
+    font-family:'Bookman Old Style';
+    padding-bottom: 8px;
+}

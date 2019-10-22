@@ -1,4 +1,4 @@
-from src.html import HTMLGenerator
+from src.html_element import HTMLElement
 from src.person import Person
 from src.union_extended import UnionExtended
 
@@ -24,7 +24,12 @@ class TreeNode():
 
     def to_html(self):
         value = self.node.to_html()
-        return HTMLGenerator.wrap_instance(self, value)
+
+        node = HTMLElement('div')
+        node.add_attribute('class', 'treenode')
+        node.set_value(value)
+
+        return str(node)
 
     def __str__(self):
         return str(self.node)

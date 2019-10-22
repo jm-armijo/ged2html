@@ -1,6 +1,6 @@
 from src.node import Node
 from src.person import Person
-from src.html import HTMLGenerator
+from src.html_element import HTMLElement
 from src.union_link import UnionLink
 
 class Union(Node):
@@ -76,7 +76,11 @@ class Union(Node):
             self.spouse2.to_html()
         )
 
-        return HTMLGenerator.wrap_instance(self, value)
+        union = HTMLElement('div')
+        union.add_attribute('class', 'union')
+        union.set_value(value)
+
+        return str(union)
 
     def __str__(self):
         return str(self.spouse1) + ' oo ' + str(self.spouse2)

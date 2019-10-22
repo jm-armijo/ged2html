@@ -1,5 +1,5 @@
 from src.date import Date
-from src.html import HTMLGenerator
+from src.html_element import HTMLElement
 
 # pylint: disable=too-few-public-methods
 class UnionLink():
@@ -17,4 +17,8 @@ class UnionLink():
             self.date.to_html()
         )
 
-        return HTMLGenerator.wrap_instance(self, value)
+        link = HTMLElement('div')
+        link.add_attribute('class', 'unionlink')
+        link.set_value(value)
+
+        return str(link)

@@ -181,6 +181,7 @@ class Parser():
             object.set_format(value)
 
     def _get_person_or_create(self, person_id):
+        person_id = person_id.replace('@', '')
         if person_id not in self.people:
             self.people[person_id] = Person(person_id)
 

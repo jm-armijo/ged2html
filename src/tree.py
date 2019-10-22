@@ -1,9 +1,7 @@
 from src.edge import Edge
-from src.html import HTMLGenerator
 from src.tree_level import TreeLevel
 from src.tree_node import TreeNode
 from src.ordered_set import OrderedSet
-from src.html_element import HTMLElement
 
 # pylint: disable=too-few-public-methods
 class Tree():
@@ -17,21 +15,6 @@ class Tree():
         self.nodes = self._create_nodes(people)
         self.edges = self._create_edges(unions)
         self._sort_nodes()
-
-    def to_html(self):
-        nodes_html = HTMLGenerator.list_to_html(self.nodes)
-        content = HTMLElement('div')
-        content.add_attribute('class', 'content')
-        content.set_value(nodes_html)
-
-        edges_html = HTMLGenerator.list_to_html(self.edges)
-        script = HTMLGenerator.get_on_load_script(edges_html)
-
-        return (
-            '{}'
-            '{}'
-        ).format(str(content), script)
-
 
 # private:
 
