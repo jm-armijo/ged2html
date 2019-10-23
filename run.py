@@ -12,8 +12,9 @@ from src.parser import Parser
 
 def copy_media_files(base_path, media_files):
     for file in media_files:
-        origin = os.path.join(base_path,file)
-        copyfile(origin, 'html/' + file )
+        if 'docs/' not in file:
+            origin = os.path.join(base_path,file)
+            copyfile(origin, 'html/' + file )
 
 def write_to_file(file_name, content):
     file_handler = open(file_name, 'w')
