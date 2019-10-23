@@ -14,7 +14,8 @@ class Person(Node):
         self.first_name = ''
         self.last_name = ''
         self.sex = 'U'
-        self.life_period = DateRange()
+        self.birth_date = Date()
+        self.death_date = Date()
         self.birth_place = ''
         self.death_place = ''
         self.unions = list()
@@ -29,24 +30,23 @@ class Person(Node):
             return 'they'
 
     def can_show_dates(self):
-        start = self.life_period.start
-        end = self.life_period.end
-        limit = datetime.datetime.now().year - 100
+        limit = Date()
+        limit.set_year(datetime.datetime.now().year - 99)
 
-        if not end.is_empty() or (not start.is_empty() and int(start.year) < limit):
+        if not self.death_date.is_empty() or (not self.birth_date.is_empty() and self.birth_date < limit):
             return True
         else:
             return False
 
     def get_birth_date(self):
         if self.can_show_dates():
-            return self.life_period.start
+            return self.birth_date
         else:
             return Date()
 
     def get_death_date(self):
         if self.can_show_dates():
-            return self.life_period.end
+            return self.death_date
         else:
             return Date()
 
@@ -63,13 +63,13 @@ class Person(Node):
         self.sex = sex
 
     def set_birth_date(self, date):
-        self.life_period.start = date
+        self.birth_date = date
 
     def set_birth_place(self, place):
         self.birth_place = place
 
     def set_death_date(self, date):
-        self.life_period.end = date
+        self.death_date = date
 
     def set_death_place(self, place):
         self.death_place = place
@@ -89,7 +89,9 @@ class Person(Node):
 
     def get_date_range(self):
         if self.can_show_dates():
-            return str(self.life_period)
+            start = self.birth_date.get_year_as_text()
+            end = self.death_date.get_year_as_text()
+            return "{} &ndash; {}".format(start, end)
         else:
             return ''
 
@@ -127,14 +129,10 @@ class Person(Node):
         return str(person)
 
     def _info_to_html(self):
-        life_period = ''
-        if self.can_show_dates():
-            life_period = self.life_period.to_html()
-
         value = '{}{}{}{}'.format(
             self.first_name_to_html(),
             self.last_name_to_html(),
-            life_period,
+            self.date_range_to_html(),
             self.sex_to_html()
         )
 
@@ -177,10 +175,21 @@ class Person(Node):
         return html
 
     def date_range_to_html(self):
-        element_date_range = HTMLElement('div')
-        element_date_range.add_attribute('class', 'date-range')
-        element_date_range.set_value(self.life_period.to_html())
-        return str(element_date_range)
+        dates = ''
+        if self.can_show_dates():
+            separator = HTMLElement('div')
+            separator.add_attribute('class', 'separator')
+            separator.set_value('&ndash;')
+
+            dates = self.birth_date.to_html()
+            dates += str(separator)
+            dates += self.death_date.to_html()
+
+        element = HTMLElement('div')
+        element.add_attribute('class', 'date-range')
+        element.set_value(dates)
+
+        return str(element)
 
     def birth_place_to_html(self):
         element_birth_place = HTMLElement('div')

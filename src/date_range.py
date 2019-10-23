@@ -7,20 +7,32 @@ class DateRange():
         self.start = Date()
         self.end = Date()
 
+    def is_empty(self):
+        return self.start.is_empty() or self.end.is_empty()
+
     def to_html(self):
-        separator = HTMLElement('div')
-        separator.add_attribute('class', 'separator')
-        separator.set_value('&ndash;')
+        element = HTMLElement('div')
+        element.add_attribute('class', 'person-date')
+        element.add_attribute('title', self.get_as_yyyymmdd())
+        element.set_value(self.get_year_as_text())
+        return str(element)
 
-        html = self.start.to_html()
-        html += str(separator)
-        html += self.end.to_html()
+    def get_as_yyyymmdd(self):
+        start = self.start.get_as_yyyymmdd()
+        end = self.end.get_as_yyyymmdd()
+        return "{}/{}".format(start, end)
 
-        return html
+    def get_year_as_text(self):
+        start = self.start.get_year_as_text()
+        end = self.end.get_year_as_text()
 
-    def __str__(self):
-        str = ''
-        if not self.end.is_empty() or (not self.start.is_empty() and int(self.start.year) < datetime.datetime.now().year - 100):
-            str = "{} - {}".format(self.start.year, self.end.year)
+        if start == end:
+            return end
+        else:
+            return "{}/{}".format(start, end)
 
-        return str
+    def get_as_text(self):
+        return "between " + self.start.get_as_text() + " and " + self.end.get_as_text()
+
+    def __lt__(self, other):
+        return self.end < other

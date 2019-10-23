@@ -8,9 +8,6 @@ class Date():
         self.month = ''
         self.year = ''
 
-    def is_empty(self):
-        return self.year == ''
-
     def set_precision(self, precision):
         self.precision = precision
 
@@ -23,14 +20,28 @@ class Date():
     def set_year(self, year):
         self.year = year
 
+    def is_empty(self):
+        return self.year == ''
+
     def to_html(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'person-date')
-        element.add_attribute('title', self.get_full())
-        element.set_value(self.year)
+        element.add_attribute('title', self.get_as_yyyymmdd())
+        element.set_value(self.get_year_as_text())
         return str(element)
 
-    def get_full(self):
+    def get_as_yyyymmdd(self):
+        value = self.year
+        if self.month:
+            value += "-{}".format(self.month)
+            if self.day:
+                value += "-{}".format(self.day)
+        return value
+
+    def get_year_as_text(self):
+        return self.year
+
+    def get_as_text(self):
         date = self.year
         if self.month != '':
             date = self.month + " " + date
@@ -38,3 +49,6 @@ class Date():
                 date = self.day + " " + date
 
         return date
+
+    def __lt__(self, other):
+        return int(self.year) < other.year

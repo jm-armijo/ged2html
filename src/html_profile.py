@@ -60,7 +60,7 @@ class HTMLProfile(HTMLDocument):
     def _get_birth_info(self):
         name = self.person.first_name.title()
         place = self.person.birth_place
-        date = self.person.get_birth_date().get_full()
+        date = self.person.get_birth_date().get_as_text()
 
         if place == '' and date == '':
             return ''
@@ -82,7 +82,7 @@ class HTMLProfile(HTMLDocument):
     def _get_death_info(self):
         pronoun = self.person.get_pronoun().title()
         place = self.person.death_place
-        date = self.person.get_death_date().get_full()
+        date = self.person.get_death_date().get_as_text()
 
         if place == '' and date == '':
             return ''

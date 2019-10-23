@@ -1,6 +1,7 @@
 import re
 
 from src.date import Date
+from src.date_range import DateRange
 from src.person import Person
 from src.text_line import TextLine
 from src.object import Object
@@ -194,6 +195,16 @@ class Parser():
         return self.objects[object_id]
 
     def _create_date(self, raw_date):
+        pattern_range = re.compile(r"BET\s(.*)\sAND\s(.*)")
+        if pattern_range.match(raw_date):
+            match = pattern_range.search(raw_date)
+            date = self._parse_range(match.group(1), match.group(2))
+        else:
+            date = self._parse_date(raw_date)
+
+        return date
+
+    def _parse_date(self, raw_date):
         date = Date()
 
         pattern = re.compile(r"(ABT|AFT|BEF|EST)?\s?(\d{1,2})?\s?(\w{3})?\s?(\d{4})")
@@ -208,5 +219,12 @@ class Parser():
             date.year = match.group(4)
         elif raw_date != '':
             print("Unable to parse date '{}'".format(raw_date))
+
+        return date
+
+    def _parse_range(self, raw_date1, raw_date2):
+        date = DateRange()
+        date.start = self._parse_date(raw_date1)
+        date.end = self._parse_date(raw_date2)
 
         return date
