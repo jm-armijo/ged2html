@@ -11,6 +11,7 @@ class Union(Node):
         self.spouse1 = Person()
         self.spouse2 = Person()
         self.link = UnionLink(union_id)
+        self.sources = list()
 
     def set_spouse1(self, spouse):
         spouse.add_union(self)
@@ -23,6 +24,9 @@ class Union(Node):
     def add_child(self, child):
         child.set_parents(self)
         self.children.append(child)
+
+    def add_source(self, source_id):
+        self.sources.append(source_id)
 
     def set_date(self, date):
         self.link.date = date
@@ -81,6 +85,12 @@ class Union(Node):
         union.set_value(value)
 
         return str(union)
+
+    def sources_to_html(self):
+        sources = ''
+        for source in self.sources:
+            sources += source.to_html()
+        return sources
 
     def __str__(self):
         return str(self.spouse1) + ' oo ' + str(self.spouse2)

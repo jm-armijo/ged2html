@@ -5,6 +5,7 @@ from src.date_range import DateRange
 from src.person import Person
 from src.text_line import TextLine
 from src.object import Object
+from src.source import Source
 from src.tree import Tree
 from src.union import Union
 
@@ -35,14 +36,16 @@ class Parser():
 
     def __init__(self):
         self.people = dict()
-        self.objects = dict()
         self.unions = list()
+        self.objects = dict()
+        self.sources = dict()
         self.tree = None
 
         self.state = 'IDLE'
         self.current_line = None
         self.last_person = None
         self.last_object = None
+        self.last_source = None
         self.last_key_per_level = dict()
 
     def parse(self, file_name):
@@ -81,7 +84,7 @@ class Parser():
 
     def _get_current_state(self):
         new_state = 'IDLE'
-        if self.current_line.level == 0 and self.current_line.data in ['INDI', 'FAM', 'OBJE']:
+        if self.current_line.level == 0 and self.current_line.data in ['INDI', 'FAM', 'OBJE', 'SOUR']:
             new_state = self.current_line.data
         elif self.state == 'INDI' or self.state == 'INDI_DATA':
             if self.current_line.level > 0:
@@ -92,6 +95,9 @@ class Parser():
         elif self.state == 'OBJE' or self.state == 'OBJE_DATA':
             if self.current_line.level > 0:
                 new_state = 'OBJE_DATA'
+        elif self.state == 'SOUR' or self.state == 'SOUR_DATA':
+            if self.current_line.level > 0:
+                new_state = 'SOUR_DATA'
 
         return new_state
 
@@ -108,6 +114,10 @@ class Parser():
             self._create_object()
         elif self.state == 'OBJE_DATA':
             self._add_object_data()
+        elif self.state == 'SOUR':
+            self._create_source()
+        elif self.state == 'SOUR_DATA':
+            self._add_source_data()
 
     def _create_person(self):
         person = self._get_person_or_create(self.current_line.attribute)
@@ -130,6 +140,9 @@ class Parser():
         elif attribute == 'OBJE':
             object = self._get_object_or_create(value)
             person.add_object(object)
+        elif attribute == 'SOUR':
+            source = self._get_source_or_create(value)
+            person.add_source(source)
         elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
             date = self._create_date(value)
             person.set_birth_date(date)
@@ -158,6 +171,9 @@ class Parser():
             union.set_spouse2(self._get_person_or_create(value))
         elif attribute == 'CHIL':
             union.add_child(self._get_person_or_create(value))
+        elif attribute == 'SOUR':
+            source = self._get_source_or_create(value)
+            union.add_source(source)
         elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'MARR':
             date = self._create_date(value)
             union.set_date(date)
@@ -181,6 +197,22 @@ class Parser():
         elif attribute == 'FORM':
             object.set_format(value)
 
+    def _create_source(self):
+        source = self._get_source_or_create(self.current_line.attribute)
+        self.sources[source.id] = source
+        self.last_source = source.id
+
+    def _add_source_data(self):
+        level = self.current_line.level
+        attribute = self.current_line.attribute
+        value = self.current_line.data
+
+        source = self.sources[self.last_source]
+
+        if attribute == 'OBJE':
+            object = self._get_object_or_create(value)
+            source.add_object(object)
+
     def _get_person_or_create(self, person_id):
         person_id = person_id.replace('@', '')
         if person_id not in self.people:
@@ -193,6 +225,12 @@ class Parser():
             self.objects[object_id] = Object(object_id)
 
         return self.objects[object_id]
+
+    def _get_source_or_create(self, source_id):
+        if source_id not in self.sources:
+            self.sources[source_id] = Source(source_id)
+
+        return self.sources[source_id]
 
     def _create_date(self, raw_date):
         pattern_range = re.compile(r"BET\s(.*)\sAND\s(.*)")

@@ -36,7 +36,17 @@ class HTMLProfile(HTMLDocument):
     def _get_body_content(self):
         content  = self._get_body_image()
         content += self._get_body_info()
+        content += self._get_body_sources()
         return content
+
+    def _get_body_sources(self):
+        sources_content = self.person.sources_to_html()
+
+        sources = HTMLElement('div')
+        sources.add_attribute('class', 'sources')
+        sources.set_value(sources_content)
+
+        return str(sources)
 
     def _get_body_info(self):
         content = self._get_birth_info()

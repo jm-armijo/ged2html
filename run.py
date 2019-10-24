@@ -12,9 +12,11 @@ from src.parser import Parser
 
 def copy_media_files(base_path, media_files):
     for file in media_files:
-        if 'docs/' not in file:
-            origin = os.path.join(base_path,file)
-            copyfile(origin, 'html/' + file )
+        dir = os.path.dirname(file)
+        os.makedirs("html/{}".format(dir), 0o755, True)
+
+        origin = os.path.join(base_path,file)
+        copyfile(origin, 'html/' + file )
 
 def write_to_file(file_name, content):
     file_handler = open(file_name, 'w')
@@ -54,6 +56,7 @@ def create_output_directory():
     os.makedirs('html/css', 0o755, True)
     os.makedirs('html/scripts', 0o755, True)
     os.makedirs('html/images', 0o755, True)
+    os.makedirs('html/docs', 0o755, True)
 
     # Copy files
     copyfile('src/css/base.css', 'html/css/base.css')

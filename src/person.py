@@ -20,6 +20,7 @@ class Person(Node):
         self.death_place = ''
         self.unions = list()
         self.objects = list()
+        self.sources = list()
 
     def get_pronoun(self):
         if self.sex == 'M':
@@ -83,6 +84,9 @@ class Person(Node):
 
     def add_object(self, object_id):
         self.objects.append(object_id)
+
+    def add_source(self, source_id):
+        self.sources.append(source_id)
 
     def get_full_name(self):
         return "{}, {}".format(self.last_name, self.first_name)
@@ -202,6 +206,14 @@ class Person(Node):
         element_death_place.add_attribute('class', 'place')
         element_death_place.set_value(self.death_place)
         return str(element_death_place)
+
+    def sources_to_html(self):
+        sources = ''
+        for source in self.sources:
+            sources += source.to_html()
+        for union in self.unions:
+            sources += union.sources_to_html()
+        return sources
 
     # pylint: disable=no-self-use
     def _split_name(self, name):
