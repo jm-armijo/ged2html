@@ -54,7 +54,8 @@ div.person-info {
     background-color: White;
     border-radius: 10px;
 
-    min-width: 500px;
+    width: 50vw;
+    min-width: 300px;
     min-height: 265px;
 
 }
@@ -64,4 +65,45 @@ div.text {
     font-variant: normal;
     font-family:'Bookman Old Style';
     padding-bottom: 8px;
+}
+
+div.sources {
+    min-width: 300px;
+    margin: 30px 0px 50px 30px;
+    white-space: normal;
+}
+
+div.source {
+    display: inline-block;
+    margin: 30px 30px 30px 0px;
+    padding: 0px;
+}
+
+div.table-header {
+    display: inline-block;
+    background-color: White;
+    border: 1px solid Black;
+    padding: 10px 0px;
+	width: 100%;
+}
+
+div.table-title {
+    color: Black;
+    font-weight: bold;
+    font-size: small;
+    vertical-align: middle;
+    padding-left: 15px;
+}
+
+div.source-content {
+    border: 1px solid Black;
+    padding: 0px 10px;
+}
+
+img.source {
+    width: 200px;
+    height: 200px;
+    margin: 5px;
+    background-position: center center;
+    background-size: cover;
 }
