@@ -8,6 +8,9 @@ class UnionLink():
         self.date = Date()
         self.place = ''
 
+    def is_private(self):
+        return True
+
     def to_html(self):
         value = (
             '    <img class="unionlink-image" src="images/unionlink.png" id={}>\n'

@@ -65,14 +65,15 @@ class Tree():
         edges = list()
         if start not in self.opened:
             self._notify_element_not_found(start.id)
-        else:
+        elif not start.is_private():
             edges = self._create_edges_to_nodes(start, start.get_children())
         return edges
 
     def _create_edges_to_nodes(self, start, end_nodes):
         edges = list()
         for end in end_nodes:
-            edges += self._create_edge_to_node(start, end)
+            if not end.is_private():
+                edges += self._create_edge_to_node(start, end)
         return edges
 
     def _create_edge_to_node(self, start, end):

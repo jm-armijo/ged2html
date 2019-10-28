@@ -23,6 +23,9 @@ class TreeNode():
         return self.node.get_parents()
 
     def to_html(self):
+        if self.node.is_private():
+            return ''
+
         value = self.node.to_html()
 
         node = HTMLElement('div')

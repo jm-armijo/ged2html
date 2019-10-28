@@ -69,7 +69,13 @@ class Union(Node):
 
         return parents
 
+    def is_private(self):
+        return self.spouse1.is_private() and self.spouse2.is_private()
+
     def to_html(self):
+        if self.is_private():
+            return ''
+
         value = (
             '  {}\n'
             '  {}\n'

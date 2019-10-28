@@ -32,7 +32,17 @@ class UnionExtended(Node):
             children += union.get_children()
         return children
 
+    def is_private(self):
+        for node in self.nodes:
+            if not node.is_private():
+                return False
+
+        return True
+
     def to_html(self):
+        if self.is_private():
+            return ''
+
         html = ''
         for node in self.nodes:
             html += node.to_html()

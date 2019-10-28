@@ -21,6 +21,7 @@ class Person(Node):
         self.unions = list()
         self.objects = list()
         self.sources = list()
+        self.private = False
 
     def get_pronoun(self):
         if self.sex == 'M':
@@ -62,6 +63,12 @@ class Person(Node):
 
     def set_sex(self, sex):
         self.sex = sex
+
+    def set_private(self):
+        self.private = True
+
+    def is_private(self):
+        return self.private
 
     def set_birth_date(self, date):
         self.birth_date = date
@@ -115,6 +122,10 @@ class Person(Node):
         return len(self.unions) == 0
 
     def to_html(self):
+        if self.is_private():
+            person = Person(self.id)
+            self = person
+
         value = (
             '  {}'
             '  {}'

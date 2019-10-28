@@ -143,6 +143,8 @@ class Parser():
         elif attribute == 'SOUR':
             source = self._get_source_or_create(value)
             person.add_source(source)
+        elif attribute == '_PRIV':
+            person.set_private()
         elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
             date = self._create_date(value)
             person.set_birth_date(date)
