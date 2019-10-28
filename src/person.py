@@ -1,5 +1,7 @@
 import datetime
 import re
+import urllib.parse
+
 from src.date_range import DateRange
 from src.date import Date
 from src.html_element import HTMLElement
@@ -207,16 +209,27 @@ class Person(Node):
         return str(element)
 
     def birth_place_to_html(self):
-        element_birth_place = HTMLElement('div')
-        element_birth_place.add_attribute('class', 'place')
-        element_birth_place.set_value(self.birth_place)
-        return str(element_birth_place)
+        if self.birth_place == '':
+            return ''
+        else:
+            return self._place_to_html(self.birth_place)
 
     def death_place_to_html(self):
-        element_death_place = HTMLElement('div')
-        element_death_place.add_attribute('class', 'place')
-        element_death_place.set_value(self.death_place)
-        return str(element_death_place)
+        if self.death_place == '':
+            return ''
+        else:
+            return self._place_to_html(self.death_place)
+
+    def _place_to_html(self, place):
+        query = urllib.parse.quote(place)
+        url = "https://www.google.com/maps/search/?api=1&query={}".format(query)
+
+        element_place = HTMLElement('a')
+        element_place.add_attribute('class', 'place')
+        element_place.add_attribute('href', url)
+        element_place.add_attribute('target', '_blank')
+        element_place.set_value(place)
+        return str(element_place)
 
     def sources_to_html(self):
         sources = ''
