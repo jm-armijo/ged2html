@@ -214,6 +214,10 @@ class Parser():
         if attribute == 'OBJE':
             object = self._get_object_or_create(value)
             source.add_object(object)
+        elif attribute == 'TITL':
+            source.title = value
+        elif attribute == 'TEXT':
+            source.text = value
 
     def _get_person_or_create(self, person_id):
         person_id = person_id.replace('@', '')

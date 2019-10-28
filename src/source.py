@@ -3,6 +3,8 @@ from src.html_element import HTMLElement
 class Source():
     def __init__(self, id):
         self.id = id
+        self.title = ''
+        self.text = ''
         self.objects = list()
 
     def add_object(self, object):
@@ -21,7 +23,8 @@ class Source():
     def _source_title_to_html(self):
         title = HTMLElement('div')
         title.add_attribute('class', 'table-title')
-        title.set_value(self.id)
+        title.add_attribute('id', self.id)
+        title.set_value(self.title)
 
         element = HTMLElement('div')
         element.add_attribute('class', 'table-header')
