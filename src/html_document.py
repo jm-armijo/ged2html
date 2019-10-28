@@ -49,7 +49,7 @@ class HTMLDocument():
 
     def _get_head_styles(self):
         font = HTMLElement('link')
-        font.add_attribute('href', "https://fonts.googleapis.com/css?family='New Rocker'")
+        font.add_attribute('href', "{}css/font_new_rocker.css".format(self.path_to_css))
         font.add_attribute('rel', 'stylesheet')
 
         css = HTMLElement('link')
