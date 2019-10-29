@@ -251,7 +251,7 @@ class Parser():
     def _parse_date(self, raw_date):
         date = Date()
 
-        pattern = re.compile(r"(ABT|AFT|BEF|EST)?\s?(\d{1,2})?\s?(\w{3})?\s?(\d{4})")
+        pattern = re.compile(r"(ABT|CAL|AFT|BEF|EST)?\s?(\d{1,2})?\s?(\w{3})?\s?(\d{4})")
         if pattern.match(raw_date):
             match = pattern.search(raw_date)
             if match.group(1):
