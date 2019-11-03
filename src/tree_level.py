@@ -1,5 +1,4 @@
 from src.ordered_set import OrderedSet
-from src.html_element import HTMLElement
 
 class TreeLevel():
     def __init__(self):
@@ -25,16 +24,6 @@ class TreeLevel():
         for node in self.nodes:
             children += node.get_children()
         return children
-
-    def to_html(self):
-        nodes = ''
-        for node in self.nodes:
-            nodes += node.to_html()
-
-        level = HTMLElement('div')
-        level.add_attribute('class', 'treelevel')
-        level.set_value(nodes)
-        return str(level)
 
     def _find_node_having_person(self, person):
         for node in self.nodes:

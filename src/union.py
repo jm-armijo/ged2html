@@ -1,6 +1,5 @@
 from src.node import Node
 from src.person import Person
-from src.html_element import HTMLElement
 from src.union_link import UnionLink
 
 class Union(Node):
@@ -71,32 +70,6 @@ class Union(Node):
 
     def is_private(self):
         return self.spouse1.is_private() and self.spouse2.is_private()
-
-    def to_html(self):
-        if self.is_private():
-            return ''
-
-        value = (
-            '  {}\n'
-            '  {}\n'
-            '  {}\n'
-        ).format(
-            self.spouse1.to_html(),
-            self.link.to_html(),
-            self.spouse2.to_html()
-        )
-
-        union = HTMLElement('div')
-        union.add_attribute('class', 'union')
-        union.set_value(value)
-
-        return str(union)
-
-    def sources_to_html(self):
-        sources = ''
-        for source in self.sources:
-            sources += source.to_html()
-        return sources
 
     def __str__(self):
         return str(self.spouse1) + ' oo ' + str(self.spouse2)

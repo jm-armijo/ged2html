@@ -1,12 +1,14 @@
 from src.html_document import HTMLDocument
 from src.html_element import HTMLElement
+from src.formatter_person import PersonFormatter
 
 class HTMLProfile(HTMLDocument):
     def __init__(self, title, person):
+        self.person = person
         self.path_to_css = '../'
         self.path_to_images = '../'
-        self.person = person
         self.title = self.person.get_full_name()
+        self.formatter = PersonFormatter(person)
 
     def _get_head_styles(self):
         css = HTMLElement('link')
@@ -19,100 +21,29 @@ class HTMLProfile(HTMLDocument):
         separator.add_attribute('class', 'separator')
         separator.set_value(',&nbsp;')
 
-        title = self.person.last_name_to_html()
+        title = self.formatter.format_last_name()
         title += str(separator)
-        title += self.person.first_name_to_html()
+        title += self.formatter.format_first_name()
 
         element = HTMLElement('h1')
         element .set_value(title)
         return str(element)
 
     def _get_body_title2(self):
-        value = self.person.get_date_range()
-        element = HTMLElement('h2')
-        element .set_value(value)
+        value = self.formatter.format_dates_as_title_range()
+        element = HTMLElement('h2', value)
         return str(element)
 
     def _get_body_content(self):
         content  = self._get_body_image()
-        content += self._get_body_info()
-        content += self._get_body_sources()
+        content += self.formatter.format_detailed_info()
+        content += self.formatter.format_sources()
         return content
 
-    def _get_body_sources(self):
-        sources_content = self.person.sources_to_html()
-
-        sources = HTMLElement('div')
-        sources.add_attribute('class', 'sources')
-        sources.set_value(sources_content)
-
-        return str(sources)
-
-    def _get_body_info(self):
-        content = self._get_birth_info()
-        content += self._get_death_info()
-
-        info = HTMLElement('div')
-        info.add_attribute('class', 'person-info')
-        info.set_value(content)
-
-        return str(info)
-
     def _get_body_image(self):
-        image_html = self.person.image_to_html(self.path_to_css)
+        image_html = self.formatter.format_image(self.path_to_css)
 
-        img_wrap = HTMLElement('div')
+        img_wrap = HTMLElement('div', image_html)
         img_wrap.add_attribute('class', 'photo')
-        img_wrap.set_value(image_html)
 
         return str(img_wrap)
-
-    def _get_birth_info(self):
-        name = self.person.first_name.title()
-        place = self.person.birth_place_to_html()
-        date = self.person.get_birth_date().get_as_text()
-
-        if place == '' and date == '':
-            return ''
-
-        text  = "{} was born ".format(name)
-
-        if place != '':
-            text += " in {}".format(place)
-
-        if date != '':
-            text += " on {}".format(date)
-
-        element = HTMLElement('div')
-        element.add_attribute('class', 'text')
-        element.set_value(text)
-
-        return str(element)
-
-    def _get_death_info(self):
-        pronoun = self.person.get_pronoun().title()
-        place = self.person.death_place_to_html()
-        date = self.person.get_death_date().get_as_text()
-
-        if place == '' and date == '':
-            return ''
-
-        text  = "{} died ".format(pronoun)
-
-        if place != '':
-            text += " in {}".format(place)
-
-        if date != '':
-            text += " on {}".format(date)
-
-        element = HTMLElement('div')
-        element.add_attribute('class', 'text')
-        element.set_value(text)
-
-        return str(element)
-
-    def _get_sex(self):
-        element = HTMLElement('div')
-        element.add_attribute('class', 'sex')
-        element.set_value("Sex : {}".format(self.person.sex))
-        return str(element)

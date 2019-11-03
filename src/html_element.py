@@ -1,8 +1,8 @@
 class HTMLElement():
-    def __init__(self, tag):
+    def __init__(self, tag, value=None):
         self.tag = tag
         self.attributes = dict()
-        self.value = None
+        self.value = value
 
     def add_attribute(self, attribute, value):
         self.attributes[attribute] = value

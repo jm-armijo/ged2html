@@ -1,6 +1,5 @@
-from src.html_element import HTMLElement
-from src.person import Person
 from src.union_extended import UnionExtended
+from src.person import Person
 
 # pylint: disable=too-few-public-methods
 class TreeNode():
@@ -21,18 +20,6 @@ class TreeNode():
 
     def get_parents(self):
         return self.node.get_parents()
-
-    def to_html(self):
-        if self.node.is_private():
-            return ''
-
-        value = self.node.to_html()
-
-        node = HTMLElement('div')
-        node.add_attribute('class', 'treenode')
-        node.set_value(value)
-
-        return str(node)
 
     def __str__(self):
         return str(self.node)

@@ -1,5 +1,6 @@
 from src.html_document import HTMLDocument
 from src.html_element import HTMLElement
+from src.formatter_factory import FormatterFactory
 
 class HTMLTree(HTMLDocument):
     def __init__(self, title, tree):
@@ -51,8 +52,29 @@ class HTMLTree(HTMLDocument):
     def _get_body_content(self):
         content = ''
         for level in self.tree.nodes:
-            content += level.to_html()
+            content += self._get_tree_level(level)
         return content
+
+    def _get_tree_level(self, level):
+        nodes = ''
+        for node in level.nodes:
+            nodes += self._get_tree_node(node)
+
+        element = HTMLElement('div')
+        element.add_attribute('class', 'treelevel')
+        element.set_value(nodes)
+        return str(element)
+
+    def _get_tree_node(self, node):
+        if node.node.is_private():
+            return ''
+
+        formatter = FormatterFactory.make(node.node)
+
+        element = HTMLElement('div', formatter.format())
+        element.add_attribute('class', 'treenode')
+
+        return str(element)
 
     def _get_body_end_script(self):
         event_listener = self._get_event_listener_script()

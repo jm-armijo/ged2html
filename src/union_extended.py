@@ -39,15 +39,6 @@ class UnionExtended(Node):
 
         return True
 
-    def to_html(self):
-        if self.is_private():
-            return ''
-
-        html = ''
-        for node in self.nodes:
-            html += node.to_html()
-        return html
-
     def _extend_nodes(self, nodes):
         unions = set()
         for node in nodes:

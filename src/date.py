@@ -23,13 +23,6 @@ class Date():
     def is_empty(self):
         return self.year == ''
 
-    def to_html(self):
-        element = HTMLElement('div')
-        element.add_attribute('class', 'person-date')
-        element.add_attribute('title', self.get_as_yyyymmdd())
-        element.set_value(self.get_year_as_text())
-        return str(element)
-
     def get_as_yyyymmdd(self):
         value = self.year
         if self.month:

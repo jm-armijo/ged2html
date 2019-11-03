@@ -16,8 +16,8 @@ div.last-name {
 
 div.separator {
     height: 50px;
-    font-size: 30px;
     display: inline-block;
+    padding: 0px 5px;
 }
 
 div.photo {
@@ -60,11 +60,32 @@ div.person-info {
 
 }
 
-div.text {
-    font-size: small;
-    font-variant: normal;
-    font-family:'Bookman Old Style';
-    padding-bottom: 8px;
+div.detailed-info-section {
+    display: block;
+    margin: 10px 0px;
+}
+
+div.detailed-info-title {
+    display: block;
+    margin-bottom: 5px;
+
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+div.detailed-info-entry {
+    display: block;
+    font-size: 12px;
+}
+
+div.detailed-info-header {
+    display: inline-block;
+    margin: 0px 5px 5px 0px;
+}
+
+div.date {
+    display: inline-block;
 }
 
 div.sources {
