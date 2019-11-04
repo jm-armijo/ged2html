@@ -48,7 +48,7 @@ class PersonFormatter():
 
     def format_image(self, path=''):
         if self.person.objects:
-            path += self.person.objects[0].file
+            path += self.person.objects[0].file.path
         else:
             path += 'images/face.png'
 

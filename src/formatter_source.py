@@ -39,7 +39,7 @@ class SourceFormatter():
         return str(element)
 
     def _object_to_html(self, object):
-        path_to_image = "../{}".format(object.file)
+        path_to_image = "../{}".format(object.file.path)
 
         content = HTMLElement('img')
         content.add_attribute('class', 'source')

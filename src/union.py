@@ -1,6 +1,6 @@
 from src.node import Node
 from src.person import Person
-from src.union_link import UnionLink
+from src.element_event import Event
 
 class Union(Node):
     def __init__(self, union_id):
@@ -9,7 +9,7 @@ class Union(Node):
         self.id = union_id
         self.spouse1 = Person()
         self.spouse2 = Person()
-        self.link = UnionLink(union_id)
+        self.marriage = Event()
         self.sources = list()
 
     def set_spouse1(self, spouse):
@@ -26,12 +26,6 @@ class Union(Node):
 
     def add_source(self, source_id):
         self.sources.append(source_id)
-
-    def set_date(self, date):
-        self.link.date = date
-
-    def set_place(self, place):
-        self.link.place = place
 
     def get_spouses(self):
         people = list()
@@ -68,11 +62,12 @@ class Union(Node):
 
         return parents
 
+    def get_sources(self):
+        sources = self.marriage.sources
+        return sources
+
     def is_private(self):
         return self.spouse1.is_private() and self.spouse2.is_private()
-
-    def __str__(self):
-        return str(self.spouse1) + ' oo ' + str(self.spouse2)
 
     def __contains__(self, item):
         if item in self.spouse1:

@@ -1,17 +1,17 @@
 from src.html_element import HTMLElement
 from src.formatter_factory import FormatterFactory
 
-class UnionLinkFormatter():
-    def __init__(self, link):
-        self.link = link
+class UnionFormatter():
+    def __init__(self, union):
+        self.union = union
 
     def format(self):
         img = HTMLElement('img')
         img.add_attribute('class', 'unionlink-image')
         img.add_attribute('src', 'images/unionlink.png')
-        img.add_attribute('id', self.link.id)
+        img.add_attribute('id', self.union.id)
 
-        date = self.format_date(self.link.date)
+        date = self.format_date(self.union.marriage.date)
 
         element = HTMLElement('div', str(img) + date)
         element.add_attribute('class', 'unionlink')
@@ -25,4 +25,4 @@ class UnionLinkFormatter():
         element.set_value(date.get_year_as_text())
         return str(element)
 
-FormatterFactory.register('UnionLink', UnionLinkFormatter)
+FormatterFactory.register('Union', UnionFormatter)

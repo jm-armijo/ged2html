@@ -90,7 +90,7 @@ class Person(Node):
         sources += self.death.sources
 
         for union in self.unions:
-            sources += union.sources
+            sources += union.get_sources()
         return sources
 
     def is_single(self):

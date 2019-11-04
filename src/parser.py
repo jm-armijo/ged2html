@@ -11,8 +11,10 @@ from src.tree import Tree
 from src.union import Union
 
 from src.parse_path import ParsePath
+from src.element import Element
 from src.element_name import Name
 from src.element_event import Event
+from src.element_file import File
 
 # pylint: disable=too-few-public-methods
 class Parser():
@@ -49,11 +51,6 @@ class Parser():
 
         self.state = 'IDLE'
         self.current_line = None
-        self.last_person = None
-        self.last_object = None
-        self.last_source = None
-        self.last_key_per_level = dict()
-
         self.path = ParsePath()
 
     def parse(self, file_name):
@@ -67,7 +64,9 @@ class Parser():
         files = list()
         for object in self.objects.values():
             if object.file:
-                files.append(object.file)
+                path = object.file.path
+                if path != '':
+                    files.append(path)
         return files
 
     # Reads the file into a list of lines
@@ -86,14 +85,13 @@ class Parser():
 
     def _parse_lines(self, lines):
         for self.current_line in lines:
-            self.last_key_per_level[self.current_line.level] = self.current_line.attribute
             self.state = self._get_current_state()
             self._parse_current_line()
 
     def _get_current_state(self):
         new_state = 'IDLE'
-        if self.current_line.level == 0 and self.current_line.data in ['INDI', 'FAM', 'OBJE', 'SOUR']:
-            new_state = self.current_line.data
+        if self.current_line.level == 0 and self.current_line.tag in ['INDI', 'FAM', 'OBJE', 'SOUR', 'NOTE']:
+            new_state = self.current_line.tag
         elif self.state == 'INDI' or self.state == 'INDI_DATA':
             if self.current_line.level > 0:
                 new_state = 'INDI_DATA'
@@ -106,6 +104,9 @@ class Parser():
         elif self.state == 'SOUR' or self.state == 'SOUR_DATA':
             if self.current_line.level > 0:
                 new_state = 'SOUR_DATA'
+        elif self.state == 'NOTE' or self.state == 'NOTE_DATA':
+            if self.current_line.level > 0:
+                new_state = 'NOTE_DATA'
 
         return new_state
 
@@ -126,151 +127,208 @@ class Parser():
             self._create_source()
         elif self.state == 'SOUR_DATA':
             self._add_source_data()
+        elif self.state == 'NOTE':
+            self._create_note()
+        elif self.state == 'NOTE_DATA':
+            self._add_note_data()
 
     def _create_person(self):
-        person = self._get_person_or_create(self.current_line.attribute)
+        person = self._get_person_or_create(self.current_line.id)
         self.people[person.id] = person
-        self.last_person = person.id
         self.path.set_current(0, 'INDI', person)
+
+    def _create_union(self):
+        union = Union(self.current_line.id)
+        self.unions.append(union)
+        self.path.set_current(0, 'FAM', union)
+
+    def _create_object(self):
+        object = self._get_object_or_create(self.current_line.id)
+        self.objects[object.id] = object
+        self.path.set_current(0, 'OBJE', object)
+
+    def _create_source(self):
+        source = self._get_source_or_create(self.current_line.id)
+        self.sources[source.id] = source
+        self.path.set_current(0, 'SOUR', source)
+
+    def _create_note(self):
+        note = self._get_note_or_create(self.current_line.id, self.current_line.data)
+        self.notes[note.id] = note
+        self.path.set_current(0, 'NOTE', note)
 
     def _add_person_data(self):
         level = self.current_line.level
-        attribute = self.current_line.attribute
+        tag = self.current_line.tag
         value = self.current_line.data
         child = value
-
-        person = self.people[self.last_person]
 
         parent = self.path.get_object_at(level-1)
         parent_key = self.path.get_key_at(level-1)
         if parent == None:
             return
 
-        if attribute == 'NAME':
+        if tag == 'NAME':
             child = Name(value)
             parent.name = child
-        elif attribute == 'GIVN':
+        elif tag == 'GIVN':
             child = value
             parent.given_name = child
-        elif attribute == 'SURN':
+        elif tag == 'SURN':
             child = value
             parent.last_name = value
-        elif attribute == 'SEX':
+        elif tag == 'SEX':
             child = value
             parent.gender = child
-        elif attribute == 'NATI':
+        elif tag == 'NATI':
             child = Event(value)
             parent.nationality = child
-        elif attribute == 'BIRT':
+        elif tag == 'BIRT':
             child = Event()
             parent.birth = child
-        elif attribute == 'BAPM':
+        elif tag == 'BAPM':
             child = Event()
             parent.baptism = child
-        elif attribute == 'OCCU':
+        elif tag == 'OCCU':
             child = Event(value)
             parent.occupation = child
-        elif attribute == 'DEAT':
+        elif tag == 'DEAT':
             child = Event()
             parent.death = child
-        elif attribute == 'CAUS':
+        elif tag == 'CAUS':
             child = value
             parent.cause = child
-        elif attribute == 'BURI':
+        elif tag == 'BURI':
             child = Event()
             parent.burial = child
-        elif attribute == 'OBJE':
+        elif tag == 'OBJE':
             child = self._get_object_or_create(value)
             parent.add_object(child)
-        elif attribute == 'SOUR':
-            child = self._get_source_or_create(value)
-            parent.add_source(child)
-        elif attribute == 'NOTE':
-            child = self._get_note_or_create(value)
-            parent.add_note(child)
-        elif attribute == '_PRIV':
+        elif tag == '_PRIV':
             child = True
             parent.private = child
-        elif attribute == 'DATE':
-            child = self._create_date(value)
-            if parent_key != 'CHAN':
-                parent.date = child
-        elif attribute == '_TIME':
-            child = value
-            parent.date.time = child
-        elif attribute == 'PLAC':
-            child = value
-            parent.place = child
-        elif attribute in ['CHAN', 'TIME', 'FAMC','FAMS']:
-            child = Event()
         else:
-            child = Event()
-            print("Unknown child tag '{}' for parent tag '{}'".format(attribute, parent_key))
+            child = self._add_common_data()
 
-        self.path.set_current(level, attribute, child)
-
-    def _create_union(self):
-        union = Union(self.current_line.attribute)
-        self.unions.append(union)
+        self.path.set_current(level, tag, child)
 
     def _add_union_data(self):
         level = self.current_line.level
-        attribute = self.current_line.attribute
+        tag = self.current_line.tag
         value = self.current_line.data
 
-        union = self.unions[-1]
+        parent = self.path.get_object_at(level-1)
+        if parent == None:
+            return
 
-        if attribute == 'HUSB':
-            union.set_spouse1(self._get_person_or_create(value))
-        elif attribute == 'WIFE':
-            union.set_spouse2(self._get_person_or_create(value))
-        elif attribute == 'CHIL':
-            union.add_child(self._get_person_or_create(value))
-        elif attribute == 'SOUR':
-            source = self._get_source_or_create(value)
-            union.add_source(source)
-        elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'MARR':
-            date = self._create_date(value)
-            union.set_date(date)
-        elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'MARR':
-            union.set_place(value)
+        if tag == 'HUSB':
+            child = self._get_person_or_create(value)
+            parent.set_spouse1(child)
+        elif tag == 'WIFE':
+            child = self._get_person_or_create(value)
+            parent.set_spouse2(child)
+        elif tag == 'CHIL':
+            child = self._get_person_or_create(value)
+            parent.add_child(child)
+        elif tag == 'MARR':
+            child = Event()
+            parent.marriage = child
+        else:
+            child = self._add_common_data()
 
-    def _create_object(self):
-        object = self._get_object_or_create(self.current_line.attribute)
-        self.objects[object.id] = object
-        self.last_object = object.id
+        self.path.set_current(level, tag, child)
 
     def _add_object_data(self):
         level = self.current_line.level
-        attribute = self.current_line.attribute
+        tag = self.current_line.tag
         value = self.current_line.data
 
-        object = self.objects[self.last_object]
+        parent = self.path.get_object_at(level-1)
 
-        if attribute == 'FILE':
-            object.set_file(value)
-        elif attribute == 'FORM':
-            object.set_format(value)
+        if tag == 'FILE':
+            child = File(value)
+            parent.file = child
+        elif tag == 'FORM':
+            child = value
+            parent.format = child
+        elif tag == 'TITL':
+            child = value
+            parent.title = child
+        else:
+            child = self._add_common_data()
 
-    def _create_source(self):
-        source = self._get_source_or_create(self.current_line.attribute)
-        self.sources[source.id] = source
-        self.last_source = source.id
+        self.path.set_current(level, tag, child)
 
     def _add_source_data(self):
         level = self.current_line.level
-        attribute = self.current_line.attribute
+        tag = self.current_line.tag
         value = self.current_line.data
 
-        source = self.sources[self.last_source]
+        parent = self.path.get_object_at(level-1)
 
-        if attribute == 'OBJE':
-            object = self._get_object_or_create(value)
-            source.add_object(object)
-        elif attribute == 'TITL':
-            source.title = value
-        elif attribute == 'TEXT':
-            source.text = value
+        if tag == 'OBJE':
+            child = self._get_object_or_create(value)
+            parent.add_object(child)
+        elif tag == 'TITL':
+            child = value
+            parent.title = child
+        elif tag == 'TEXT':
+            child = value
+            parent.text = child
+        else:
+            child = self._add_common_data()
+
+        self.path.set_current(level, tag, child)
+
+    def _add_note_data(self):
+        level = self.current_line.level
+        tag = self.current_line.tag
+        value = self.current_line.data
+
+        parent = self.path.get_object_at(level-1)
+
+        if tag == 'CONT':
+            child = value
+            parent.add_value(child)
+        elif tag == 'CONC':
+            child = value
+            parent.concatenate_value(child)
+        else:
+            child = self._add_common_data()
+
+        self.path.set_current(level, tag, child)
+
+    def _add_common_data(self):
+        level = self.current_line.level
+        tag = self.current_line.tag
+        value = self.current_line.data
+
+        parent = self.path.get_object_at(level-1)
+        parent_key = self.path.get_key_at(level-1)
+
+        if tag == 'SOUR':
+            child = self._get_source_or_create(value)
+            parent.add_source(child)
+        elif tag == 'NOTE':
+            child = self._get_note_or_create(value)
+            parent.add_note(child)
+        elif tag == 'DATE':
+            child = self._create_date(value)
+            if parent_key != 'CHAN':
+                parent.date = child
+        elif tag == '_TIME':
+            child = value
+            parent.date.time = child
+        elif tag == 'PLAC':
+            child = value
+            parent.place = child
+        elif tag in ['CHAN', 'TIME', 'FAMC','FAMS']:
+            child = Event()
+        else:
+            child = Element()
+            print("Unknown child tag '{}' for parent tag '{}'".format(tag, parent_key))
+
+        return child
 
     def _get_person_or_create(self, person_id):
         person_id = person_id.replace('@', '')
@@ -291,11 +349,12 @@ class Parser():
 
         return self.sources[source_id]
 
-    def _get_note_or_create(self, note_id):
-        if note_id not in self.notes:
-            self.notes[note_id] = Note(note_id)
+    def _get_note_or_create(self, id, value=''):
+        if id not in self.notes:
+            self.notes[id] = Note(id)
+        self.notes[id].add_value(value)
 
-        return self.notes[note_id]
+        return self.notes[id]
 
     def _create_date(self, raw_date):
         pattern_range = re.compile(r"BET\s(.*)\sAND\s(.*)")

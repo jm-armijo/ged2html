@@ -75,12 +75,12 @@ class UnionExtended(Node):
         union = self._find_next_union(spouse)
         if union is not None:
             self.unions.append(union)
-            self.nodes.append(union.link)
+            self.nodes.append(union)
             self._add_spouse(union.get_other_spouse(spouse))
 
     def _find_next_union(self, spouse):
         for union in spouse.get_unions():
-            if union.link not in self.nodes:
+            if union not in self.nodes:
                 return union
 
         return None
