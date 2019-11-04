@@ -4,10 +4,15 @@ from src.date import Date
 from src.date_range import DateRange
 from src.person import Person
 from src.text_line import TextLine
+from src.note import Note
 from src.object import Object
 from src.source import Source
 from src.tree import Tree
 from src.union import Union
+
+from src.parse_path import ParsePath
+from src.element_name import Name
+from src.element_event import Event
 
 # pylint: disable=too-few-public-methods
 class Parser():
@@ -39,6 +44,7 @@ class Parser():
         self.unions = list()
         self.objects = dict()
         self.sources = dict()
+        self.notes = dict()
         self.tree = None
 
         self.state = 'IDLE'
@@ -47,6 +53,8 @@ class Parser():
         self.last_object = None
         self.last_source = None
         self.last_key_per_level = dict()
+
+        self.path = ParsePath()
 
     def parse(self, file_name):
         text_lines = self._read_file(file_name)
@@ -123,38 +131,83 @@ class Parser():
         person = self._get_person_or_create(self.current_line.attribute)
         self.people[person.id] = person
         self.last_person = person.id
+        self.path.set_current(0, 'INDI', person)
 
     def _add_person_data(self):
         level = self.current_line.level
         attribute = self.current_line.attribute
         value = self.current_line.data
+        child = value
 
         person = self.people[self.last_person]
 
+        parent = self.path.get_object_at(level-1)
+        parent_key = self.path.get_key_at(level-1)
+        if parent == None:
+            return
+
         if attribute == 'NAME':
-            person.set_name(value)
+            child = Name(value)
+            parent.name = child
         elif attribute == 'GIVN':
-            person.set_given_name(value)
+            child = value
+            parent.given_name = child
+        elif attribute == 'SURN':
+            child = value
+            parent.last_name = value
         elif attribute == 'SEX':
-            person.set_sex(value)
+            child = value
+            parent.gender = child
+        elif attribute == 'NATI':
+            child = Event(value)
+            parent.nationality = child
+        elif attribute == 'BIRT':
+            child = Event()
+            parent.birth = child
+        elif attribute == 'BAPM':
+            child = Event()
+            parent.baptism = child
+        elif attribute == 'OCCU':
+            child = Event(value)
+            parent.occupation = child
+        elif attribute == 'DEAT':
+            child = Event()
+            parent.death = child
+        elif attribute == 'CAUS':
+            child = value
+            parent.cause = child
+        elif attribute == 'BURI':
+            child = Event()
+            parent.burial = child
         elif attribute == 'OBJE':
-            object = self._get_object_or_create(value)
-            person.add_object(object)
+            child = self._get_object_or_create(value)
+            parent.add_object(child)
         elif attribute == 'SOUR':
-            source = self._get_source_or_create(value)
-            person.add_source(source)
+            child = self._get_source_or_create(value)
+            parent.add_source(child)
+        elif attribute == 'NOTE':
+            child = self._get_note_or_create(value)
+            parent.add_note(child)
         elif attribute == '_PRIV':
-            person.set_private()
-        elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'BIRT':
-            date = self._create_date(value)
-            person.set_birth_date(date)
-        elif attribute == 'DATE' and self.last_key_per_level[level - 1] == 'DEAT':
-            date = self._create_date(value)
-            person.set_death_date(date)
-        elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'BIRT':
-            person.set_birth_place(value)
-        elif attribute == 'PLAC' and self.last_key_per_level[level - 1] == 'DEAT':
-            person.set_death_place(value)
+            child = True
+            parent.private = child
+        elif attribute == 'DATE':
+            child = self._create_date(value)
+            if parent_key != 'CHAN':
+                parent.date = child
+        elif attribute == '_TIME':
+            child = value
+            parent.date.time = child
+        elif attribute == 'PLAC':
+            child = value
+            parent.place = child
+        elif attribute in ['CHAN', 'TIME', 'FAMC','FAMS']:
+            child = Event()
+        else:
+            child = Event()
+            print("Unknown child tag '{}' for parent tag '{}'".format(attribute, parent_key))
+
+        self.path.set_current(level, attribute, child)
 
     def _create_union(self):
         union = Union(self.current_line.attribute)
@@ -237,6 +290,12 @@ class Parser():
             self.sources[source_id] = Source(source_id)
 
         return self.sources[source_id]
+
+    def _get_note_or_create(self, note_id):
+        if note_id not in self.notes:
+            self.notes[note_id] = Note(note_id)
+
+        return self.notes[note_id]
 
     def _create_date(self, raw_date):
         pattern_range = re.compile(r"BET\s(.*)\sAND\s(.*)")

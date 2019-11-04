@@ -23,7 +23,7 @@ class HTMLProfile(HTMLDocument):
 
         title = self.formatter.format_last_name()
         title += str(separator)
-        title += self.formatter.format_first_name()
+        title += self.formatter.format_given_name()
 
         element = HTMLElement('h1')
         element .set_value(title)

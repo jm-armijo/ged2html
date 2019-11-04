@@ -7,6 +7,7 @@ class Date():
         self.day = ''
         self.month = ''
         self.year = ''
+        self.time = ''
 
     def set_precision(self, precision):
         self.precision = precision

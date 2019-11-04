@@ -4,56 +4,46 @@ import re
 from src.date import Date
 from src.node import Node
 
+from src.element_name import Name
+from src.element_event import Event
+
 # pylint: disable=too-many-instance-attributes
 class Person(Node):
     def __init__(self, person_id=''):
         super().__init__()
 
         self.id = person_id
-        self.first_name = ''
-        self.last_name = ''
+        self.name = Name('')
+        self.birth = Event()
+        self.baptism = Event()
+        self.death = Event()
+        self.burial = Event()
+        self.nationality = Event()
+        self.occupation = Event()
+
         self.gender = 'U'
-        self.birth_date = Date()
-        self.death_date = Date()
-        self.birth_place = ''
-        self.death_place = ''
         self.unions = list()
         self.objects = list()
-        self.sources = list()
+        self.notes = list()
         self.private = False
 
     def can_show_dates(self):
         limit = Date()
         limit.set_year(datetime.datetime.now().year - 99)
 
-        if not self.death_date.is_empty() or (not self.birth_date.is_empty() and self.birth_date < limit):
+        if not self.death.date.is_empty() or (not self.birth.date.is_empty() and self.birth.date < limit):
             return True
         else:
             return False
 
-    def set_name(self, name):
-        name_parts = self._split_name(name)
-        self.set_given_name(name_parts[0])
-        self.last_name = name_parts[1].lower()
+    def set_given_name(self, given_name):
+        self.name.given_name = given_name.lower()
 
-    def set_given_name(self, first_name):
-        if self.first_name == '':
-            self.first_name = first_name.lower()
-
-    def set_sex(self, gender):
-        self.gender = gender
-
-    def set_private(self):
-        self.private = True
+    def set_last_name(self, last_name):
+        self.name.last_name = last_name.lower()
 
     def is_private(self):
         return self.private
-
-    def set_birth_date(self, date):
-        self.birth_date = date
-
-    def set_birth_place(self, place):
-        self.birth_place = place
 
     def set_death_date(self, date):
         self.death_date = date
@@ -71,11 +61,17 @@ class Person(Node):
     def add_object(self, object_id):
         self.objects.append(object_id)
 
-    def add_source(self, source_id):
-        self.sources.append(source_id)
+    def add_note(self, note_id):
+        self.notes.append(note_id)
 
     def get_full_name(self):
-        return "{}, {}".format(self.last_name, self.first_name)
+        return self.name.get_full()
+
+    def get_given_name(self):
+        return self.name.given_name
+
+    def get_last_name(self):
+        return self.name.last_name
 
     def get_spouses(self):
         return [self]
@@ -90,7 +86,9 @@ class Person(Node):
         return self.unions
 
     def get_sources(self):
-        sources = self.sources
+        sources = self.birth.sources
+        sources += self.death.sources
+
         for union in self.unions:
             sources += union.sources
         return sources
@@ -106,9 +104,6 @@ class Person(Node):
         else:
             match = re.search(r'^(.*?)/?\s*$', name)
             return ('', match.group(1).strip())
-
-    def __str__(self):
-        return "[{} {}]".format(self.first_name, self.last_name)
 
     def __contains__(self, item):
         return item == self

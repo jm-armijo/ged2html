@@ -26,7 +26,7 @@ class PersonFormatter():
 
     def format_summary_info(self):
         value = '{}{}{}{}'.format(
-            self.format_first_name(),
+            self.format_given_name(),
             self.format_last_name(),
             self.format_dates_as_summary_range(),
             self.format_gender_for_tree()
@@ -57,16 +57,16 @@ class PersonFormatter():
         element.add_attribute('src', path)
         return str(element)
 
-    def format_first_name(self):
+    def format_given_name(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'first-name')
-        element.set_value(self.person.first_name)
+        element.set_value(self.person.get_given_name())
         return str(element)
 
     def format_last_name(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'last-name')
-        element.set_value(self.person.last_name)
+        element.set_value(self.person.get_last_name())
         return str(element)
 
     def format_gender_for_tree(self):
@@ -86,14 +86,14 @@ class PersonFormatter():
         section = ''
 
         # Date info
-        if not self.person.birth_date.is_empty():
-            date_value = self.format_detailed_date(self.person.birth_date)
+        if not self.person.birth.date.is_empty():
+            date_value = self.format_detailed_date(self.person.birth.date)
             date_entry = self.format_detailed_info_entry('Date', date_value)
             section += date_entry
 
         # Place info
-        if not self.person.birth_place == '':
-            place_value = self.format_place(self.person.birth_place)
+        if not self.person.birth.place == '':
+            place_value = self.format_place(self.person.birth.place)
             place_entry = self.format_detailed_info_entry('Place', place_value)
             section += place_entry
 
@@ -103,14 +103,14 @@ class PersonFormatter():
         section = ''
 
         # Date info
-        if not self.person.death_date.is_empty():
-            date_value = self.format_detailed_date(self.person.death_date)
+        if not self.person.death.date.is_empty():
+            date_value = self.format_detailed_date(self.person.death.date)
             date_entry = self.format_detailed_info_entry('Date', date_value)
             section += str(date_entry)
 
         # Place info
-        if not self.person.death_place == '':
-            place_value = self.format_place(self.person.death_place)
+        if not self.person.death.place == '':
+            place_value = self.format_place(self.person.death.place)
             place_entry = self.format_detailed_info_entry('Place', place_value)
             section += str(place_entry)
 
@@ -188,9 +188,9 @@ class PersonFormatter():
             separator = HTMLElement('div', '&ndash;')
             separator.add_attribute('class', 'separator')
 
-            dates = self.format_title_date(self.person.birth_date)
+            dates = self.format_title_date(self.person.birth.date)
             dates += str(separator)
-            dates += self.format_title_date(self.person.death_date)
+            dates += self.format_title_date(self.person.death.date)
 
         element = HTMLElement('div', dates)
         element.add_attribute('class', 'date-range')
@@ -203,9 +203,9 @@ class PersonFormatter():
             separator = HTMLElement('div', '&ndash;')
             separator.add_attribute('class', 'separator')
 
-            dates = self.format_summary_date(self.person.birth_date)
+            dates = self.format_summary_date(self.person.birth.date)
             dates += str(separator)
-            dates += self.format_summary_date(self.person.death_date)
+            dates += self.format_summary_date(self.person.death.date)
 
         element = HTMLElement('div', dates)
         element.add_attribute('class', 'date-range')
