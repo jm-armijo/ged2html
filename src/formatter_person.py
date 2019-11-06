@@ -113,9 +113,23 @@ class PersonFormatter():
         return self.format_detailed_section('Baptism', section)
 
     def format_detailed_marriages_info(self):
+        marriages = ''
         for union in self.person.unions:
-            section = self.format_detailed_event(union.marriage)
-            return self.format_detailed_section('Marriage', section)
+            marriages += self.format_detailed_marriage_info(union)
+        return marriages
+
+    def format_detailed_marriage_info(self, union):
+        section = self.format_detailed_event(union.marriage)
+        section += self.format_spouse_name(union)
+        return self.format_detailed_section('Marriage', section)
+
+    def format_spouse_name(self, union):
+        header = self.format_detailed_info_header('{}:'.format('Spouse'))
+        spouse = union.get_other_spouse(self.person)
+        name = spouse.name.get_full().title()
+        entry = HTMLElement('div', header + name)
+        entry.add_attribute('class', 'detailed-info-entry')
+        return str(entry)
 
     def format_detailed_death_info(self):
         section = self.format_detailed_event(self.person.death)
