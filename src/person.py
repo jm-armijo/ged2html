@@ -42,6 +42,14 @@ class Person(Node):
     def set_last_name(self, last_name):
         self.name.last_name = last_name.lower()
 
+    def set_gender(self, value):
+        if value == 'M':
+            self.gender = 'male'
+        elif value == 'F':
+            self.gender = 'female'
+        else:
+            self.gender = ''
+
     def is_private(self):
         return self.private
 

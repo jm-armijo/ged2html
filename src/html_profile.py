@@ -37,7 +37,6 @@ class HTMLProfile(HTMLDocument):
     def _get_body_content(self):
         content  = self._get_body_image()
         content += self.formatter.format_detailed_info()
-        content += self.formatter.format_sources()
         return content
 
     def _get_body_image(self):

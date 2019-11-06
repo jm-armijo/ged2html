@@ -37,9 +37,15 @@ class PersonFormatter():
         return str(element)
 
     def format_detailed_info(self):
-        value = '{}{}'.format(
+        value = '{}{}{}{}{}{}{}{}'.format(
             self.format_detailed_birth_info(),
-            self.format_detailed_death_info()
+            self.format_detailed_gender_info(),
+            self.format_detailed_nationality_info(),
+            self.format_detailed_baptism_info(),
+            self.format_detailed_occupation_info(),
+            self.format_detailed_marriages_info(),
+            self.format_detailed_death_info(),
+            self.format_detailed_burial_info()
         )
 
         element = HTMLElement('div', value)
@@ -82,39 +88,86 @@ class PersonFormatter():
     def format_gender_for_profile(self):
         pass
 
+    def format_detailed_nationality_info(self):
+        section = self.format_detailed_event(self.person.nationality)
+        return self.format_detailed_section('Nationality', section)
+
+    def format_detailed_occupation_info(self):
+        section = self.format_detailed_event(self.person.occupation)
+        return self.format_detailed_section('Occupation', section)
+
+    def format_detailed_gender_info(self):
+        section = ''
+        if self.person.gender:
+            entry = HTMLElement('div', self.person.gender)
+            entry.add_attribute('class', 'detailed-info-entry')
+            section += str(entry)
+        return self.format_detailed_section('Gender', section)
+
     def format_detailed_birth_info(self):
+        section = self.format_detailed_event(self.person.birth)
+        return self.format_detailed_section('Birth', section)
+
+    def format_detailed_baptism_info(self):
+        section = self.format_detailed_event(self.person.baptism)
+        return self.format_detailed_section('Baptism', section)
+
+    def format_detailed_marriages_info(self):
+        for union in self.person.unions:
+            section = self.format_detailed_event(union.marriage)
+            return self.format_detailed_section('Marriage', section)
+
+    def format_detailed_death_info(self):
+        section = self.format_detailed_event(self.person.death)
+        return self.format_detailed_section('Death', section)
+
+    def format_detailed_burial_info(self):
+        section = self.format_detailed_event(self.person.burial)
+        return self.format_detailed_section('Burial', section)
+
+    def format_detailed_event(self, event):
         section = ''
 
+        if event.type:
+            entry = HTMLElement('div', event.type)
+            entry.add_attribute('class', 'detailed-info-entry')
+            section += str(entry)
+
         # Date info
-        if not self.person.birth.date.is_empty():
-            date_value = self.format_detailed_date(self.person.birth.date)
+        if not event.date.is_empty():
+            date_value = self.format_detailed_date(event.date)
             date_entry = self.format_detailed_info_entry('Date', date_value)
             section += date_entry
 
         # Place info
-        if not self.person.birth.place == '':
-            place_value = self.format_place(self.person.birth.place)
+        if event.place:
+            place_value = self.format_place(event.place)
             place_entry = self.format_detailed_info_entry('Place', place_value)
             section += place_entry
 
-        return self.format_detailed_section('Birth', section)
+        sources = self.format_sources(event)
+        if sources:
+            sources_entry = self.format_detailed_info_entry('Sources', sources)
+            section += sources_entry
 
-    def format_detailed_death_info(self):
-        section = ''
+        return section
 
-        # Date info
-        if not self.person.death.date.is_empty():
-            date_value = self.format_detailed_date(self.person.death.date)
-            date_entry = self.format_detailed_info_entry('Date', date_value)
-            section += str(date_entry)
+    def format_sources(self, event):
+        sources = list()
+        for source in event.sources:
+            sources += self.format_source(source)
 
-        # Place info
-        if not self.person.death.place == '':
-            place_value = self.format_place(self.person.death.place)
-            place_entry = self.format_detailed_info_entry('Place', place_value)
-            section += str(place_entry)
+        return ', '.join(sources)
 
-        return self.format_detailed_section('Death', section)
+    def format_source(self, source):
+        formatted_source = list()
+        formatter = FormatterFactory.make(source)
+        source = formatter.format()
+
+        if source != '':
+            formatted_source.append(source)
+
+        return formatted_source
 
     def format_detailed_section(self, title, content):
         section = ''
@@ -125,7 +178,7 @@ class PersonFormatter():
 
             section_element = HTMLElement('div', str(title) + content)
             section_element.add_attribute('class', 'detailed-info-section')
-        
+
             section = str(section_element)
 
         return section
@@ -169,17 +222,6 @@ class PersonFormatter():
         element.add_attribute('class', 'place')
         element.add_attribute('href', url)
         element.add_attribute('target', '_blank')
-        return str(element)
-
-    def format_sources(self):
-        sources = ''
-        for source in self.person.get_sources():
-            formatter = FormatterFactory.make(source)
-            sources += formatter.format()
-
-        element = HTMLElement('div', sources)
-        element.add_attribute('class', 'sources')
-
         return str(element)
 
     def format_dates_as_title_range(self):

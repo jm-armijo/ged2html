@@ -179,7 +179,7 @@ class Parser():
             parent.last_name = value
         elif tag == 'SEX':
             child = value
-            parent.gender = child
+            parent.set_gender(child)
         elif tag == 'NATI':
             child = Event(value)
             parent.nationality = child

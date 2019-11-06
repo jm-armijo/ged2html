@@ -10,7 +10,6 @@ class Union(Node):
         self.spouse1 = Person()
         self.spouse2 = Person()
         self.marriage = Event()
-        self.sources = list()
 
     def set_spouse1(self, spouse):
         spouse.add_union(self)

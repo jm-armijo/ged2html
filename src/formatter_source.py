@@ -6,49 +6,32 @@ class SourceFormatter():
         self.source = source
 
     def format(self):
-        title = self._source_title_to_html()
-        content = self._source_content_to_html()
+        separator = HTMLElement('div', ',')
+        separator.add_attribute('class', 'source-separator')
+        separator = str(separator)
 
-        element = HTMLElement('div')
-        element.add_attribute('class', 'source')
-        element.set_value(title + content)
+        objects = self.source.objects
+        formatted_objects = list()
 
-        return str(element)
+        for i in range(len(objects)):
+            object = objects[i]
+            title = self.get_title(i, len(objects))
+            formatted_objects.append(self.format_object(object, title))
 
-    def _source_title_to_html(self):
-        title = HTMLElement('div')
-        title.add_attribute('class', 'table-title')
-        title.add_attribute('id', self.source.id)
-        title.set_value(self.source.title)
+        return separator.join(formatted_objects)
 
-        element = HTMLElement('div')
-        element.add_attribute('class', 'table-header')
-        element.set_value(str(title))
+    def get_title(self, index, length):
+        if length == 1:
+            return "{}".format(self.source.title)
+        else:
+            return "{} ({}/{})".format(self.source.title, index+1, length)
 
-        return str(element)
-
-    def _source_content_to_html(self):
-        html = ''
-        for object in self.source.objects:
-            html += self._object_to_html(object)
-
-        element = HTMLElement('div')
-        element.add_attribute('class', 'source-content')
-        element.set_value(html)
-
-        return str(element)
-
-    def _object_to_html(self, object):
+    def format_object(self, object, title):
         path_to_image = "../{}".format(object.file.path)
-
-        content = HTMLElement('img')
-        content.add_attribute('class', 'source')
-        content.add_attribute('src', path_to_image)
-
         link = HTMLElement('a')
         link.add_attribute('href', path_to_image)
         link.add_attribute('target', '_blank')
-        link.set_value(str(content))
+        link.set_value(title)
 
         return str(link)
 
