@@ -11,7 +11,9 @@ class UnionFormatter():
         img.add_attribute('src', 'images/unionlink.png')
         img.add_attribute('id', self.union.id)
 
-        date = self.format_date(self.union.marriage.date)
+        date = ''
+        if self.union.spouse1.is_dead() and self.union.spouse2.is_dead():
+            date = self.format_date(self.union.marriage.date)
 
         element = HTMLElement('div', str(img) + date)
         element.add_attribute('class', 'unionlink')

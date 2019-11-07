@@ -27,11 +27,15 @@ class Person(Node):
         self.notes = list()
         self.private = False
 
-    def can_show_dates(self):
+    def is_dead(self):
         limit = Date()
         limit.set_year(datetime.datetime.now().year - 99)
 
-        if not self.death.date.is_empty() or (not self.birth.date.is_empty() and self.birth.date < limit):
+        if not self.death.date.is_empty():
+            return True
+        elif self.birth.date.is_empty():
+            return True
+        elif self.birth.date < limit:
             return True
         else:
             return False

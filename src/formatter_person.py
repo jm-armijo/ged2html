@@ -119,8 +119,8 @@ class PersonFormatter():
         return marriages
 
     def format_detailed_marriage_info(self, union):
-        section = self.format_detailed_event(union.marriage)
-        section += self.format_spouse_name(union)
+        section = self.format_spouse_name(union)
+        section += self.format_detailed_event(union.marriage)
         return self.format_detailed_section('Marriage', section)
 
     def format_spouse_name(self, union):
@@ -151,7 +151,7 @@ class PersonFormatter():
             section += self.format_detailed_info_value(event.type)
 
         # Date info
-        if not event.date.is_empty():
+        if not event.date.is_empty() and self.person.is_dead():
             date_value = self.format_detailed_date(event.date)
             date_entry = self.format_detailed_info_key_value('Date', date_value)
             section += date_entry
@@ -169,8 +169,8 @@ class PersonFormatter():
             section += notes
 
         # Sources
-        sources = self.format_sources(event)
-        if sources:
+        if event.sources and self.person.is_dead():
+            sources = self.format_sources(event)
             sources_entry = self.format_detailed_info_key_value('Sources', sources)
             section += sources_entry
 
@@ -262,7 +262,7 @@ class PersonFormatter():
 
     def format_dates_as_title_range(self):
         dates = ''
-        if self.person.can_show_dates():
+        if self.person.is_dead():
             separator = HTMLElement('div', '&ndash;')
             separator.add_attribute('class', 'separator')
 
@@ -277,7 +277,7 @@ class PersonFormatter():
 
     def format_dates_as_summary_range(self):
         dates = ''
-        if self.person.can_show_dates():
+        if self.person.is_dead():
             separator = HTMLElement('div', '&ndash;')
             separator.add_attribute('class', 'separator')
 
