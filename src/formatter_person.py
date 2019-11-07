@@ -37,7 +37,7 @@ class PersonFormatter():
         return str(element)
 
     def format_detailed_info(self):
-        value = '{}{}{}{}{}{}{}{}'.format(
+        value = '{}{}{}{}{}{}{}{}{}'.format(
             self.format_detailed_birth_info(),
             self.format_detailed_gender_info(),
             self.format_detailed_nationality_info(),
@@ -45,7 +45,8 @@ class PersonFormatter():
             self.format_detailed_occupation_info(),
             self.format_detailed_marriages_info(),
             self.format_detailed_death_info(),
-            self.format_detailed_burial_info()
+            self.format_detailed_burial_info(),
+            self.format_detailed_general_info()
         )
 
         element = HTMLElement('div', value)
@@ -135,6 +136,13 @@ class PersonFormatter():
     def format_detailed_burial_info(self):
         section = self.format_detailed_event(self.person.burial)
         return self.format_detailed_section('Burial', section)
+
+    def format_detailed_general_info(self):
+        value = ''
+        if self.person.notes:
+            notes = self.format_notes(self.person.notes)
+            value += self.format_detailed_info_value(notes)
+        return self.format_detailed_section('General', value)
 
     def format_detailed_event(self, event):
         section = ''
