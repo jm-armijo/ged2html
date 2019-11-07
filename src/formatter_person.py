@@ -99,10 +99,9 @@ class PersonFormatter():
     def format_detailed_gender_info(self):
         section = ''
         if self.person.gender:
-            entry = HTMLElement('div', self.person.gender)
-            entry.add_attribute('class', 'detailed-info-entry')
-            section += str(entry)
-        return self.format_detailed_section('Gender', section)
+            gender = self.format_detailed_info_value(self.person.gender.title())
+            section = self.format_detailed_section('Gender', gender)
+        return section
 
     def format_detailed_birth_info(self):
         section = self.format_detailed_event(self.person.birth)
@@ -124,12 +123,10 @@ class PersonFormatter():
         return self.format_detailed_section('Marriage', section)
 
     def format_spouse_name(self, union):
-        header = self.format_detailed_info_header('{}:'.format('Spouse'))
         spouse = union.get_other_spouse(self.person)
         name = spouse.name.get_full().title()
-        entry = HTMLElement('div', header + name)
-        entry.add_attribute('class', 'detailed-info-entry')
-        return str(entry)
+
+        return self.format_detailed_info_key_value('Spouse', name)
 
     def format_detailed_death_info(self):
         section = self.format_detailed_event(self.person.death)
@@ -143,28 +140,43 @@ class PersonFormatter():
         section = ''
 
         if event.type:
-            entry = HTMLElement('div', event.type)
-            entry.add_attribute('class', 'detailed-info-entry')
-            section += str(entry)
+            section += self.format_detailed_info_value(event.type)
 
         # Date info
         if not event.date.is_empty():
             date_value = self.format_detailed_date(event.date)
-            date_entry = self.format_detailed_info_entry('Date', date_value)
+            date_entry = self.format_detailed_info_key_value('Date', date_value)
             section += date_entry
 
         # Place info
         if event.place:
             place_value = self.format_place(event.place)
-            place_entry = self.format_detailed_info_entry('Place', place_value)
+            place_entry = self.format_detailed_info_key_value('Place', place_value)
             section += place_entry
 
+        # Notes
+        if event.notes:
+            notes = self.format_notes(event.notes)
+            notes = self.format_detailed_info_value(notes)
+            section += notes
+
+        # Sources
         sources = self.format_sources(event)
         if sources:
-            sources_entry = self.format_detailed_info_entry('Sources', sources)
+            sources_entry = self.format_detailed_info_key_value('Sources', sources)
             section += sources_entry
 
         return section
+
+    def format_notes(self, notes):
+        formatted_notes = ''
+        for note in notes:
+            formatted_notes += self.format_note(note)
+        return formatted_notes
+
+    def format_note(self, note):
+        value = '</br>'.join(note.value)
+        return self.format_detailed_info_value(value)
 
     def format_sources(self, event):
         sources = list()
@@ -197,12 +209,14 @@ class PersonFormatter():
 
         return section
 
-    def format_detailed_info_entry(self, header, value):
-        header = self.format_detailed_info_header('{}:'.format(header))
-
-        entry = HTMLElement('div', header + value)
+    def format_detailed_info_value(self, value):
+        entry = HTMLElement('div', value)
         entry.add_attribute('class', 'detailed-info-entry')
         return str(entry)
+
+    def format_detailed_info_key_value(self, header, value):
+        header = self.format_detailed_info_header('{}:'.format(header))
+        return self.format_detailed_info_value(header + value)
 
     def format_detailed_info_header(self, header):
         header = HTMLElement('div', header)
