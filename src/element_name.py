@@ -11,6 +11,8 @@ class Name(Element):
         self.last_name = parts[1].lower()
 
     def get_full(self):
+        if self.last_name == '' and self.given_name == '':
+            return ''
         return "{}, {}".format(self.last_name, self.given_name)
 
     def _split_name(self):

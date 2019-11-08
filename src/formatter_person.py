@@ -105,11 +105,17 @@ class PersonFormatter():
         return section
 
     def format_detailed_birth_info(self):
-        section = self.format_detailed_event(self.person.birth)
+        if self.person.is_dead():
+            section = self.format_detailed_event(self.person.birth)
+        else:
+            section = self.format_detailed_private_event(self.person.birth)
         return self.format_detailed_section('Birth', section)
 
     def format_detailed_baptism_info(self):
-        section = self.format_detailed_event(self.person.baptism)
+        if self.person.is_dead():
+            section = self.format_detailed_event(self.person.baptism)
+        else:
+            section = self.format_detailed_private_event(self.person.baptism)
         return self.format_detailed_section('Baptism', section)
 
     def format_detailed_marriages_info(self):
@@ -120,14 +126,19 @@ class PersonFormatter():
 
     def format_detailed_marriage_info(self, union):
         section = self.format_spouse_name(union)
-        section += self.format_detailed_event(union.marriage)
+        if union.spouse1.is_dead() and union.spouse2.is_dead():
+            section += self.format_detailed_event(union.marriage)
+        else:
+            section += self.format_detailed_private_event(union.marriage)
         return self.format_detailed_section('Marriage', section)
 
     def format_spouse_name(self, union):
         spouse = union.get_other_spouse(self.person)
         name = spouse.name.get_full().title()
+        element = HTMLElement('a', name)
+        element.add_attribute('href', '../{}'.format(spouse.id))
 
-        return self.format_detailed_info_key_value('Spouse', name)
+        return self.format_detailed_info_key_value('Spouse', str(element))
 
     def format_detailed_death_info(self):
         section = self.format_detailed_event(self.person.death)
@@ -147,34 +158,56 @@ class PersonFormatter():
     def format_detailed_event(self, event):
         section = ''
 
-        if event.type:
-            section += self.format_detailed_info_value(event.type)
-
-        # Date info
-        if not event.date.is_empty() and self.person.is_dead():
-            date_value = self.format_detailed_date(event.date)
-            date_entry = self.format_detailed_info_key_value('Date', date_value)
-            section += date_entry
-
-        # Place info
-        if event.place:
-            place_value = self.format_place(event.place)
-            place_entry = self.format_detailed_info_key_value('Place', place_value)
-            section += place_entry
-
-        # Notes
-        if event.notes:
-            notes = self.format_notes(event.notes)
-            notes = self.format_detailed_info_value(notes)
-            section += notes
-
-        # Sources
-        if event.sources and self.person.is_dead():
-            sources = self.format_sources(event)
-            sources_entry = self.format_detailed_info_key_value('Sources', sources)
-            section += sources_entry
+        section += self.format_event_type(event.type)
+        section += self.format_event_date(event.date)
+        section += self.format_event_place(event.place)
+        section += self.format_event_notes(event.notes)
+        section += self.format_event_sources(event.sources)
 
         return section
+
+    def format_detailed_private_event(self, event):
+        section = ''
+
+        section += self.format_event_type(event.type)
+        section += self.format_event_place(event.place)
+        section += self.format_event_notes(event.notes)
+
+        return section
+
+    def format_event_type(self, type):
+        section  = ''
+        if type:
+            section = self.format_detailed_info_value(type)
+        return section
+
+    def format_event_date(self, date):
+        date_entry = ''
+        if not date.is_empty():
+            date_value = self.format_detailed_date(date)
+            date_entry = self.format_detailed_info_key_value('Date', date_value)
+        return date_entry
+
+    def format_event_place(self, place):
+        place_entry = ''
+        if place:
+            place_value = self.format_place(place)
+            place_entry = self.format_detailed_info_key_value('Place', place_value)
+        return place_entry
+
+    def format_event_notes(self, notes):
+        notes = ''
+        if notes:
+            notes = self.format_notes(notes)
+            notes = self.format_detailed_info_value(notes)
+        return notes
+
+    def format_event_sources(self, sources):
+        sources_entry = ''
+        if sources:
+            sources = self.format_sources(sources)
+            sources_entry = self.format_detailed_info_key_value('Sources', sources)
+        return sources_entry
 
     def format_notes(self, notes):
         formatted_notes = ''
@@ -186,9 +219,9 @@ class PersonFormatter():
         value = '</br>'.join(note.value)
         return self.format_detailed_info_value(value)
 
-    def format_sources(self, event):
+    def format_sources(self, sources):
         sources = list()
-        for source in event.sources:
+        for source in sources:
             sources += self.format_source(source)
 
         return ', '.join(sources)
