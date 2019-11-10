@@ -173,10 +173,10 @@ class Parser():
             parent.name = child
         elif tag == 'GIVN':
             child = value
-            parent.given_name = child
+            parent.set_given_name(child)
         elif tag == 'SURN':
             child = value
-            parent.last_name = value
+            parent.set_last_name(value)
         elif tag == 'SEX':
             child = value
             parent.set_gender(child)

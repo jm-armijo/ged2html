@@ -41,10 +41,10 @@ class Person(Node):
             return False
 
     def set_given_name(self, given_name):
-        self.name.given_name = given_name.lower()
+        self.name.set_given_name(given_name)
 
     def set_last_name(self, last_name):
-        self.name.last_name = last_name.lower()
+        self.name.set_last_name(last_name)
 
     def set_gender(self, value):
         if value == 'M':

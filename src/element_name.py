@@ -7,8 +7,14 @@ class Name(Element):
 
         self.name = name
         parts = self._split_name()
-        self.given_name = parts[0].lower()
-        self.last_name = parts[1].lower()
+        self.set_given_name(parts[0])
+        self.set_last_name(parts[1])
+
+    def set_given_name(self, given_name):
+        self.given_name = given_name.lower().replace(',', '')
+
+    def set_last_name(self, last_name):
+        self.last_name = last_name.lower().replace(',', '')
 
     def get_full(self):
         if self.last_name == '' and self.given_name == '':
