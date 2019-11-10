@@ -220,11 +220,11 @@ class PersonFormatter():
         return self.format_detailed_info_value(value)
 
     def format_sources(self, sources):
-        sources = list()
+        formatted_sources = list()
         for source in sources:
-            sources += self.format_source(source)
+            formatted_sources += self.format_source(source)
 
-        return ', '.join(sources)
+        return ', '.join(formatted_sources)
 
     def format_source(self, source):
         formatted_source = list()

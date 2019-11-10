@@ -22,7 +22,7 @@ class TextLine():
             self.tag = match.group(2)
             self.data = match.group(3)
         else:
-            raise "Cannot process line {}".format(line)
+            raise Exception("Cannot process line '{}'".format(line))
 
         if self.data is None:
             self.data = ''

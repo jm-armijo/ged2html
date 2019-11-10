@@ -1,8 +1,7 @@
 body {
     background-color: SteelBlue;
     font-size: x-small;
-    font-family:'Bookman Old Style';
-    font-variant: small-caps;
+    font-family:'Helvetica';
     text-align: center;
     color: Black;
 
@@ -15,6 +14,8 @@ body {
 }
 
 div.title {
+    font-family:'Bookman Old Style';
+    font-variant: small-caps;
     background-color: White;
     border-bottom: 2px solid Black;
     border-top: 20px solid SteelBlue;
