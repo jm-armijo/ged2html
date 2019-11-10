@@ -153,6 +153,7 @@ class PersonFormatter():
         if self.person.notes:
             notes = self.format_notes(self.person.notes)
             value += self.format_detailed_info_value(notes)
+            value += self.format_event_sources(self.person.sources)
         return self.format_detailed_section('General', value)
 
     def format_detailed_event(self, event):

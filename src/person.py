@@ -23,6 +23,7 @@ class Person(Node):
 
         self.gender = 'U'
         self.unions = list()
+        self.sources = list()
         self.objects = list()
         self.notes = list()
         self.private = False
@@ -69,6 +70,9 @@ class Person(Node):
     def add_union(self, union):
         self.unions.append(union)
         self.children += union.get_children()
+
+    def add_source(self, source_id):
+        self.sources.append(source_id)
 
     def add_object(self, object_id):
         self.objects.append(object_id)
