@@ -9,6 +9,12 @@ class Date():
         self.year = ''
         self.time = ''
 
+    def get_year(self):
+        if self.year == '':
+            return '3000'
+        else:
+            return self.year
+
     def set_precision(self, precision):
         self.precision = precision
 

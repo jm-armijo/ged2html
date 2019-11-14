@@ -117,7 +117,7 @@ class Tree():
         return nodes
 
     def _sort_nodes(self):
-        priority_nodes = list()
-        for level in reversed(self.nodes):
-            level.sort_nodes_giving_priority(priority_nodes)
-            priority_nodes = level.get_children()
+        priority_nodes = OrderedSet()
+        for level in self.nodes:
+            level.sort_nodes_giving_priority(priority_nodes.to_list())
+            priority_nodes = OrderedSet(level.get_parents())

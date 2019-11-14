@@ -68,6 +68,9 @@ class Union(Node):
     def is_private(self):
         return self.spouse1.is_private() and self.spouse2.is_private()
 
+    def __str__(self):
+        return 'oo ({})'.format(self.id)
+
     def __contains__(self, item):
         if item in self.spouse1:
             return True

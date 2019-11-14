@@ -10,6 +10,9 @@ class DateRange():
     def is_empty(self):
         return self.start.is_empty() or self.end.is_empty()
 
+    def get_year(self):
+        return min(self.start.year, self.end.year)
+
     def to_html(self):
         element = HTMLElement('div')
         element.add_attribute('class', 'person-date')

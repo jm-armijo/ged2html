@@ -14,6 +14,12 @@ class UnionExtended(Node):
     def get_unions(self):
         return self.unions
 
+    def get_birth_year(self):
+        years = list()
+        for spouse in self.get_spouses():
+            years.append(spouse.birth.date.get_year())
+        return min(years)
+
     def get_spouses(self):
         people = list()
         for union in self.unions:
@@ -86,7 +92,7 @@ class UnionExtended(Node):
         return None
 
     def __str__(self):
-        return ' oo '.join(map(str, self.nodes))
+        return ' '.join(map(str, self.nodes))
 
     def __contains__(self, item):
         for union in self.unions:

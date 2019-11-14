@@ -41,6 +41,9 @@ class Person(Node):
         else:
             return False
 
+    def get_birth_year(self):
+        return self.birth.date.get_year()
+
     def set_given_name(self, given_name):
         self.name.set_given_name(given_name)
 
@@ -120,6 +123,9 @@ class Person(Node):
         else:
             match = re.search(r'^(.*?)/?\s*$', name)
             return ('', match.group(1).strip())
+
+    def __str__(self):
+        return self.name.get_full()
 
     def __contains__(self, item):
         return item == self
