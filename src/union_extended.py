@@ -10,6 +10,7 @@ class UnionExtended(Node):
         self.nodes = list()
         unions = self._extend_nodes(unions)
         self._arrange_unions(unions)
+        self._sort_unions()
 
     def get_unions(self):
         return self.unions
@@ -63,6 +64,21 @@ class UnionExtended(Node):
     def _arrange_unions(self, unions):
         spouse = self._find_spouse_with_one_union(unions)
         self._add_spouse(spouse)
+
+    def _sort_unions(self):
+        dates = self._get_union_dates()
+        if dates and dates[0] > dates[-1]:
+            self.nodes.reverse()
+            self.unions.reverse()
+
+    def _get_union_dates(self):
+        dates = list()
+        for union in self.unions:
+            year = union.marriage.date.get_year()
+            if int(year) < 3000:
+                dates.append(year)
+
+        return dates
 
     def _find_spouse_with_one_union(self, unions):
         for union in unions:
