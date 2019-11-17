@@ -160,9 +160,9 @@ class PersonFormatter():
         section = ''
 
         section += self.format_event_type(event.type)
+        section += self.format_event_notes(event.notes)
         section += self.format_event_date(event.date)
         section += self.format_event_place(event.place)
-        section += self.format_event_notes(event.notes)
         section += self.format_event_sources(event.sources)
 
         return section
@@ -197,11 +197,11 @@ class PersonFormatter():
         return place_entry
 
     def format_event_notes(self, notes):
-        notes = ''
+        formatted_notes = ''
         if notes:
-            notes = self.format_notes(notes)
-            notes = self.format_detailed_info_value(notes)
-        return notes
+            formatted_notes = self.format_notes(notes)
+            formatted_notes = self.format_detailed_info_value(formatted_notes)
+        return formatted_notes
 
     def format_event_sources(self, sources):
         sources_entry = ''
