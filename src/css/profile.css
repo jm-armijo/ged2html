@@ -82,11 +82,12 @@ div.detailed-info-title {
 div.detailed-info-entry {
     display: block;
     font-size: 12px;
+    margin-bottom: 5px;
 }
 
 div.detailed-info-header {
     display: inline-block;
-    margin: 0px 5px 5px 0px;
+    margin: 0px 5px 0px 0px;
 }
 
 div.date {
