@@ -195,9 +195,9 @@ class Parser():
         elif tag == 'DEAT':
             child = Event()
             parent.death = child
-        elif tag == 'CAUS':
+        elif tag == 'TYPE':
             child = value
-            parent.cause = child
+            parent.type = child
         elif tag == 'BURI':
             child = Event()
             parent.burial = child
