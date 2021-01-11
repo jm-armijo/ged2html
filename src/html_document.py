@@ -74,6 +74,10 @@ class HTMLDocument():
         return str(body)
 
     def _get_body_title(self):
+        bar = HTMLElement('div')
+        bar.add_attribute('class', 'background-bar')
+        bar.set_value("&nbsp;")
+
         title_content = self._get_body_title1()
         title_content += self._get_body_title2()
 
@@ -81,7 +85,7 @@ class HTMLDocument():
         title.add_attribute('class', 'title')
         title.set_value(title_content)
 
-        return str(title)
+        return str(bar) + str(title)
 
     def _get_body_content_wrapper(self):
         content = self._get_body_content()

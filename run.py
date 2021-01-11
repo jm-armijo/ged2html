@@ -67,6 +67,7 @@ def create_output_directory():
     copyfile('src/images/unionlink.png', 'html/images/unionlink.png')
     copyfile('src/images/sex-M.png', 'html/images/sex-M.png')
     copyfile('src/images/sex-F.png', 'html/images/sex-F.png')
+    copyfile('src/images/background.jpg', 'html/images/background.jpg')
     copyfile('src/images/icon.png', 'html/images/icon.png')
 
 def are_args_valid():
