@@ -18,7 +18,10 @@ class HTMLTree(HTMLDocument):
     def _get_head_scripts(self):
         script = HTMLElement('script')
         script.add_attribute('src', 'scripts/leader-line.min.js')
-        return str(script)
+
+        pagemap = HTMLElement('script')
+        pagemap.add_attribute('src', 'scripts/pagemap.min.js')
+        return str(script) + str(pagemap)
 
     ######## STRUCTURE OF HTML BODY ############
     #
@@ -55,6 +58,11 @@ class HTMLTree(HTMLDocument):
             content += self._get_tree_level(level)
         return content
 
+    def _get_minimap(self):
+        minimap = HTMLElement('canvas')
+        minimap.add_attribute('id', 'map')
+        return str(minimap)
+
     def _get_tree_level(self, level):
         nodes = ''
         for node in level.nodes:
@@ -77,10 +85,16 @@ class HTMLTree(HTMLDocument):
         return str(element)
 
     def _get_body_end_script(self):
+        maptag = self._get_minimap()
+
         event_listener = self._get_event_listener_script()
         script = HTMLElement('script')
         script.set_value(event_listener)
-        return str(script)
+
+        minimap = HTMLElement('script')
+        minimap.add_attribute('src', 'scripts/minimap.js')
+
+        return str(maptag) + str(minimap) + str(script)
 
     def _get_event_listener_script(self):
         edges_script = ''

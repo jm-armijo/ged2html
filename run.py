@@ -63,6 +63,8 @@ def create_output_directory():
     copyfile('src/css/tree.css', 'html/css/tree.css')
     copyfile('src/css/profile.css', 'html/css/profile.css')
     copyfile('src/scripts/leader-line.min.js', 'html/scripts/leader-line.min.js')
+    copyfile('src/scripts/pagemap.min.js', 'html/scripts/pagemap.min.js')
+    copyfile('src/scripts/minimap.js', 'html/scripts/minimap.js')
     copyfile('src/images/face.png', 'html/images/face.png')
     copyfile('src/images/unionlink.png', 'html/images/unionlink.png')
     copyfile('src/images/sex-M.png', 'html/images/sex-M.png')

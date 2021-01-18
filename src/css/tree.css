@@ -1,3 +1,12 @@
+#map {
+    position: fixed;
+    top: 140px;
+    left: 20px;
+    width: 200px;
+    height: 100%;
+    z-index: 100;
+}
+
 div.content {
     width: 100%;
     margin: 150px 0px 0px 0px;
