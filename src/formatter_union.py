@@ -12,7 +12,7 @@ class UnionFormatter():
         img.add_attribute('id', self.union.id)
 
         date = ''
-        if self.union.spouse1.is_dead() and self.union.spouse2.is_dead():
+        if self.union.spouse1.is_dead() and self.union.spouse2.is_dead() and not self.union.marriage.date.is_empty():
             date = self.format_date(self.union.marriage.date)
 
         element = HTMLElement('div', str(img) + date)

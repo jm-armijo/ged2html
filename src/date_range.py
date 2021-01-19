@@ -13,13 +13,6 @@ class DateRange():
     def get_year(self):
         return min(self.start.year, self.end.year)
 
-    def to_html(self):
-        element = HTMLElement('div')
-        element.add_attribute('class', 'person-date')
-        element.add_attribute('title', self.get_as_yyyymmdd())
-        element.set_value(self.get_year_as_text())
-        return str(element)
-
     def get_as_yyyymmdd(self):
         start = self.start.get_as_yyyymmdd()
         end = self.end.get_as_yyyymmdd()

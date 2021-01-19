@@ -35,6 +35,13 @@ div.unionlink {
     display: inline-block;
 }
 
+div.person-date {
+    border-radius: 10px;
+    border: 2px solid black;
+    background-color: White;
+    padding: 5px;
+}
+
 img.unionlink-image {
     margin-left: auto;
     margin-right: auto;
