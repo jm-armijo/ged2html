@@ -65,7 +65,7 @@ class HTMLDocument():
     #################################
 
     def _get_body(self):
-        body_content = self._get_body_title()
+        body_content = self._get_top_bar()
         body_content += self._get_body_content_wrapper()
         body_content += self._get_body_end_script()
 
@@ -73,19 +73,49 @@ class HTMLDocument():
         body.set_value(body_content)
         return str(body)
 
-    def _get_body_title(self):
+    def _get_top_bar(self):
+        padding_bar = self._get_padding_bar()
+        home_logo = self._get_home_logo()
+        title = self._get_body_title()
+
+        bar = HTMLElement('div')
+        bar.add_attribute('class', 'top-bar')
+        bar.set_value(padding_bar + home_logo + title)
+
+        return str(bar)
+
+    def _get_padding_bar(self):
         bar = HTMLElement('div')
         bar.add_attribute('class', 'background-bar')
         bar.set_value("&nbsp;")
 
-        title_content = self._get_body_title1()
+        return str(bar)
+
+    def _get_home_logo(self):
+        home_img = HTMLElement('img')
+        home_img.add_attribute('class', 'home-logo')
+        home_img.add_attribute('src', "{}images/tree.png".format(self.path_to_images))
+
+        home_link = HTMLElement('a')
+        home_link.add_attribute('class', 'home-logo')
+        home_link.add_attribute('href', "/family")
+        home_link.set_value(str(home_img))
+
+        home_div = HTMLElement('div')
+        home_div.add_attribute('class', 'home-logo')
+        home_div.set_value(str(home_link))
+
+        return str(home_div)
+
+    def _get_body_title(self):
+        title_content  = self._get_body_title1()
         title_content += self._get_body_title2()
 
         title = HTMLElement('div')
         title.add_attribute('class', 'title')
         title.set_value(title_content)
 
-        return str(bar) + str(title)
+        return str(title)
 
     def _get_body_content_wrapper(self):
         content = self._get_body_content()

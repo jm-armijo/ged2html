@@ -40,7 +40,7 @@ div.photo {
 }
 
 img.photo {
-    border: 1px solid Black;
+    border: 1px solid #0f3202;
     border-radius: 10px;
     width: 100%;
     height: auto;
@@ -54,8 +54,8 @@ div.person-info {
     vertical-align: top;
     display: inline-block;
     margin: 0px 0px 0px 50px;
-	padding: 10px;
-    border: 1px solid black;
+    padding: 10px;
+    border: 1px solid #0f3202;
     background-color: White;
     border-radius: 10px;
 
@@ -109,9 +109,9 @@ div.source {
 div.table-header {
     display: inline-block;
     background-color: White;
-    border: 1px solid Black;
+    border: 1px solid #0f3202;
     padding: 10px 0px;
-	width: 100%;
+    width: 100%;
 }
 
 div.table-title {
@@ -123,7 +123,7 @@ div.table-title {
 }
 
 div.source-content {
-    border: 1px solid Black;
+    border: 1px solid #0f3202;
     padding: 0px 10px;
 }
 

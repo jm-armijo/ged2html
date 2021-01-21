@@ -37,7 +37,7 @@ div.unionlink {
 
 div.person-date {
     border-radius: 10px;
-    border: 2px solid black;
+    border: 1px solid #0f3202;
     background-color: White;
     padding: 5px;
 }
@@ -67,7 +67,7 @@ div.photo {
 
 img.photo {
     border-radius: 10px;
-    border: 1px solid Black;
+    border: 1px solid #0f3202;
     width: 110px;
 }
 
@@ -99,7 +99,7 @@ div.last-name {
 div.person-info {
     text-align: left;
     border-radius: 10px;
-    border: 2px solid black;
+    border: 1px solid #0f3202;
     background-color: White;
     padding: 5px;
     position: relative;
