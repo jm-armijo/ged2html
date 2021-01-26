@@ -324,6 +324,9 @@ class Parser():
             parent.place = child
         elif tag in ['CHAN', 'TIME', 'FAMC','FAMS']:
             child = Event()
+        elif tag in ['_SOSADABOVILLE', '_SOSA']:
+            child = value
+            parent.sosa = child
         else:
             child = Element()
             print("Unknown child tag '{}' for parent tag '{}'".format(tag, parent_key))

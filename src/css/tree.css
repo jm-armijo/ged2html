@@ -83,6 +83,13 @@ div.last-name:empty:before {
    content: '?';
 }
 
+div.sosa {
+    text-transform: capitalize;
+    width: 110px;
+    white-space: normal;
+    text-align: right;
+}
+
 div.first-name {
     text-transform: capitalize;
     width: 110px;
@@ -90,7 +97,7 @@ div.first-name {
 }
 
 div.last-name {
-    text-transform: capitalize;
+    text-transform: uppercase;
     font-weight: bold;
     width: 110px;
     white-space: normal;

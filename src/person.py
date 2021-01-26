@@ -27,6 +27,7 @@ class Person(Node):
         self.objects = list()
         self.notes = list()
         self.private = False
+        self.sosa = ''
 
     def is_dead(self):
         limit = Date()

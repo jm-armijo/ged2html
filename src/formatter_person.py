@@ -26,6 +26,7 @@ class PersonFormatter():
 
     def format_summary_info(self):
         value = '{}{}{}{}'.format(
+            self.format_sosa(),
             self.format_given_name(),
             self.format_last_name(),
             self.format_dates_as_summary_range(),
@@ -62,6 +63,13 @@ class PersonFormatter():
         element = HTMLElement('img')
         element.add_attribute('class', 'photo')
         element.add_attribute('src', path)
+        return str(element)
+
+    def format_sosa(self):
+        element = HTMLElement('div')
+        element.add_attribute('class', 'sosa')
+        value = self.person.sosa or '&nbsp;'
+        element.set_value(value)
         return str(element)
 
     def format_given_name(self):
@@ -296,7 +304,9 @@ class PersonFormatter():
 
     def format_dates_as_title_range(self):
         dates = ''
-        if self.person.is_dead():
+        if self.person.birth.date.is_empty() and self.person.death.date.is_empty():
+            dates = ''
+        elif self.person.is_dead():
             separator = HTMLElement('div', '&ndash;')
             separator.add_attribute('class', 'separator')
 
@@ -311,7 +321,9 @@ class PersonFormatter():
 
     def format_dates_as_summary_range(self):
         dates = ''
-        if self.person.is_dead():
+        if self.person.birth.date.is_empty() and self.person.death.date.is_empty():
+            dates = ''
+        elif self.person.is_dead():
             separator = HTMLElement('div', '&ndash;')
             separator.add_attribute('class', 'separator')
 
